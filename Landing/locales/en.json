@@ -1,0 +1,72 @@
+{
+  "nav": {
+    "studio": "Studio",
+    "services": "Services",
+    "work": "Work",
+    "method": "Method",
+    "cta": "Let's talk"
+  },
+  "hero": {
+    "badge": "Creative AI Automation Studio",
+    "titleA": "Empowering global innovation through ",
+    "titleB": "intelligent automation.",
+    "subtitle": "THEYINE bridges technical precision and artistic vision — a premier AI automation studio crafting invisible power for visible results. Simple automation. Human clarity.",
+    "ctaPrimary": "Get started",
+    "ctaSecondary": "Our services",
+    "audience": ["Startups", "Creative agencies", "Hospitality", "SaaS founders"]
+  },
+  "services": {
+    "eyebrow": "What we do",
+    "title": "Hybrid intelligence for modern brands",
+    "subtitle": "Design, automation and operational intelligence under one studio — built to simplify the complex and make work feel effortless.",
+    "items": [
+      { "title": "AI Automation Systems", "description": "End-to-end intelligent workflows that run your operations quietly in the background." },
+      { "title": "Workflow Optimization", "description": "We map, simplify and accelerate complex processes into clean, measurable flows." },
+      { "title": "Creative AI Tools", "description": "Custom generative tooling that extends your team's creative capacity." },
+      { "title": "Digital Design Systems", "description": "Scalable, consistent design foundations — a modern digital backbone for your brand." },
+      { "title": "Landing & Web Production", "description": "High-craft landing pages built in Next.js, Framer or Webflow — fast and refined." },
+      { "title": "Content & UGC Systems", "description": "AI-driven content pipelines that produce on-brand assets at scale." },
+      { "title": "QR Menu & Restaurant", "description": "Smart ordering and menu automation for hospitality operators." },
+      { "title": "Hotel & Reservation", "description": "Automated booking, guest flows and operations for modern hospitality." }
+    ]
+  },
+  "gallery": {
+    "eyebrow": "Capability map",
+    "title": "Gallery of Intelligence",
+    "subtitle": "Explore how THEYINE turns intelligence into outcomes — select a capability to see it in motion.",
+    "capabilities": [
+      { "label": "Neural Synthesis", "title": "Neural Synthesis", "meta": "Predictive modeling visualization", "description": "We model patterns hidden in your data and turn them into predictive systems that anticipate, not just react — the intelligent core behind every automation.", "tags": ["AI Architecture", "Prediction", "Data"] },
+      { "label": "Flow Intelligence", "title": "Flow Intelligence", "meta": "Harmonious AI integration", "description": "Automation that moves with your team. We connect tools, data and decisions into seamless flows that remove friction and free people for higher work.", "tags": ["Automation", "Integration", "Ops"] },
+      { "label": "Creative Flow", "title": "Creative Flow", "meta": "Generative design systems", "description": "Generative design systems that scale your brand voice — on-brand assets, layouts and content produced with craft and consistency, at speed.", "tags": ["Generative", "Design", "Content"] },
+      { "label": "Adaptive Ops", "title": "Adaptive Ops", "meta": "Self-improving operations", "description": "Operational intelligence that measures, learns and refines itself. Your systems get sharper over time — quietly compounding efficiency every cycle.", "tags": ["Optimization", "Analytics", "Scale"] }
+    ]
+  },
+  "method": {
+    "eyebrow": "How we work",
+    "title": "Methodology",
+    "subtitle": "A systematic progression from conceptual intelligence to tangible automation.",
+    "steps": [
+      { "title": "Discovery & Audit", "desc": "We map your processes, data and goals to find where intelligence creates leverage." },
+      { "title": "Architecture Design", "desc": "We design the automation and design system — the invisible backbone." },
+      { "title": "Implementation", "desc": "We build, integrate and ship fast, with craft at every layer." },
+      { "title": "Evolution", "desc": "We measure, refine and scale — your systems get smarter over time." }
+    ]
+  },
+  "cta": {
+    "title": "Let's build your intelligent backbone.",
+    "subtitle": "Intelligent automation for modern brands. Tell us what you want to simplify — we'll design the system.",
+    "primary": "Start a project",
+    "secondary": "Explore services"
+  },
+  "footer": {
+    "tagline": "Creative AI Automation Studio for modern brands. Simple automation. Human clarity.",
+    "links": { "linkedin": "LinkedIn", "instagram": "Instagram", "privacy": "Privacy", "terms": "Terms" },
+    "rights": "THEYINE Intelligence Studio. All rights reserved.",
+    "crafted": "Crafted with intelligent automation."
+  },
+  "a11y": {
+    "language": "Select language",
+    "theme": "Toggle light and dark theme",
+    "menu": "Toggle menu"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(identify \"C:/Users/Ivet/Desktop/DOA/THEYINE/TYlogo1.png\")",
+      "Bash(mkdir -p app components styles public/assets)",
+      "Bash(cp \"C:/Users/Ivet/Desktop/DOA/THEYINE/TYlogo1.png\" public/assets/theyine-logo.png)",
+      "Bash(npm -v)",
+      "PowerShell(npm install *)"
+    ]
+  }
+}

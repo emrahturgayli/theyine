@@ -1,0 +1,72 @@
+{
+  "nav": {
+    "studio": "Stüdyo",
+    "services": "Hizmetler",
+    "work": "Çalışmalar",
+    "method": "Yöntem",
+    "cta": "İletişime geç"
+  },
+  "hero": {
+    "badge": "Yaratıcı AI Otomasyon Stüdyosu",
+    "titleA": "Akıllı otomasyonla küresel inovasyonu ",
+    "titleB": "güçlendiriyoruz.",
+    "subtitle": "THEYINE teknik hassasiyet ile sanatsal vizyonu birleştirir — görünür sonuçlar için görünmez güç üreten önde gelen bir AI otomasyon stüdyosu. Basit otomasyon. İnsana özgü netlik.",
+    "ctaPrimary": "Başlayın",
+    "ctaSecondary": "Hizmetlerimiz",
+    "audience": ["Girişimler", "Kreatif ajanslar", "Konaklama", "SaaS kurucuları"]
+  },
+  "services": {
+    "eyebrow": "Ne yapıyoruz",
+    "title": "Modern markalar için hibrit zekâ",
+    "subtitle": "Tasarım, otomasyon ve operasyonel zekâ tek bir stüdyoda — karmaşığı basitleştirmek ve işi zahmetsiz kılmak için.",
+    "items": [
+      { "title": "AI Otomasyon Sistemleri", "description": "Operasyonlarınızı arka planda sessizce yürüten uçtan uca akıllı iş akışları." },
+      { "title": "İş Akışı Optimizasyonu", "description": "Karmaşık süreçleri haritalar, sadeleştirir ve ölçülebilir akışlara dönüştürürüz." },
+      { "title": "Yaratıcı AI Araçları", "description": "Ekibinizin yaratıcı kapasitesini genişleten özel üretken araçlar." },
+      { "title": "Dijital Tasarım Sistemleri", "description": "Ölçeklenebilir, tutarlı tasarım temelleri — markanız için modern bir dijital omurga." },
+      { "title": "Landing & Web Üretimi", "description": "Next.js, Framer veya Webflow ile yüksek kaliteli landing sayfaları — hızlı ve zarif." },
+      { "title": "İçerik & UGC Sistemleri", "description": "Marka uyumlu içerikleri ölçekte üreten AI destekli içerik hatları." },
+      { "title": "QR Menü & Restoran", "description": "Konaklama işletmeleri için akıllı sipariş ve menü otomasyonu." },
+      { "title": "Otel & Rezervasyon", "description": "Modern konaklama için otomatik rezervasyon, misafir akışları ve operasyonlar." }
+    ]
+  },
+  "gallery": {
+    "eyebrow": "Yetenek haritası",
+    "title": "Zekâ Galerisi",
+    "subtitle": "THEYINE'in zekâyı sonuçlara nasıl dönüştürdüğünü keşfedin — bir yeteneği seçerek çalışırken görün.",
+    "capabilities": [
+      { "label": "Nöral Sentez", "title": "Nöral Sentez", "meta": "Öngörücü modelleme görselleştirmesi", "description": "Verilerinizdeki gizli örüntüleri modeller ve onları yalnızca tepki vermeyen, öngören sistemlere dönüştürürüz — her otomasyonun akıllı çekirdeği.", "tags": ["AI Mimarisi", "Öngörü", "Veri"] },
+      { "label": "Akış Zekâsı", "title": "Akış Zekâsı", "meta": "Uyumlu AI entegrasyonu", "description": "Ekibinizle uyum içinde hareket eden otomasyon. Araçları, verileri ve kararları sürtünmesiz akışlarda birleştirir, insanları daha değerli işlere serbest bırakırız.", "tags": ["Otomasyon", "Entegrasyon", "Operasyon"] },
+      { "label": "Yaratıcı Akış", "title": "Yaratıcı Akış", "meta": "Üretken tasarım sistemleri", "description": "Marka sesinizi ölçekleyen üretken tasarım sistemleri — ustalık ve tutarlılıkla, hızla üretilen marka uyumlu içerikler ve düzenler.", "tags": ["Üretken", "Tasarım", "İçerik"] },
+      { "label": "Uyarlanabilir Operasyon", "title": "Uyarlanabilir Operasyon", "meta": "Kendini geliştiren operasyonlar", "description": "Ölçen, öğrenen ve kendini iyileştiren operasyonel zekâ. Sistemleriniz zamanla daha keskin hale gelir — her döngüde sessizce verim biriktirir.", "tags": ["Optimizasyon", "Analitik", "Ölçek"] }
+    ]
+  },
+  "method": {
+    "eyebrow": "Nasıl çalışıyoruz",
+    "title": "Metodoloji",
+    "subtitle": "Kavramsal zekâdan somut otomasyona sistematik bir ilerleme.",
+    "steps": [
+      { "title": "Keşif & Denetim", "desc": "Zekânın nerede kaldıraç yarattığını bulmak için süreçlerinizi, verilerinizi ve hedeflerinizi haritalarız." },
+      { "title": "Mimari Tasarım", "desc": "Otomasyon ve tasarım sistemini tasarlarız — görünmez omurga." },
+      { "title": "Uygulama", "desc": "Her katmanda ustalıkla hızlıca inşa eder, entegre eder ve yayınlarız." },
+      { "title": "Evrim", "desc": "Ölçer, iyileştirir ve ölçekleriz — sistemleriniz zamanla daha akıllı olur." }
+    ]
+  },
+  "cta": {
+    "title": "Akıllı omurganızı birlikte inşa edelim.",
+    "subtitle": "Modern markalar için akıllı otomasyon. Neyi basitleştirmek istediğinizi söyleyin — sistemi biz tasarlayalım.",
+    "primary": "Projeye başla",
+    "secondary": "Hizmetleri keşfet"
+  },
+  "footer": {
+    "tagline": "Modern markalar için Yaratıcı AI Otomasyon Stüdyosu. Basit otomasyon. İnsana özgü netlik.",
+    "links": { "linkedin": "LinkedIn", "instagram": "Instagram", "privacy": "Gizlilik", "terms": "Koşullar" },
+    "rights": "THEYINE Intelligence Studio. Tüm hakları saklıdır.",
+    "crafted": "Akıllı otomasyonla üretildi."
+  },
+  "a11y": {
+    "language": "Dil seçin",
+    "theme": "Açık ve koyu temayı değiştir",
+    "menu": "Menüyü aç/kapat"
+  }
+}

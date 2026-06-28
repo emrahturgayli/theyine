@@ -1,0 +1,152 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   THEYINE — global base
+   Bright, breathing, premium foundation.
+   ============================================================ */
+
+@layer base {
+  :root {
+    --font-inter: "Inter", system-ui, sans-serif;
+
+    /* Light theme — Soft White surfaces, Charcoal ink, lavender accent.
+       Values are RGB channels (space separated) for /opacity support. */
+    --canvas: 249 249 251; /* #F9F9FB */
+    --surface: 255 255 255; /* #FFFFFF */
+    --mist: 237 237 242; /* #EDEDF2 */
+    --line: 228 226 236; /* #E4E2EC */
+    --ink: 31 24 39; /* #1F1827 */
+    --ink-soft: 86 80 95; /* #56505F */
+    --ink-faint: 142 138 153; /* #8E8A99 */
+    --lavender: 124 58 237; /* #7C3AED */
+    --lavender-soft: 201 199 245; /* #C9C7F5 */
+    --lavender-tint: 241 238 254; /* #F1EEFE */
+    --panel: 27 24 34; /* #1B1822 — always-dark CTA */
+  }
+
+  .dark {
+    /* Dark theme — deep charcoal surfaces, soft light ink, brighter lavender. */
+    --canvas: 17 16 20; /* #111014 */
+    --surface: 26 24 31; /* #1A181F */
+    --mist: 35 33 42; /* #23212A */
+    --line: 47 44 58; /* #2F2C3A */
+    --ink: 237 235 243; /* #EDEBF3 */
+    --ink-soft: 178 172 192; /* #B2ACC0 */
+    --ink-faint: 132 126 147; /* #847E93 */
+    --lavender: 167 139 250; /* #A78BFA */
+    --lavender-soft: 109 92 170; /* #6D5CAA */
+    --lavender-tint: 38 32 56; /* #262038 */
+    --panel: 23 21 29; /* #17151D */
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-canvas text-ink font-sans;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+
+  /* Smooth color/border shifts when toggling theme. Utility classes that set
+     their own `transition` (e.g. transition-all on cards/buttons) override this
+     due to higher specificity, so interactive transitions stay intact. */
+  body * {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-duration: 300ms;
+    transition-timing-function: ease;
+  }
+
+  ::selection {
+    background: theme("colors.lavender-soft");
+    color: theme("colors.ink");
+  }
+
+  /* Refined focus ring for keyboard users */
+  :focus-visible {
+    outline: 2px solid theme("colors.lavender");
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  /* Layout shell ----------------------------------------------------- */
+  .container-shell {
+    @apply mx-auto w-full max-w-container px-6 md:px-10 lg:px-16;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.32em] text-ink-faint;
+  }
+
+  /* Buttons ---------------------------------------------------------- */
+  .btn {
+    @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold
+           transition-all duration-300 ease-out;
+  }
+  /* Primary — refined lavender accent, the dominant action */
+  .btn-primary {
+    @apply btn bg-lavender text-white shadow-soft hover:bg-[#6d2fd6] hover:shadow-lift hover:-translate-y-0.5;
+  }
+  /* Secondary — ghost / outline, clearly subordinate */
+  .btn-secondary {
+    @apply btn border border-line bg-transparent text-ink hover:border-lavender hover:text-lavender hover:-translate-y-0.5;
+  }
+  /* Dark variant for use on the ink CTA panel */
+  .btn-on-dark {
+    @apply btn bg-lavender text-white hover:bg-white hover:text-ink hover:-translate-y-0.5;
+  }
+  .link-arrow {
+    @apply inline-flex items-center gap-2 text-sm font-semibold text-lavender transition-opacity hover:opacity-70;
+  }
+
+  /* Cards ------------------------------------------------------------ */
+  .card {
+    @apply rounded-xl2 border border-line bg-surface transition-all duration-500 ease-out;
+  }
+  .card-hover:hover {
+    @apply -translate-y-1 border-lavender-soft shadow-soft;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(120deg, #1f1827 0%, #7c3aed 60%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Reveal-on-scroll: starts hidden, .is-visible triggers the rise. */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
