@@ -5,7 +5,10 @@
       "Bash(mkdir -p app components styles public/assets)",
       "Bash(cp \"C:/Users/Ivet/Desktop/DOA/THEYINE/TYlogo1.png\" public/assets/theyine-logo.png)",
       "Bash(npm -v)",
-      "PowerShell(npm install *)"
+      "PowerShell(npm install *)",
+      "Bash(git rm *)",
+      "Bash(git commit -m 'Remove vercel.json *)",
+      "Bash(git push *)"
     ]
   }
 }
