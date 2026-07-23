@@ -1,7 +1,7 @@
 "use client";
 
 import { useLanguage } from "@/hooks/useLanguage";
-import { track } from "@/lib/analytics";
+import { trackEvent } from "@/lib/analytics";
 
 /**
  * Enterprise hero for the /shopify-virtual-try-on page.
@@ -35,7 +35,7 @@ export default function TryOnHero() {
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <a
             href="#contact"
-            onClick={() => track("cta_click", { cta: "start_project", page: "shopify-virtual-try-on" })}
+            onClick={() => trackEvent("cta_click", "start_project")}
             className="btn-primary w-full sm:w-auto"
           >
             {h.ctaPrimary}
@@ -45,7 +45,7 @@ export default function TryOnHero() {
           </a>
           <a
             href="#tryon"
-            onClick={() => track("cta_click", { cta: "automate_store", page: "shopify-virtual-try-on" })}
+            onClick={() => trackEvent("cta_click", "automate_store")}
             className="btn-secondary w-full sm:w-auto"
           >
             {h.ctaSecondary}

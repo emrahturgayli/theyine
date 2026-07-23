@@ -7,7 +7,8 @@ import { GA_MEASUREMENT_ID } from "@/lib/analytics";
  * Page views are auto-tracked; custom events flow via track().
  */
 export default function Analytics() {
-  if (!GA_MEASUREMENT_ID) return null;
+  // No-op in dev or when no ID — keeps analytics out of local/preview traffic.
+  if (!GA_MEASUREMENT_ID || process.env.NODE_ENV !== "production") return null;
 
   return (
     <>

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import Reveal from "./Reveal";
 import { useLanguage } from "@/hooks/useLanguage";
-import { track } from "@/lib/analytics";
+import { trackEvent } from "@/lib/analytics";
 
 /**
  * TryOnDemo — live proof section for the Shopify × AI virtual try-on automation.
@@ -16,6 +16,15 @@ export default function TryOnDemo() {
   const { dict } = useLanguage();
   const t = dict.tryon;
   const [pos, setPos] = useState(50); // slider konumu (%) — before/after geçişi
+  const sliderFired = useRef(false); // slider_interaction yalnızca ilk kez
+
+  function onSlide(value: number) {
+    setPos(value);
+    if (!sliderFired.current) {
+      sliderFired.current = true;
+      trackEvent("slider_interaction", "before_after");
+    }
+  }
 
   return (
     <section id="tryon" className="border-b border-line py-24 md:py-section">
@@ -135,7 +144,7 @@ export default function TryOnDemo() {
                   min={0}
                   max={100}
                   value={pos}
-                  onChange={(e) => setPos(Number(e.target.value))}
+                  onChange={(e) => onSlide(Number(e.target.value))}
                   aria-label={t.sliderHint}
                   className="absolute inset-0 h-full w-full cursor-ew-resize opacity-0"
                 />
@@ -167,7 +176,7 @@ export default function TryOnDemo() {
         <Reveal className="mt-12">
           <a
             href="#contact"
-            onClick={() => track("cta_click", { cta: "automate_store", section: "tryon_demo" })}
+            onClick={() => trackEvent("cta_click", "automate_store_tryon")}
             className="btn-primary"
           >
             {t.cta}
