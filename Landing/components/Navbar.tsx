@@ -133,6 +133,7 @@ export default function Navbar() {
   const links = [
     { label: t("nav.studio"), href: "#studio" },
     { label: t("nav.services"), href: "#services" },
+    { label: t("nav.pricing"), href: "#pricing" },
     { label: t("nav.work"), href: "#work" },
     { label: t("nav.method"), href: "#method" },
   ];
