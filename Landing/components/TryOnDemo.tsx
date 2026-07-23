@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Reveal from "./Reveal";
 import { useLanguage } from "@/hooks/useLanguage";
+import { track } from "@/lib/analytics";
 
 /**
  * TryOnDemo — live proof section for the Shopify × AI virtual try-on automation.
@@ -164,7 +165,11 @@ export default function TryOnDemo() {
         </div>
 
         <Reveal className="mt-12">
-          <a href="#contact" className="btn-primary">
+          <a
+            href="#contact"
+            onClick={() => track("cta_click", { cta: "automate_store", section: "tryon_demo" })}
+            className="btn-primary"
+          >
             {t.cta}
             <svg
               width="18"

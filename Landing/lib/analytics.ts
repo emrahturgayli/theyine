@@ -1,7 +1,9 @@
 /**
- * Provider-agnostic event tracking. No-ops on the server and when no analytics
- * layer is present. Sends to GA4 (gtag) and/or GTM (dataLayer) if either exists.
+ * GA4 + provider-agnostic event tracking. The <Analytics /> component loads
+ * gtag.js with this ID; track() then sends to GA4 (gtag) and GTM (dataLayer).
  */
+export const GA_MEASUREMENT_ID = "G-6LH347WTRK";
+
 type Props = Record<string, unknown>;
 
 export function track(event: string, props: Props = {}): void {
