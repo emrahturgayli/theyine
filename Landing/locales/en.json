@@ -5,6 +5,7 @@
     "work": "Work",
     "method": "Method",
     "pricing": "Pricing",
+    "tryonLink": "Shopify × AI Try-On",
     "cta": "Let's talk"
   },
   "hero": {
@@ -87,6 +88,41 @@
       { "name": "Growth", "price": "€249", "unit": "/mo", "features": ["Up to 500 products / mo", "3 brand models", "Instagram Reels output", "Priority support"] },
       { "name": "Scale", "price": "Custom", "unit": "", "features": ["Unlimited products", "Dedicated pipeline", "Custom integrations", "SLA & onboarding"] }
     ]
+  },
+  "tryonPage": {
+    "seoTitle": "Shopify Virtual Try-On Automation | THEYINE",
+    "seoDescription": "Automatically dress your Shopify products on a model with AI and write the images back to your store. Enterprise-grade, 24/7, multilingual.",
+    "hero": {
+      "eyebrow": "Enterprise · Shopify × AI",
+      "title": "Virtual try-on for your entire Shopify catalog",
+      "subtitle": "An end-to-end automation that turns plain product photos into on-model imagery — generated, written back to Shopify, and tagged, without a studio or a shoot.",
+      "ctaPrimary": "Start a project",
+      "ctaSecondary": "Automate my store"
+    },
+    "pipeline": {
+      "eyebrow": "The pipeline",
+      "title": "Three systems, one seamless flow",
+      "subtitle": "Connected once, running quietly in the background — scheduled or triggered on demand.",
+      "steps": [
+        { "title": "Shopify", "desc": "Pulls product images from the collection you choose." },
+        { "title": "Fal.ai", "desc": "Virtual try-on dresses your model, then polls to completion." },
+        { "title": "Shopify", "desc": "Writes the generated image back and tags the product done." }
+      ],
+      "runtime": "Runs 24/7 on Modal — scheduled or webhook-triggered, with retries and error alerts."
+    },
+    "caseStudy": {
+      "eyebrow": "Pilot results",
+      "title": "Proven on a live store",
+      "subtitle": "Measured on the theyine-dev store during the pilot run.",
+      "metrics": [
+        { "value": "~30s", "label": "per product" },
+        { "value": "100%", "label": "success rate" },
+        { "value": "€0", "label": "studio cost" },
+        { "value": "250+", "label": "catalog scale" }
+      ],
+      "quote": "From a flat photo to an on-model image, written straight back to the store — no manual step in between.",
+      "quoteBy": "THEYINE pilot · Shopify × Fal.ai"
+    }
   },
   "demoVideo": {
     "eyebrow": "See it live",
