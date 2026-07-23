@@ -136,6 +136,8 @@ export default function Navbar() {
     { label: t("nav.pricing"), href: "#pricing" },
     { label: t("nav.work"), href: "#work" },
     { label: t("nav.method"), href: "#method" },
+    // Dedicated enterprise route (full page, not an in-page anchor).
+    { label: t("nav.tryonLink"), href: "/shopify-virtual-try-on" },
   ];
 
   useEffect(() => {

@@ -5,6 +5,7 @@
     "work": "Çalışmalar",
     "method": "Yöntem",
     "pricing": "Fiyatlar",
+    "tryonLink": "Shopify × AI Giydirme",
     "cta": "İletişime geç"
   },
   "hero": {
@@ -87,6 +88,41 @@
       { "name": "Büyüme", "price": "₺6.000", "unit": "/ay", "features": ["Aylık 500 ürüne kadar", "3 marka mankeni", "Instagram Reels çıktısı", "Öncelikli destek"] },
       { "name": "Ölçek", "price": "Özel", "unit": "", "features": ["Sınırsız ürün", "Özel işlem hattı", "Özel entegrasyonlar", "SLA & kurulum"] }
     ]
+  },
+  "tryonPage": {
+    "seoTitle": "Shopify Sanal Giydirme Otomasyonu | THEYINE",
+    "seoDescription": "Shopify ürünlerinizi yapay zeka ile mankene otomatik giydirin ve görselleri mağazanıza geri yazın. Kurumsal, 7/24, çok dilli.",
+    "hero": {
+      "eyebrow": "Kurumsal · Shopify × AI",
+      "title": "Tüm Shopify kataloğunuz için sanal giydirme",
+      "subtitle": "Düz ürün fotoğraflarını mankenli görsellere dönüştüren uçtan uca otomasyon — üretir, Shopify'a geri yazar ve etiketler; stüdyo ya da çekim olmadan.",
+      "ctaPrimary": "Projeye başla",
+      "ctaSecondary": "Mağazamı otomatikleştir"
+    },
+    "pipeline": {
+      "eyebrow": "İşlem hattı",
+      "title": "Üç sistem, tek kesintisiz akış",
+      "subtitle": "Bir kez bağlanır, arka planda sessizce çalışır — zamanlı ya da anlık tetiklenir.",
+      "steps": [
+        { "title": "Shopify", "desc": "Seçtiğiniz koleksiyondan ürün görsellerini çeker." },
+        { "title": "Fal.ai", "desc": "Sanal giydirme mankeninizi giydirir, tamamlanana kadar bekler." },
+        { "title": "Shopify", "desc": "Üretilen görseli geri yazar ve ürünü etiketler." }
+      ],
+      "runtime": "Modal üzerinde 7/24 çalışır — zamanlı ya da webhook ile, retry ve hata bildirimiyle."
+    },
+    "caseStudy": {
+      "eyebrow": "Pilot sonuçları",
+      "title": "Canlı mağazada kanıtlandı",
+      "subtitle": "Pilot çalıştırmada theyine-dev mağazasında ölçüldü.",
+      "metrics": [
+        { "value": "~30sn", "label": "ürün başına" },
+        { "value": "%100", "label": "başarı oranı" },
+        { "value": "₺0", "label": "stüdyo maliyeti" },
+        { "value": "250+", "label": "katalog ölçeği" }
+      ],
+      "quote": "Düz bir fotoğraftan mankenli görsele, doğrudan mağazaya geri yazılarak — arada tek bir manuel adım olmadan.",
+      "quoteBy": "THEYINE pilot · Shopify × Fal.ai"
+    }
   },
   "demoVideo": {
     "eyebrow": "Canlı izleyin",
