@@ -4,6 +4,7 @@
     "services": "Hizmetler",
     "work": "Çalışmalar",
     "method": "Yöntem",
+    "pricing": "Fiyatlar",
     "cta": "İletişime geç"
   },
   "hero": {
@@ -51,6 +52,48 @@
       { "title": "Uygulama", "desc": "Her katmanda ustalıkla hızlıca inşa eder, entegre eder ve yayınlarız." },
       { "title": "Evrim", "desc": "Ölçer, iyileştirir ve ölçekleriz — sistemleriniz zamanla daha akıllı olur." }
     ]
+  },
+  "tryon": {
+    "eyebrow": "Shopify × AI",
+    "title": "Sanal giydirme, otomatik pilotta",
+    "subtitle": "THEYINE mağazanızdaki her ürünü seçtiğiniz mankene giydirir ve üretilen görseli tekrar Shopify'a yükler. Stüdyo yok, çekim yok, bekleme yok.",
+    "inputLabel": "Manken",
+    "inputTag": "Girdi",
+    "engine": "THEYINE Giydirme Motoru",
+    "productTag": "+ Ürün",
+    "outputLabel": "Çıktı",
+    "outputTag": "Otomatik üretildi",
+    "beforeLabel": "Önce",
+    "afterLabel": "Sonra",
+    "sliderHint": "Önce ve sonrayı karşılaştırmak için sürükleyin",
+    "productName": "Basic Black T-Shirt",
+    "proof": "Gerçek çıktı — “{product}” ürünü canlı otomasyonla saniyeler içinde mankene giydirildi.",
+    "steps": [
+      { "title": "Ürünü çeker", "desc": "Shopify mağazanızdan işlenmemiş ürünlerin görsellerini otomatik toplar." },
+      { "title": "Mankene giydirir", "desc": "Yapay zeka, ürünü seçtiğiniz marka mankenine gerçekçi şekilde giydirir." },
+      { "title": "Mağazaya geri yazar", "desc": "Görseli ürüne ekler ve “yenilendi” etiketi atar — tekrar işlenmez." }
+    ],
+    "cta": "Mağazamı otomatikleştir"
+  },
+  "pricing": {
+    "eyebrow": "Fiyatlandırma",
+    "title": "Basit, sembolik fiyatlar",
+    "subtitle": "İlk aşama için yol gösterici başlangıç fiyatları — kesin kapsam kataloğunuza göre netleşir.",
+    "popular": "En popüler",
+    "note": "Sembolik fiyatlar — kesin plan kısa bir keşif görüşmesinden sonra netleşir.",
+    "cta": "Başlayın",
+    "plans": [
+      { "name": "Başlangıç", "price": "₺2.500", "unit": "/ay", "features": ["Aylık 100 ürüne kadar", "1 marka mankeni", "Otomatik görsel + etiketleme", "E-posta desteği"] },
+      { "name": "Büyüme", "price": "₺6.000", "unit": "/ay", "features": ["Aylık 500 ürüne kadar", "3 marka mankeni", "Instagram Reels çıktısı", "Öncelikli destek"] },
+      { "name": "Ölçek", "price": "Özel", "unit": "", "features": ["Sınırsız ürün", "Özel işlem hattı", "Özel entegrasyonlar", "SLA & kurulum"] }
+    ]
+  },
+  "demoVideo": {
+    "eyebrow": "Canlı izleyin",
+    "title": "30 saniyelik demoyu izleyin",
+    "subtitle": "Baştan sona bir çalıştırma — düz ürün fotoğrafından mankenli görsele, doğrudan Shopify'a geri yazılır.",
+    "badge": "Video yakında",
+    "caption": "Tam anlatım çok yakında."
   },
   "cta": {
     "title": "Akıllı omurganızı birlikte inşa edelim.",

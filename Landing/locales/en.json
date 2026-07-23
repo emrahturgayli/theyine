@@ -4,6 +4,7 @@
     "services": "Services",
     "work": "Work",
     "method": "Method",
+    "pricing": "Pricing",
     "cta": "Let's talk"
   },
   "hero": {
@@ -51,6 +52,48 @@
       { "title": "Implementation", "desc": "We build, integrate and ship fast, with craft at every layer." },
       { "title": "Evolution", "desc": "We measure, refine and scale — your systems get smarter over time." }
     ]
+  },
+  "tryon": {
+    "eyebrow": "Shopify × AI",
+    "title": "Virtual try-on, on autopilot",
+    "subtitle": "THEYINE dresses every product in your store on the model you choose, then uploads the generated image back to Shopify. No studio, no shoot, no waiting.",
+    "inputLabel": "Model",
+    "inputTag": "Input",
+    "engine": "THEYINE Try-On Engine",
+    "productTag": "+ Product",
+    "outputLabel": "Output",
+    "outputTag": "Auto-generated",
+    "beforeLabel": "Before",
+    "afterLabel": "After",
+    "sliderHint": "Drag to compare before and after",
+    "productName": "Basic Black T-Shirt",
+    "proof": "Real output — “{product}” dressed on the model in seconds by the live automation.",
+    "steps": [
+      { "title": "Pulls the product", "desc": "Automatically collects images of unprocessed products from your Shopify store." },
+      { "title": "Dresses the model", "desc": "AI fits the product onto your chosen brand model, realistically." },
+      { "title": "Writes back to store", "desc": "Adds the image to the product and tags it “done” — never processed twice." }
+    ],
+    "cta": "Automate my store"
+  },
+  "pricing": {
+    "eyebrow": "Pricing",
+    "title": "Simple, symbolic pricing",
+    "subtitle": "Indicative starting points for the first stage — the final scope is shaped around your catalog.",
+    "popular": "Most popular",
+    "note": "Symbolic prices — the exact plan is finalized after a short discovery call.",
+    "cta": "Get started",
+    "plans": [
+      { "name": "Starter", "price": "€99", "unit": "/mo", "features": ["Up to 100 products / mo", "1 brand model", "Auto image + tagging", "Email support"] },
+      { "name": "Growth", "price": "€249", "unit": "/mo", "features": ["Up to 500 products / mo", "3 brand models", "Instagram Reels output", "Priority support"] },
+      { "name": "Scale", "price": "Custom", "unit": "", "features": ["Unlimited products", "Dedicated pipeline", "Custom integrations", "SLA & onboarding"] }
+    ]
+  },
+  "demoVideo": {
+    "eyebrow": "See it live",
+    "title": "Watch the 30-second demo",
+    "subtitle": "A full run — from a plain product photo to an on-model image, written straight back to Shopify.",
+    "badge": "Video coming soon",
+    "caption": "Full walkthrough dropping shortly."
   },
   "cta": {
     "title": "Let's build your intelligent backbone.",
