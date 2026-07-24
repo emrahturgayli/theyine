@@ -37,12 +37,13 @@ export default function ShopifyVirtualTryOnPage() {
     <>
       <Navbar />
       <main>
+        {/* Prestige flow: promise → proof → how → results → watch → price */}
         <TryOnHero />
         <TryOnDemo />
         <Pipeline />
         <CaseStudy />
-        <Pricing />
         <DemoVideo />
+        <Pricing />
       </main>
       <Footer />
     </>

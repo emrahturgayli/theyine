@@ -133,7 +133,7 @@ export default function Navbar() {
   const links = [
     { label: t("nav.studio"), href: "#studio" },
     { label: t("nav.services"), href: "#services" },
-    { label: t("nav.pricing"), href: "#pricing" },
+    { label: t("nav.pricing"), href: "/shopify-virtual-try-on#pricing" },
     { label: t("nav.work"), href: "#work" },
     { label: t("nav.method"), href: "#method" },
     // Dedicated enterprise route (full page, not an in-page anchor).

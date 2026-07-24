@@ -32,6 +32,8 @@ export function trackEvent(action: string, label?: string, extra: Props = {}): v
     category: "theyine_tryon",
     action,
     ...(label ? { label } : {}),
+    // Auto page context — the try-on sections now live on their own route.
+    ...(typeof window !== "undefined" ? { page: window.location.pathname } : {}),
     ...extra,
   });
 }
