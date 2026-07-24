@@ -4,7 +4,7 @@
  */
 // Env override, with a safe literal fallback. Empty string => analytics no-ops.
 export const GA_MEASUREMENT_ID =
-  process.env.NEXT_PUBLIC_GA_ID ?? "G-2NWHGKF2QX";
+  process.env.NEXT_PUBLIC_GA_ID ?? "G-6GBD51PMQ4";
 
 type Props = Record<string, unknown>;
 
