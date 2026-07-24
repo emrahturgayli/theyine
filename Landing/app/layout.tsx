@@ -49,10 +49,10 @@ export default function RootLayout({
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: noFlashScript }} />
+        <Analytics />
       </head>
       <body>
         <Providers>{children}</Providers>
-        <Analytics />
       </body>
     </html>
   );

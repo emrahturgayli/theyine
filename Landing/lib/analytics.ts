@@ -2,9 +2,11 @@
  * GA4 + provider-agnostic event tracking. The <Analytics /> component loads
  * gtag.js with this ID; track() then sends to GA4 (gtag) and GTM (dataLayer).
  */
-// Env override, with a safe literal fallback. Empty string => analytics no-ops.
-export const GA_MEASUREMENT_ID =
-  process.env.NEXT_PUBLIC_GA_ID ?? "G-6GBD51PMQ4";
+// Env override with a literal fallback. `||` (not `??`) so an env var that
+// exists but is empty still falls back instead of silently disabling GA.
+export const GA_MEASUREMENT_ID = (
+  process.env.NEXT_PUBLIC_GA_ID || "G-6GBD51PMQ4"
+).trim();
 
 type Props = Record<string, unknown>;
 

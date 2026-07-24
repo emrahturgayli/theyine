@@ -1,27 +1,28 @@
-import Script from "next/script";
 import { GA_MEASUREMENT_ID } from "@/lib/analytics";
 
 /**
- * Loads Google Analytics 4 (gtag.js) after the page is interactive.
- * Defines the global gtag() so lib/analytics.ts `track()` reaches GA4.
- * Page views are auto-tracked; custom events flow via track().
+ * Google Analytics 4 (gtag.js), rendered as plain script tags inside <head>.
+ *
+ * Deliberately NOT next/script: `afterInteractive` injects only after
+ * hydration, so the tag is missing from the server HTML (and from view-source).
+ * Server-rendering the standard GA snippet guarantees it is in the live DOM.
+ * gtag() is defined globally here, which is what lib/analytics.ts track() uses.
  */
 export default function Analytics() {
-  // No-op in dev or when no ID — keeps analytics out of local/preview traffic.
-  if (!GA_MEASUREMENT_ID || process.env.NODE_ENV !== "production") return null;
+  if (!GA_MEASUREMENT_ID) return null;
 
   return (
     <>
-      <Script
+      <script
+        async
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-        strategy="afterInteractive"
       />
-      <Script id="ga4-init" strategy="afterInteractive">
-        {`window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', '${GA_MEASUREMENT_ID}');`}
-      </Script>
+      <script
+        id="ga4-init"
+        dangerouslySetInnerHTML={{
+          __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_MEASUREMENT_ID}');`,
+        }}
+      />
     </>
   );
 }
