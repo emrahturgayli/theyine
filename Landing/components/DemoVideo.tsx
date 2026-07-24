@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Reveal from "./Reveal";
 import { useLanguage } from "@/hooks/useLanguage";
+import { trackEvent } from "@/lib/analytics";
 
 /**
  * DemoVideo — placeholder for the upcoming product walkthrough.
@@ -28,7 +29,15 @@ export default function DemoVideo() {
         </Reveal>
 
         <Reveal className="mx-auto mt-12 max-w-4xl">
-          <div className="card relative aspect-video overflow-hidden">
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => trackEvent("demo_play", "demo_video")}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") trackEvent("demo_play", "demo_video");
+            }}
+            className="card relative aspect-video cursor-pointer overflow-hidden"
+          >
             {/* Poster (bugün). Yayına alırken bu bloğu bir <iframe> ile değiştir:
                 <iframe className="absolute inset-0 h-full w-full" src="https://www.youtube.com/embed/VIDEO_ID"
                   title={t.title} allow="accelerated-motion; encrypted-media" allowFullScreen /> */}

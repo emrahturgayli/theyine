@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "../styles/globals.css";
 import Providers from "@/components/Providers";
+import Analytics from "@/components/Analytics";
 
 // Runs before paint to apply the persisted theme/language and avoid a flash.
 const noFlashScript = `(function(){try{var e=document.documentElement;var t=localStorage.getItem('theyine-theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}if(t==='dark'){e.classList.add('dark');}e.style.colorScheme=t;var l=localStorage.getItem('theyine-lang');if(l){e.lang=l;}}catch(_){}})();`;
@@ -51,6 +52,7 @@ export default function RootLayout({
       </head>
       <body>
         <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );

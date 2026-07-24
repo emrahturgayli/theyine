@@ -2,6 +2,7 @@
 
 import Reveal from "../Reveal";
 import { useLanguage } from "@/hooks/useLanguage";
+import { trackEvent } from "@/lib/analytics";
 
 /**
  * Pipeline diagram — Shopify → Fal.ai → Shopify.
@@ -30,7 +31,10 @@ export default function Pipeline() {
           <div className="flex flex-col items-stretch gap-4 md:flex-row md:items-center">
             {p.steps.map((step, i) => (
               <div key={step.title} className="contents md:flex md:flex-1 md:items-center">
-                <article className="card flex-1 p-6">
+                <article
+                  onClick={() => trackEvent("pipeline_interaction", step.title)}
+                  className="card flex-1 cursor-pointer p-6"
+                >
                   <div className="flex items-center gap-3">
                     <span className="flex h-9 w-9 items-center justify-center rounded-full bg-lavender-tint text-xs font-semibold text-lavender">
                       0{i + 1}

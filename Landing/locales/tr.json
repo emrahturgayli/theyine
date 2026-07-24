@@ -99,6 +99,26 @@
       "ctaPrimary": "Projeye başla",
       "ctaSecondary": "Mağazamı otomatikleştir"
     },
+    "inputs": {
+      "eyebrow": "Motorun aldığı girdiler",
+      "title": "İki girdi. Tek bitmiş görsel.",
+      "subtitle": "Marka mankeniniz ve ürün fotoğrafınız — gerisi otomatik.",
+      "modelLabel": "Manken girdisi",
+      "modelCaption": "Bir kez çekilir, tüm katalog boyunca yeniden kullanılır.",
+      "productLabel": "Ürün girdisi",
+      "productCaption": "Doğrudan Shopify koleksiyonunuzdan çekilir."
+    },
+    "compare": {
+      "eyebrow": "Sonuç",
+      "title": "Farkı görmek için sürükleyin",
+      "subtitle": "Aynı manken, saniyeler içinde giydirildi — ardından otomatik olarak Shopify'a geri yazıldı."
+    },
+    "ctaBand": {
+      "title": "Kataloğunuz yarına hazır.",
+      "subtitle": "İşlem hattını mağazanıza bağlarız, düğme sizde olur.",
+      "primary": "Projeye başla",
+      "secondary": "Fiyatları gör"
+    },
     "pipeline": {
       "eyebrow": "İşlem hattı",
       "title": "Üç sistem, tek kesintisiz akış",

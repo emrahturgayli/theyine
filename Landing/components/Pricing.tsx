@@ -2,6 +2,7 @@
 
 import Reveal from "./Reveal";
 import { useLanguage } from "@/hooks/useLanguage";
+import { trackEvent } from "@/lib/analytics";
 
 /**
  * Pricing — symbolic first-stage tiers for the try-on automation.
@@ -79,6 +80,7 @@ export default function Pricing() {
 
                   <a
                     href="#contact"
+                    onClick={() => trackEvent("select_plan", plan.name)}
                     className={`mt-8 w-full ${featured ? "btn-primary" : "btn-secondary"}`}
                   >
                     {t.cta}
