@@ -6,8 +6,10 @@ import { trackEvent } from "@/lib/analytics";
 
 /**
  * Pricing — symbolic first-stage tiers for the try-on automation.
+ * The featured plan is lifted above its siblings (negative margin + shadow)
+ * rather than just outlined, so the hierarchy reads at a glance.
  * Brand-native (light, lavender, Inter), localized via dict.pricing.
- * The middle plan is featured. All CTAs point to the contact section.
+ * All CTAs point to the contact section.
  */
 export default function Pricing() {
   const { dict } = useLanguage();
@@ -27,14 +29,16 @@ export default function Pricing() {
           <p className="mt-4 text-lg text-ink-soft">{t.subtitle}</p>
         </Reveal>
 
-        <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-3">
+        <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3 md:items-end md:gap-5">
           {t.plans.map((plan, i) => {
             const featured = i === 1;
             return (
-              <Reveal key={plan.name} delay={i * 90}>
+              <Reveal key={plan.name} delay={i * 90} className={featured ? "md:-mt-6" : ""}>
                 <article
                   className={`card flex h-full flex-col p-7 ${
-                    featured ? "border-lavender shadow-lift" : ""
+                    featured
+                      ? "border-lavender shadow-lift md:pb-9 md:pt-9"
+                      : ""
                   }`}
                 >
                   <div className="flex items-center justify-between gap-3">
@@ -47,7 +51,11 @@ export default function Pricing() {
                   </div>
 
                   <div className="mt-4 flex items-baseline gap-1">
-                    <span className="text-4xl font-bold tracking-tight text-ink">
+                    <span
+                      className={`font-bold tracking-tight text-ink ${
+                        featured ? "text-5xl" : "text-4xl"
+                      }`}
+                    >
                       {plan.price}
                     </span>
                     {plan.unit && (
@@ -91,7 +99,7 @@ export default function Pricing() {
           })}
         </div>
 
-        <p className="mt-8 text-center text-sm text-ink-faint">{t.note}</p>
+        <p className="mt-10 text-center text-sm text-ink-faint">{t.note}</p>
       </div>
     </section>
   );

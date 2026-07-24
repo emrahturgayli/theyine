@@ -6,7 +6,8 @@ import { useLanguage } from "@/hooks/useLanguage";
 
 /**
  * Inputs — the two things the engine needs: the brand model and the product.
- * Presented as equal-weight cards joined by a "+" node.
+ * Staggered, numbered pair (01 / 02) instead of a symmetric "+" join —
+ * the second card sits offset and overlapping to read as one sequence.
  */
 export default function InputsSection() {
   const { dict } = useLanguage();
@@ -31,39 +32,37 @@ export default function InputsSection() {
           <p className="mt-4 text-lg text-ink-soft">{i.subtitle}</p>
         </Reveal>
 
-        <Reveal className="mt-14">
-          <div className="flex flex-col items-center gap-5 md:flex-row md:items-stretch">
+        <Reveal className="mt-16">
+          <div className="relative grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-0">
             {cards.map((c, idx) => (
-              <div key={c.label} className="contents md:flex md:flex-1 md:items-center">
-                <figure className="card w-full flex-1 overflow-hidden">
-                  <div className="relative aspect-[4/3] bg-mist">
-                    <Image
-                      src={c.src}
-                      alt={c.label}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 42vw"
-                      className="object-cover object-top"
-                    />
-                    <span className="absolute left-4 top-4 rounded-full bg-surface/95 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-ink shadow-soft">
-                      {c.label}
-                    </span>
-                  </div>
-                  <figcaption className="border-t border-line p-5 text-sm leading-relaxed text-ink-soft">
-                    {c.caption}
-                  </figcaption>
-                </figure>
-
-                {idx === 0 && (
-                  <span
-                    className="my-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line bg-surface text-lavender shadow-soft md:mx-5 md:my-0"
-                    aria-hidden
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-                      <path d="M12 5v14M5 12h14" />
-                    </svg>
+              <figure
+                key={c.label}
+                className={`card relative overflow-hidden ${
+                  idx === 1
+                    ? "md:-ml-10 md:mt-16 md:shadow-lift"
+                    : "md:mr-10"
+                }`}
+                style={{ zIndex: idx === 1 ? 10 : 0 }}
+              >
+                <div className="relative aspect-[4/3] bg-mist">
+                  <Image
+                    src={c.src}
+                    alt={c.label}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 42vw"
+                    className="object-cover object-top"
+                  />
+                  <span className="absolute left-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-lavender text-xs font-semibold text-white shadow-soft">
+                    0{idx + 1}
                   </span>
-                )}
-              </div>
+                  <span className="absolute right-4 top-4 rounded-full bg-surface/95 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-ink shadow-soft">
+                    {c.label}
+                  </span>
+                </div>
+                <figcaption className="border-t border-line p-5 text-sm leading-relaxed text-ink-soft">
+                  {c.caption}
+                </figcaption>
+              </figure>
             ))}
           </div>
         </Reveal>
