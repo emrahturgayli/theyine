@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import TryOnHero from "@/components/tryon/TryOnHero";
-import TryOnDemo from "@/components/TryOnDemo";
+import EnterpriseHero from "@/components/enterprise/EnterpriseHero";
+import InputsSection from "@/components/enterprise/InputsSection";
+import BeforeAfter from "@/components/enterprise/BeforeAfter";
 import Pipeline from "@/components/tryon/Pipeline";
 import CaseStudy from "@/components/tryon/CaseStudy";
-import Pricing from "@/components/Pricing";
+import CtaBand from "@/components/enterprise/CtaBand";
 import DemoVideo from "@/components/DemoVideo";
+import Pricing from "@/components/Pricing";
 
-// Static SEO (server-rendered). Copy mirrors the English tryonPage dictionary.
 export const metadata: Metadata = {
   title: "Shopify Virtual Try-On Automation | THEYINE",
   description:
@@ -21,27 +22,29 @@ export const metadata: Metadata = {
     "on-model imagery",
     "THEYINE",
   ],
-  alternates: { canonical: "/shopify-virtual-try-on" },
+  alternates: { canonical: "/enterprise-tryon" },
   openGraph: {
     title: "Shopify Virtual Try-On Automation | THEYINE",
     description:
       "Turn flat product photos into on-model imagery automatically — generated, written back to Shopify, and tagged.",
     type: "website",
-    url: "/shopify-virtual-try-on",
+    url: "/enterprise-tryon",
     images: [{ url: "/assets/tryon/result.jpg" }],
   },
 };
 
-export default function ShopifyVirtualTryOnPage() {
+export default function EnterpriseTryOnPage() {
   return (
     <>
       <Navbar />
       <main>
-        {/* Prestige flow: promise → proof → how → results → watch → price */}
-        <TryOnHero />
-        <TryOnDemo />
+        {/* promise → inputs → proof → how → results → commit → watch → price */}
+        <EnterpriseHero />
+        <InputsSection />
+        <BeforeAfter />
         <Pipeline />
         <CaseStudy />
+        <CtaBand />
         <DemoVideo />
         <Pricing />
       </main>

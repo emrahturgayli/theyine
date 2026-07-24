@@ -99,6 +99,26 @@
       "ctaPrimary": "Start a project",
       "ctaSecondary": "Automate my store"
     },
+    "inputs": {
+      "eyebrow": "What the engine takes",
+      "title": "Two inputs. One finished image.",
+      "subtitle": "Your brand model and your product photo — everything else is automatic.",
+      "modelLabel": "Model input",
+      "modelCaption": "Your brand model, shot once and reused across the catalog.",
+      "productLabel": "Product input",
+      "productCaption": "Pulled straight from your Shopify collection."
+    },
+    "compare": {
+      "eyebrow": "The result",
+      "title": "Drag to see the difference",
+      "subtitle": "The same model, dressed by the engine in seconds — then written back to Shopify automatically."
+    },
+    "ctaBand": {
+      "title": "Your catalog, dressed by tomorrow.",
+      "subtitle": "We connect the pipeline to your store and hand you the switch.",
+      "primary": "Start a project",
+      "secondary": "See pricing"
+    },
     "pipeline": {
       "eyebrow": "The pipeline",
       "title": "Three systems, one seamless flow",
