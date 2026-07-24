@@ -7,9 +7,10 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { trackEvent } from "@/lib/analytics";
 
 /**
- * Before/after comparison — plain model vs. the dressed result.
- * Pure CSS/JS: a clipped overlay driven by a full-cover range input
- * (draggable, keyboard-accessible). Fires slider_interaction once.
+ * Before/after comparison — the slider frame runs wide, with a narrow
+ * editorial sidebar carrying the claim and proof line instead of a
+ * centered header. Pure CSS/JS: a clipped overlay driven by a full-cover
+ * range input (draggable, keyboard-accessible). Fires slider_interaction once.
  */
 export default function BeforeAfter() {
   const { dict } = useLanguage();
@@ -29,27 +30,32 @@ export default function BeforeAfter() {
 
   return (
     <section id="compare" className="border-b border-line py-24 md:py-section">
-      <div className="container-shell">
-        <Reveal className="max-w-2xl">
+      <div className="container-shell grid gap-10 lg:grid-cols-12 lg:gap-8">
+        <Reveal className="lg:col-span-4 lg:pt-2">
           <span className="eyebrow">
             <span className="h-1.5 w-1.5 rounded-full bg-lavender" />
             {c.eyebrow}
           </span>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-ink md:text-4xl">
+          <h2 className="mt-4 text-3xl font-bold leading-[1.05] tracking-tight text-ink md:text-4xl">
             {c.title}
           </h2>
-          <p className="mt-4 text-lg text-ink-soft">{c.subtitle}</p>
+          <p className="mt-4 max-w-sm text-lg text-ink-soft">{c.subtitle}</p>
+
+          <p className="mt-10 hidden items-start gap-2.5 border-t border-line pt-6 text-sm leading-relaxed text-ink-soft lg:flex">
+            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-lavender" />
+            {t.proof.replace("{product}", t.productName)}
+          </p>
         </Reveal>
 
-        <Reveal className="mt-14">
+        <Reveal className="lg:col-span-8" delay={80}>
           <div className="card overflow-hidden shadow-lift">
-            <div className="relative aspect-[4/5] select-none bg-mist sm:aspect-[16/10]">
+            <div className="relative aspect-[4/5] select-none bg-mist sm:aspect-[4/3]">
               {/* Before — plain model */}
               <Image
                 src="/assets/tryon/model.jpg"
                 alt={t.beforeLabel}
                 fill
-                sizes="(max-width: 1280px) 100vw, 1200px"
+                sizes="(max-width: 1280px) 100vw, 1000px"
                 className="object-cover object-top"
               />
               {/* After — dressed result, revealed from the right */}
@@ -58,7 +64,7 @@ export default function BeforeAfter() {
                   src="/assets/tryon/result.jpg"
                   alt={t.afterLabel}
                   fill
-                  sizes="(max-width: 1280px) 100vw, 1200px"
+                  sizes="(max-width: 1280px) 100vw, 1000px"
                   className="object-cover object-top"
                 />
               </div>
@@ -94,7 +100,7 @@ export default function BeforeAfter() {
             </div>
           </div>
 
-          <p className="mt-5 flex items-center gap-2 text-sm text-ink-soft">
+          <p className="mt-5 flex items-center gap-2 text-sm text-ink-soft lg:hidden">
             <span className="h-1.5 w-1.5 rounded-full bg-lavender" />
             {t.proof.replace("{product}", t.productName)}
           </p>
