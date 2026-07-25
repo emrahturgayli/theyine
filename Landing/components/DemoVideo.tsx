@@ -5,6 +5,7 @@ import Image from "next/image";
 import Reveal from "./Reveal";
 import { useLanguage } from "@/hooks/useLanguage";
 import { trackEvent } from "@/lib/analytics";
+import { parseVideo } from "@/lib/video";
 
 /**
  * DemoVideo — product walkthrough.
@@ -17,38 +18,12 @@ import { trackEvent } from "@/lib/analytics";
  * costs anything on first paint.
  */
 
-const VIDEO_URL = process.env.NEXT_PUBLIC_DEMO_VIDEO_URL ?? "";
-
-/** Turns a share link into an autoplaying embed URL. Returns null if unusable. */
-function toEmbedUrl(raw: string): string | null {
-  if (!raw) return null;
-  try {
-    const u = new URL(raw.trim());
-    const host = u.hostname.replace(/^www\./, "");
-
-    if (host === "youtu.be") {
-      const id = u.pathname.slice(1);
-      return id ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0` : null;
-    }
-    if (host.endsWith("youtube.com")) {
-      const id = u.searchParams.get("v") ?? u.pathname.split("/").filter(Boolean).pop();
-      return id ? `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0` : null;
-    }
-    if (host.endsWith("vimeo.com")) {
-      const id = u.pathname.split("/").filter(Boolean).pop();
-      return id ? `https://player.vimeo.com/video/${id}?autoplay=1` : null;
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
+const embedUrl = parseVideo(process.env.NEXT_PUBLIC_DEMO_VIDEO_URL)?.embedUrl ?? null;
 
 export default function DemoVideo() {
   const { dict } = useLanguage();
   const t = dict.demoVideo;
 
-  const embedUrl = toEmbedUrl(VIDEO_URL);
   const [playing, setPlaying] = useState(false);
 
   function play() {
