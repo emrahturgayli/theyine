@@ -10,6 +10,7 @@ import CtaBand from "@/components/enterprise/CtaBand";
 import DemoVideo from "@/components/DemoVideo";
 import Pricing from "@/components/Pricing";
 import QRWidget from "@/components/QRWidget";
+import { QR_DEMO_CAMPAIGN } from "@/lib/qr";
 import { parseVideo } from "@/lib/video";
 
 export const metadata: Metadata = {
@@ -76,7 +77,7 @@ export default function EnterpriseTryOnPage() {
         <Pricing />
       </main>
       <Footer />
-      <QRWidget campaign="happy-hour-20-trial-9gml" />
+      <QRWidget campaign={QR_DEMO_CAMPAIGN} />
     </>
   );
 }
