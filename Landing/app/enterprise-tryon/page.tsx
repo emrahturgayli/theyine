@@ -9,6 +9,7 @@ import CaseStudy from "@/components/tryon/CaseStudy";
 import CtaBand from "@/components/enterprise/CtaBand";
 import DemoVideo from "@/components/DemoVideo";
 import Pricing from "@/components/Pricing";
+import QRWidget from "@/components/QRWidget";
 import { parseVideo } from "@/lib/video";
 
 export const metadata: Metadata = {
@@ -75,6 +76,7 @@ export default function EnterpriseTryOnPage() {
         <Pricing />
       </main>
       <Footer />
+      <QRWidget campaign="happy-hour-20-trial-9gml" />
     </>
   );
 }
