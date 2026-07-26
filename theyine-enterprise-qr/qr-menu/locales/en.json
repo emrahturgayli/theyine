@@ -1,0 +1,88 @@
+{
+  "brand": "THEYINE",
+  "nav": {
+    "dashboard": "Dashboard",
+    "campaigns": "Campaigns",
+    "settings": "Settings",
+    "logout": "Log out",
+    "login": "Log in"
+  },
+  "landing": {
+    "title": "Restaurant QR Management",
+    "subtitle": "Menus, campaigns, reservations and orders — through a single QR code. Built for restaurants in Bulgaria.",
+    "watchDemo": "Watch demo",
+    "startNow": "Start QR management",
+    "features": {
+      "menu": "QR Menu",
+      "menuDesc": "A digital menu you update in seconds — no reprinting.",
+      "campaigns": "Campaigns",
+      "campaignsDesc": "Happy hours, promos and seasonal offers with expiry dates.",
+      "reservations": "Reservations",
+      "reservationsDesc": "Guests book a table straight from the QR code.",
+      "analytics": "Analytics",
+      "analyticsDesc": "Scans, clicks and conversions in real time."
+    }
+  },
+  "admin": {
+    "welcome": "Welcome! Create your first QR code under “Campaigns”, place it on your tables and watch the scans come in here.",
+    "activeCodes": "Active codes",
+    "totalScans": "Total scans",
+    "totalClicks": "Total clicks",
+    "conversions": "Conversions",
+    "last7days": "Scans — last 7 days",
+    "recentCampaigns": "Recent campaigns",
+    "noCampaigns": "No campaigns yet.",
+    "loading": "Loading…"
+  },
+  "campaigns": {
+    "title": "Campaigns",
+    "newCampaign": "New QR campaign",
+    "formTitle": "Title",
+    "formDescription": "Description",
+    "formType": "Campaign type",
+    "typeMenu": "Menu",
+    "typeReservation": "Reservation",
+    "typeOrder": "Order",
+    "formTargetUrl": "Target URL (optional)",
+    "formTargetUrlHint": "If empty, the internal QR page is shown.",
+    "formExpiry": "Valid until (optional)",
+    "formTags": "Tags (comma separated)",
+    "create": "Create QR",
+    "creating": "Creating…",
+    "created": "QR campaign created!",
+    "errorTitle": "Title is required.",
+    "errorUrl": "Invalid URL.",
+    "shortUrl": "Short URL",
+    "downloadQr": "Download QR (PNG)",
+    "views": "scans",
+    "clicks": "clicks",
+    "expired": "Expired"
+  },
+  "settings": {
+    "title": "Settings",
+    "embedTitle": "Embed on your website",
+    "embedIframe": "Iframe embed",
+    "embedScript": "Script widget",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "merchantId": "Merchant ID",
+    "restaurantName": "Restaurant name"
+  },
+  "login": {
+    "title": "Merchant login",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "error": "Wrong email or password.",
+    "demoHint": "Demo access: demo@theyine.com / theyine123"
+  },
+  "qr": {
+    "notFound": "This QR code was not found.",
+    "expired": "This campaign has expired.",
+    "openMenu": "Open the menu",
+    "internalMenu": "Opening the menu…",
+    "bookTable": "Book a table",
+    "orderNow": "Order now",
+    "poweredBy": "Powered by"
+  }
+}
