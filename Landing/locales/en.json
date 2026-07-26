@@ -167,5 +167,53 @@
     "language": "Select language",
     "theme": "Toggle light and dark theme",
     "menu": "Toggle menu"
+  },
+  "qrPage": {
+    "seoTitle": "QR Menu & Restaurant Automation | THEYINE",
+    "seoDescription": "One QR code for your restaurant's menu, campaigns, reservations and orders — with real-time scan analytics and an embeddable widget for any website.",
+    "hero": {
+      "eyebrow": "Enterprise · QR × Restaurants",
+      "title": "One QR code that runs your whole restaurant",
+      "subtitle": "Menus, campaigns, reservations and orders behind a single scannable code — managed from one dashboard, measured in real time, embeddable on any website.",
+      "ctaPrimary": "Open the live demo",
+      "ctaSecondary": "Start a project",
+      "demoTag": "Live campaign — scan or tap",
+      "metrics": [
+        { "value": "1", "label": "Code per venue" },
+        { "value": "3", "label": "Flows — menu, booking, order" },
+        { "value": "24/7", "label": "Real-time analytics" }
+      ]
+    },
+    "features": {
+      "eyebrow": "What you get",
+      "title": "Everything a restaurant needs, behind one code",
+      "subtitle": "Built for the Bulgarian market first — bilingual out of the box, nothing for guests to install.",
+      "items": [
+        {
+          "title": "Campaign QR codes",
+          "desc": "Scannable codes for menus, happy hours, reservations or orders — each with its own landing page, expiry date and tags."
+        },
+        {
+          "title": "Scan-to-conversion analytics",
+          "desc": "Every view, click and conversion is tracked per campaign and charted over the last seven days in your dashboard."
+        },
+        {
+          "title": "Embeddable widget",
+          "desc": "One script tag adds a floating menu button to any website — the landing opens in an iframe panel, no rebuild required."
+        },
+        {
+          "title": "Mobile-first guest pages",
+          "desc": "Light, fast landing pages designed for a phone held in one hand — with light and dark themes."
+        },
+        {
+          "title": "Multilingual by default",
+          "desc": "Bulgarian and English for guests and staff, switchable in one tap."
+        },
+        {
+          "title": "No app, no friction",
+          "desc": "Guests scan and act — nothing to install, no sign-up. You manage everything from a PWA-ready admin panel."
+        }
+      ]
+    }
   }
 }
