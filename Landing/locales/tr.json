@@ -167,5 +167,53 @@
     "language": "Dil seçin",
     "theme": "Açık ve koyu temayı değiştir",
     "menu": "Menüyü aç/kapat"
+  },
+  "qrPage": {
+    "seoTitle": "QR Menü ve Restoran Otomasyonu | THEYINE",
+    "seoDescription": "Restoranınızın menüsü, kampanyaları, rezervasyonları ve siparişleri için tek QR kod — gerçek zamanlı tarama analitiği ve her siteye gömülebilir widget ile.",
+    "hero": {
+      "eyebrow": "Enterprise · QR × Restoranlar",
+      "title": "Tüm restoranınızı yöneten tek bir QR kod",
+      "subtitle": "Menüler, kampanyalar, rezervasyonlar ve siparişler tek bir taranabilir kodun arkasında — tek panelden yönetilir, gerçek zamanlı ölçülür, her siteye gömülebilir.",
+      "ctaPrimary": "Canlı demoyu aç",
+      "ctaSecondary": "Proje başlat",
+      "demoTag": "Canlı kampanya — tarayın veya dokunun",
+      "metrics": [
+        { "value": "1", "label": "Mekan başına kod" },
+        { "value": "3", "label": "Akış — menü, rezervasyon, sipariş" },
+        { "value": "24/7", "label": "Gerçek zamanlı analitik" }
+      ]
+    },
+    "features": {
+      "eyebrow": "Neler sunuyoruz",
+      "title": "Bir restoranın ihtiyacı olan her şey, tek kodun arkasında",
+      "subtitle": "Önce Bulgaristan pazarı için tasarlandı — baştan iki dilli, misafirlerin kuracağı hiçbir şey yok.",
+      "items": [
+        {
+          "title": "Kampanya QR kodları",
+          "desc": "Menü, happy hour, rezervasyon veya sipariş için taranabilir kodlar — her biri kendi sayfası, geçerlilik süresi ve etiketleriyle."
+        },
+        {
+          "title": "Taramadan dönüşüme analitik",
+          "desc": "Her görüntüleme, tıklama ve dönüşüm kampanya bazında izlenir ve panelinizde son yedi günlük grafikle sunulur."
+        },
+        {
+          "title": "Gömülebilir widget",
+          "desc": "Tek bir script tag'i her siteye yüzen bir menü butonu ekler — sayfa iframe panelde açılır, yeniden geliştirme gerekmez."
+        },
+        {
+          "title": "Mobil öncelikli misafir sayfaları",
+          "desc": "Tek elle tutulan telefon için tasarlanmış hafif ve hızlı sayfalar — açık ve koyu temalarıyla."
+        },
+        {
+          "title": "Varsayılan olarak çok dilli",
+          "desc": "Misafirler ve personel için Bulgarca ve İngilizce, tek dokunuşla değiştirilebilir."
+        },
+        {
+          "title": "Uygulama yok, sürtünme yok",
+          "desc": "Misafirler tarar ve harekete geçer — kurulum yok, kayıt yok. Siz her şeyi PWA'ya hazır admin panelden yönetirsiniz."
+        }
+      ]
+    }
   }
 }
