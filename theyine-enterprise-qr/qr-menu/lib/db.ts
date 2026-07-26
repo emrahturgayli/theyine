@@ -29,6 +29,15 @@ function seed(): Store {
     restaurantName: "Ресторант София Гардън",
     city: "Sofia",
   });
+  // Satış demoları için kişiselleştirilmiş merchant (demo videosu / sunum):
+  // landing başlığında müşteri adayının kendi adı görünür.
+  merchants.set("quiet-corner", {
+    id: "quiet-corner",
+    email: "quietcorner@theyine.com",
+    password: "theyine123",
+    restaurantName: "The Quiet Corner",
+    city: "Sofia",
+  });
 
   const now = Date.now();
   const day = 86_400_000;
@@ -75,6 +84,20 @@ function seed(): Store {
       targetUrl: "https://www.theyine.com/#contact",
       tags: ["campaign", "widget-demo"],
       createdAt: new Date(now - 2 * day).toISOString(),
+      active: true,
+    },
+    {
+      // The Quiet Corner satış sunumu kampanyası (bkz. docs/demo-video-production-guide.md)
+      id: "qr_quiet_corner",
+      code: "quiet-corner-reserve",
+      merchantId: "quiet-corner",
+      title: "Chef's Tasting Evening",
+      description:
+        "Запазете маса за дегустационното меню на шефа — 5 блюда, всяка вечер от 19:00.",
+      type: "reservation",
+      targetUrl: "https://www.theyine.com/#contact",
+      tags: ["sales-demo", "quiet-corner"],
+      createdAt: new Date(now - 1 * day).toISOString(),
       active: true,
     },
     {
