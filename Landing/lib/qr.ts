@@ -9,7 +9,7 @@ export const QR_WIDGET_ORIGIN =
   process.env.NEXT_PUBLIC_QR_WIDGET_ORIGIN || "https://theyine-tzyj.vercel.app";
 
 /** Campaign showcased on marketing pages and the embedded widget. */
-export const QR_DEMO_CAMPAIGN = "happy-hour-20-trial-9gml";
+export const QR_DEMO_CAMPAIGN = "happy-hour-20-demo-2ohl";
 
 /** Public landing URL of a campaign on the QR subapp. */
 export const qrLandingUrl = (campaign: string) =>

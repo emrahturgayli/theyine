@@ -60,6 +60,22 @@ function seed(): Store {
       active: true,
     },
     {
+      // theyine.com /enterprise-qr ve /enterprise-tryon sayfalarındaki embed
+      // widget'ın gösterdiği kalıcı demo kampanyası (Landing lib/qr.ts →
+      // QR_DEMO_CAMPAIGN). Seed'de olmalı — admin'den oluşturulan kampanyalar
+      // in-memory stub'da instance geri dönüşümünde kaybolur.
+      id: "qr_demo_widget",
+      code: "happy-hour-20-demo-2ohl",
+      merchantId: "demo-merchant",
+      title: "Happy Hour −20%",
+      description: "Всеки ден 16:00–18:00 — 20% отстъпка на всички коктейли.",
+      type: "menu",
+      targetUrl: "",
+      tags: ["campaign", "widget-demo"],
+      createdAt: new Date(now - 2 * day).toISOString(),
+      active: true,
+    },
+    {
       id: "qr_demo_rezv",
       code: "book-table",
       merchantId: "demo-merchant",
