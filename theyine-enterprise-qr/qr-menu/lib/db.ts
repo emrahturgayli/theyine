@@ -69,8 +69,10 @@ function seed(): Store {
       merchantId: "demo-merchant",
       title: "Happy Hour −20%",
       description: "Всеки ден 16:00–18:00 — 20% отстъпка на всички коктейли.",
-      type: "menu",
-      targetUrl: "",
+      // CTA rezervasyon akışını demo eder: ana sitedeki iletişim/rezervasyon
+      // bölümüne gider (dış hedef olduğu için tıklama qr_conversion sayılır).
+      type: "reservation",
+      targetUrl: "https://www.theyine.com/#contact",
       tags: ["campaign", "widget-demo"],
       createdAt: new Date(now - 2 * day).toISOString(),
       active: true,
