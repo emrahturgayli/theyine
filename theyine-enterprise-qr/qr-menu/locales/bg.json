@@ -1,0 +1,88 @@
+{
+  "brand": "THEYINE",
+  "nav": {
+    "dashboard": "Табло",
+    "campaigns": "Кампании",
+    "settings": "Настройки",
+    "logout": "Изход",
+    "login": "Вход"
+  },
+  "landing": {
+    "title": "Управление на QR за ресторанти",
+    "subtitle": "Меню, кампании, резервации и поръчки — през един QR код. Създадено за ресторанти в България.",
+    "watchDemo": "Гледай демо",
+    "startNow": "Започни QR управление",
+    "features": {
+      "menu": "QR меню",
+      "menuDesc": "Дигитално меню, което обновяваш за секунди — без препечатване.",
+      "campaigns": "Кампании",
+      "campaignsDesc": "Happy hour, промоции и сезонни оферти със срок на валидност.",
+      "reservations": "Резервации",
+      "reservationsDesc": "Гостите резервират маса директно от QR кода.",
+      "analytics": "Анализи",
+      "analyticsDesc": "Сканирания, кликове и конверсии в реално време."
+    }
+  },
+  "admin": {
+    "welcome": "Добре дошли! Създайте първия си QR код от „Кампании“, поставете го на масите и следете сканиранията тук.",
+    "activeCodes": "Активни кодове",
+    "totalScans": "Общо сканирания",
+    "totalClicks": "Общо кликове",
+    "conversions": "Конверсии",
+    "last7days": "Сканирания — последните 7 дни",
+    "recentCampaigns": "Последни кампании",
+    "noCampaigns": "Все още няма кампании.",
+    "loading": "Зареждане…"
+  },
+  "campaigns": {
+    "title": "Кампании",
+    "newCampaign": "Нова QR кампания",
+    "formTitle": "Заглавие",
+    "formDescription": "Описание",
+    "formType": "Тип кампания",
+    "typeMenu": "Меню",
+    "typeReservation": "Резервация",
+    "typeOrder": "Поръчка",
+    "formTargetUrl": "Целеви URL (по избор)",
+    "formTargetUrlHint": "Ако е празно, се показва вътрешната QR страница.",
+    "formExpiry": "Валидна до (по избор)",
+    "formTags": "Етикети (разделени със запетая)",
+    "create": "Създай QR",
+    "creating": "Създаване…",
+    "created": "QR кампанията е създадена!",
+    "errorTitle": "Заглавието е задължително.",
+    "errorUrl": "Невалиден URL адрес.",
+    "shortUrl": "Кратък URL",
+    "downloadQr": "Свали QR (PNG)",
+    "views": "сканирания",
+    "clicks": "кликове",
+    "expired": "Изтекла"
+  },
+  "settings": {
+    "title": "Настройки",
+    "embedTitle": "Вграждане в сайта ви",
+    "embedIframe": "Iframe вграждане",
+    "embedScript": "Script widget",
+    "copy": "Копирай",
+    "copied": "Копирано!",
+    "merchantId": "Merchant ID",
+    "restaurantName": "Име на ресторанта"
+  },
+  "login": {
+    "title": "Вход за търговци",
+    "email": "Имейл",
+    "password": "Парола",
+    "submit": "Влез",
+    "error": "Грешен имейл или парола.",
+    "demoHint": "Демо достъп: demo@theyine.com / theyine123"
+  },
+  "qr": {
+    "notFound": "Този QR код не е намерен.",
+    "expired": "Тази кампания е изтекла.",
+    "openMenu": "Отвори менюто",
+    "internalMenu": "Менюто се отваря…",
+    "bookTable": "Резервирай маса",
+    "orderNow": "Поръчай сега",
+    "poweredBy": "Задвижвано от"
+  }
+}
