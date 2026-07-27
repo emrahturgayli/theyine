@@ -29,6 +29,15 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
   const code = String(ctx.params?.code || "");
   // Tema SSR'da okunur ki koyu tema ilk boyamada uygulansın (light→dark flash olmasın)
   const dark = ctx.query.theme === "dark";
+  // İçerik dili: ?lang=bg|en|tr > sayfa locale'i > bg. Kampanyada titleI18n
+  // yoksa base title/description kullanılır — mevcut kampanyalar etkilenmez.
+  const LANGS = ["bg", "en", "tr"] as const;
+  const qLang = String(ctx.query.lang || "");
+  const lang = (LANGS as readonly string[]).includes(qLang)
+    ? (qLang as (typeof LANGS)[number])
+    : ctx.locale === "en"
+      ? "en"
+      : "bg";
   const campaign = getCampaignByCode(code);
 
   if (!campaign || !campaign.active) {
@@ -50,8 +59,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
       status: "ok",
       code,
       dark,
-      title: campaign.title,
-      description: campaign.description,
+      title: campaign.titleI18n?.[lang] ?? campaign.title,
+      description: campaign.descriptionI18n?.[lang] ?? campaign.description,
       type: campaign.type,
       targetUrl: campaign.targetUrl || "",
       restaurantName: merchant?.restaurantName || "",

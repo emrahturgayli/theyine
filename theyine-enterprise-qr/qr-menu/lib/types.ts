@@ -12,6 +12,12 @@ export interface QRCampaign {
   merchantId: string;
   title: string;
   description: string;
+  /**
+   * Opsiyonel çeviriler — landing ?lang=bg|en|tr parametresiyle seçilir
+   * (bkz. pages/r/[code].tsx). Eksik dil base title/description'a düşer.
+   */
+  titleI18n?: Partial<Record<"bg" | "en" | "tr", string>>;
+  descriptionI18n?: Partial<Record<"bg" | "en" | "tr", string>>;
   type: CampaignType;
   /** Harici hedef URL (menü PDF'i, rezervasyon sistemi vb.). Boşsa dahili /r/[code] sayfası içerik gösterir. */
   targetUrl?: string;
