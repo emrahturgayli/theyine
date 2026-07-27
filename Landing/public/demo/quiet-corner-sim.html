@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>THEYINE QR — Kurgu Simülasyonu</title>
+</head>
+<body>
+<style>
+  /* Edit-bay aesthetic — deliberately single dark theme, like an NLE UI.
+     Brand tokens from THEYINE Landing (globals.css). */
+  :root {
+    --canvas: #111014;
+    --surface: #1a181f;
+    --mist: #23212a;
+    --line: #2f2c3a;
+    --ink: #edebf3;
+    --ink-soft: #b2acc0;
+    --ink-faint: #847e93;
+    --lavender: #a78bfa;
+    --lavender-deep: #7c3aed;
+    --amber: #e8b15c;          /* kamera sahneleri + landing CTA dünyası */
+    --amber-cta: #f59e0b;      /* qr landing gerçek CTA rengi */
+    --green: #6fbf8f;
+    --mono: "Cascadia Code", Consolas, "SF Mono", monospace;
+    --sans: Inter, "Segoe UI", system-ui, sans-serif;
+  }
+  html { background: var(--canvas); }
+  body {
+    margin: 0; background: var(--canvas); color: var(--ink);
+    font-family: var(--sans); line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 20px 80px; }
+
+  header.masthead { padding: 40px 0 18px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 18px; }
+  .lockchip { font: 700 10px var(--mono); letter-spacing: 0.12em; color: var(--green); border: 1px solid rgba(111,191,143,0.45); border-radius: 99px; padding: 4px 11px; }
+
+  /* ---------- Sunum modu ---------- */
+  .present { position: fixed; inset: 0; z-index: 100; background: var(--canvas); display: none; flex-direction: column; padding: 18px clamp(14px, 4vw, 48px) 22px; }
+  .present.on { display: flex; }
+  .present .bar { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+  .present .bar .name { font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+  .present .bar .ptc { font: 600 15px var(--mono); color: var(--amber); font-variant-numeric: tabular-nums; margin-left: auto; }
+  .present .bar .exit { background: var(--mist); border: 1px solid var(--line); color: var(--ink-soft); border-radius: 8px; font: 500 12px var(--sans); padding: 7px 14px; cursor: pointer; }
+  .present .stagewrap { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; }
+  .present .stage { width: min(100%, calc((100vh - 190px) * 16 / 9)); }
+  .present .stage > * { border-radius: 12px; box-shadow: 0 30px 80px -30px rgba(0,0,0,0.8); }
+  .present .subline { margin-top: 16px; text-align: center; font-size: clamp(13px, 1.6vw, 17px); color: var(--ink); min-height: 2.6em; }
+  .present .subline::before { content: "🎙 "; opacity: 0.6; }
+  .present .prail { height: 5px; background: var(--mist); border-radius: 3px; margin-top: 12px; overflow: hidden; }
+  .present .prail i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--lavender-deep), var(--lavender)); }
+  .brand { font-weight: 800; letter-spacing: 0.14em; font-size: 13px; color: var(--lavender); }
+  h1 { font-size: clamp(24px, 4vw, 34px); font-weight: 700; letter-spacing: -0.04em; margin: 0; text-wrap: balance; }
+  .sub { width: 100%; color: var(--ink-soft); font-size: 14px; max-width: 62ch; margin: 2px 0 0; }
+  .sub b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- Sticky timeline ---------- */
+  .deck {
+    position: sticky; top: 0; z-index: 50; background: rgba(17,16,20,0.94);
+    backdrop-filter: blur(8px); border-bottom: 1px solid var(--line);
+    padding: 14px 0 12px; margin-bottom: 34px;
+  }
+  .transport { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .playbtn {
+    background: var(--lavender-deep); color: #fff; border: 0; border-radius: 8px;
+    font: 600 14px var(--sans); padding: 8px 18px; cursor: pointer; letter-spacing: 0.01em;
+  }
+  .playbtn:hover { background: #6d2fd6; }
+  .playbtn:focus-visible, .spd:focus-visible { outline: 2px solid var(--lavender); outline-offset: 2px; }
+  .tc { font: 600 18px var(--mono); font-variant-numeric: tabular-nums; color: var(--amber); min-width: 118px; }
+  .tc small { color: var(--ink-faint); font-weight: 400; }
+  .spd { background: var(--mist); border: 1px solid var(--line); color: var(--ink-soft); border-radius: 8px; font: 500 12px var(--sans); padding: 7px 10px; cursor: pointer; }
+  .spd[aria-pressed="true"] { color: var(--ink); border-color: var(--lavender); }
+  .legend { margin-left: auto; display: flex; gap: 14px; font-size: 11px; color: var(--ink-faint); letter-spacing: 0.06em; text-transform: uppercase; }
+  .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; }
+
+  .rail { position: relative; }
+  .segs { display: flex; gap: 3px; height: 34px; }
+  .seg {
+    position: relative; border-radius: 6px; overflow: hidden; cursor: pointer;
+    border: 1px solid var(--line); background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font: 600 11px var(--sans); color: var(--ink-soft); letter-spacing: 0.04em;
+    transition: box-shadow 0.2s, color 0.2s;
+  }
+  .seg::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 4px; }
+  .seg.cam::before { background: var(--amber); }
+  .seg.scr::before { background: var(--lavender); }
+  .seg.card::before { background: var(--ink-faint); }
+  .seg.now { box-shadow: 0 0 0 1px var(--lavender); color: var(--ink); }
+  .playhead {
+    position: absolute; top: -5px; bottom: 16px; width: 2px; background: var(--amber);
+    left: 0; pointer-events: none; box-shadow: 0 0 8px rgba(232,177,92,0.7);
+  }
+  .playhead::after { content: ""; position: absolute; top: -4px; left: -4px; border: 5px solid transparent; border-top-color: var(--amber); }
+  .audiorow { display: flex; gap: 3px; margin-top: 3px; height: 12px; }
+  .audiorow .a { border-radius: 3px; background: linear-gradient(180deg, #3f3763, #2b2545); position: relative; }
+  .audiorow .a.duck { background: linear-gradient(180deg, #2b2545 40%, #1d1a30 40%); }
+  .audiorow .a .vo { position: absolute; inset: 2px 20% 2px 6%; background: var(--lavender-deep); opacity: 0.85; border-radius: 2px; }
+  .audiolabel { font: 500 10px var(--mono); color: var(--ink-faint); margin-top: 5px; letter-spacing: 0.08em; }
+
+  /* ---------- Scene cards ---------- */
+  .scene { display: grid; grid-template-columns: 96px 1fr; gap: 18px; margin: 0 0 44px; scroll-margin-top: 150px; }
+  .scene .meta { text-align: right; padding-top: 4px; }
+  .scene .meta .t { font: 600 14px var(--mono); font-variant-numeric: tabular-nums; color: var(--amber); }
+  .scene .meta .dur { font-size: 11px; color: var(--ink-faint); margin-top: 2px; }
+  .scene .meta .src { margin-top: 10px; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
+  .scene .meta .src b { display: block; color: var(--ink-soft); font-weight: 600; letter-spacing: 0.05em; }
+  .panelcard { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; transition: border-color 0.25s, box-shadow 0.25s; }
+  .scene.active .panelcard { border-color: var(--lavender); box-shadow: 0 0 0 1px var(--lavender), 0 18px 50px -20px rgba(124,58,237,0.45); }
+  .scenehead { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  .scenehead h2 { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+  .chip { font: 600 10px var(--sans); letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 9px; border-radius: 99px; border: 1px solid var(--line); color: var(--ink-soft); }
+  .chip.fx { color: var(--amber); border-color: rgba(232,177,92,0.4); }
+  .chip.cut { color: var(--ink-faint); }
+  .chip.sfx { color: var(--green); border-color: rgba(111,191,143,0.35); }
+
+  /* Frame = 16:9 mock of the actual screen */
+  .frame { position: relative; aspect-ratio: 16/9; overflow: hidden; background: #000; }
+  .frame * { box-sizing: border-box; }
+  .lower3 {
+    position: absolute; left: 5%; bottom: 9%; z-index: 30;
+    font-weight: 600; font-size: clamp(11px, 1.9vw, 17px); letter-spacing: -0.02em;
+    color: #fff; background: rgba(17,16,20,0.55); backdrop-filter: blur(4px);
+    padding: 0.5em 1em; border-radius: 8px; border-left: 3px solid var(--lavender-deep);
+  }
+  .lower3 .num { font: 600 10px var(--mono); color: var(--lavender); display: block; letter-spacing: 0.1em; margin-bottom: 2px; }
+  .fxbadge {
+    position: absolute; top: 4%; right: 3%; z-index: 30; font: 700 10px var(--mono);
+    letter-spacing: 0.12em; color: var(--amber); border: 1px solid rgba(232,177,92,0.6);
+    background: rgba(17,16,20,0.6); padding: 4px 8px; border-radius: 6px;
+  }
+
+  /* S1 — restaurant */
+  .f-rest { background: radial-gradient(120% 140% at 30% 20%, #3a2417 0%, #1c1009 55%, #0c0704 100%); }
+  .bokeh { position: absolute; border-radius: 50%; filter: blur(2px); background: radial-gradient(circle, rgba(255,196,110,0.85), rgba(255,196,110,0) 70%); }
+  .f-rest .tables { position: absolute; inset: auto 0 0 0; height: 45%; background: linear-gradient(180deg, transparent, rgba(0,0,0,0.55)); }
+  .f-rest .sil { position: absolute; bottom: 18%; border-radius: 6px 6px 0 0; background: #241209; box-shadow: 0 -18px 30px -10px rgba(255,170,80,0.12); }
+  .camnote { position: absolute; left: 3%; top: 5%; font: 500 10px var(--mono); color: rgba(255,255,255,0.55); letter-spacing: 0.1em; }
+
+  /* S2 — landing page mock (light) */
+  .f-page { background: #f6f4fb; }
+  .f-page .nav { height: 11%; background: #0d0c10; display: flex; align-items: center; padding: 0 4%; gap: 4%; }
+  .f-page .nav .logo { color: #fff; font-weight: 800; font-size: clamp(8px,1.4vw,13px); letter-spacing: 0.06em; }
+  .f-page .nav .links { display: flex; gap: 6%; flex: 1; }
+  .f-page .nav .links i { width: 34px; height: 4px; border-radius: 2px; background: #4a4652; }
+  .f-page .nav .cta { background: var(--lavender-deep); color: #fff; border-radius: 99px; font-size: clamp(7px,1.2vw,11px); font-weight: 600; padding: 0.4em 1.1em; }
+  .f-page .hero { padding: 5% 4% 0; }
+  .f-page .eyebrow { font-size: clamp(6px,1vw,9px); letter-spacing: 0.22em; color: var(--lavender-deep); font-weight: 700; }
+  .f-page .h { color: #1f1827; font-weight: 800; letter-spacing: -0.045em; line-height: 1.02; font-size: clamp(16px,3.6vw,34px); max-width: 58%; }
+  .f-page.dark { background: #111014; }
+  .f-page.dark .h { color: #edebf3; }
+  .qrtile { position: absolute; left: 5%; bottom: -6%; width: 24%; aspect-ratio: 1; background: #fff; border-radius: 10px; box-shadow: 0 18px 40px -14px rgba(124,58,237,0.4); padding: 3.5%; }
+  .f-page.dark .qrtile { background: #1a181f; }
+  .qrsvg { width: 100%; height: 100%; color: #1f1827; }
+  .f-page.dark .qrsvg { color: #edebf3; }
+
+  /* floating widget button + panel (the real product look) */
+  .wbtn {
+    position: absolute; right: 3%; bottom: 6%; z-index: 20;
+    background: #111; color: #fff; font-weight: 600; font-size: clamp(8px,1.3vw,12px);
+    padding: 0.7em 1.6em; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .wpanel {
+    position: absolute; right: 3%; bottom: 17%; z-index: 20; width: 30%; height: 68%;
+    background: #fffbeb; border-radius: 10px; box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    padding: 5% 2.5% 2%; text-align: center; display: flex; flex-direction: column; gap: 5%;
+  }
+  .wpanel.dark { background: #1c1917; }
+  .wpanel .rest { font-size: clamp(6px,0.9vw,9px); font-weight: 700; letter-spacing: 0.14em; color: #b45309; }
+  .wpanel.dark .rest { color: #fbbf24; }
+  .wpanel .title { font-weight: 800; letter-spacing: -0.03em; color: #1c1917; font-size: clamp(10px,1.7vw,17px); line-height: 1.1; }
+  .wpanel.dark .title { color: #fafaf9; }
+  .wpanel .desc { font-size: clamp(6px,1vw,9px); color: #57534e; line-height: 1.4; padding: 0 4%; }
+  .wpanel.dark .desc { color: #a8a29e; }
+  .wpanel .cta { margin: 2% 6% 0; background: var(--amber-cta); color: #1c1917; font-weight: 700; font-size: clamp(8px,1.3vw,12px); padding: 0.8em 0; border-radius: 9px; box-shadow: 0 6px 20px rgba(245,158,11,0.4); }
+  .wpanel .powered { margin-top: auto; font-size: clamp(5px,0.8vw,8px); color: #a8a29e; letter-spacing: 0.1em; }
+
+  /* S3 triptych */
+  .trip { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; background: #000; aspect-ratio: 16/9; position: relative; }
+  .trip > div { position: relative; overflow: hidden; }
+  .t-stand { background: radial-gradient(100% 120% at 50% 25%, #33200f 0%, #150c05 70%); }
+  .t-stand .stand { position: absolute; left: 50%; bottom: 16%; transform: translateX(-50%); width: 46%; aspect-ratio: 3/4; background: #17130f; border-radius: 8px; border: 1px solid #3a2c1c; display: flex; align-items: center; justify-content: center; }
+  .t-stand .stand .q { width: 66%; aspect-ratio: 1; background: #fff; border-radius: 5px; padding: 7%; }
+  .phone { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 44%; aspect-ratio: 9/18; background: #000; border-radius: 12% / 6%; border: 2px solid #2c2c31; overflow: hidden; }
+  .phone .scr-land { position: absolute; inset: 3% 4%; border-radius: 8% / 4%; background: #fffbeb; padding: 14% 7% 6%; text-align: center; display: flex; flex-direction: column; gap: 7%; }
+  .phone .rest { font-size: clamp(4px,0.7vw,7px); font-weight: 700; letter-spacing: 0.13em; color: #b45309; }
+  .phone .title { font-weight: 800; color: #1c1917; letter-spacing: -0.03em; font-size: clamp(7px,1.2vw,12px); line-height: 1.1; }
+  .phone .desc { font-size: clamp(4px,0.65vw,6.5px); color: #57534e; line-height: 1.35; }
+  .phone .cta { margin: 4% 2% 0; background: var(--amber-cta); color: #1c1917; font-weight: 700; font-size: clamp(5px,0.9vw,9px); padding: 0.7em 0; border-radius: 7px; }
+  .phone .contact { position: absolute; inset: 3% 4%; border-radius: 8% / 4%; background: #f6f4fb; padding: 12% 8%; }
+  .phone .contact .bar { height: 6%; background: #0d0c10; border-radius: 4px; margin-bottom: 10%; }
+  .phone .contact .fld { height: 8%; border: 1px solid #d8d4e4; border-radius: 5px; margin-bottom: 6%; background: #fff; }
+  .phone .contact .send { height: 9%; width: 55%; background: var(--lavender-deep); border-radius: 6px; margin-top: 4%; }
+  .subcap { position: absolute; bottom: 4%; left: 0; right: 0; text-align: center; font: 600 9px var(--mono); letter-spacing: 0.1em; color: rgba(255,255,255,0.5); }
+
+  /* S4 split dashboard */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: #000; aspect-ratio: 16/9; position: relative; }
+  .split > div { position: relative; overflow: hidden; }
+  .dash { background: #14121a; padding: 5%; }
+  .dash .row { display: flex; gap: 4%; margin-bottom: 6%; }
+  .stat { flex: 1; background: #1d1a26; border: 1px solid #2c2837; border-radius: 8px; padding: 6% 7%; }
+  .stat .lbl { font-size: clamp(5px,0.8vw,8px); letter-spacing: 0.12em; text-transform: uppercase; color: #847e93; }
+  .stat .val { font: 700 clamp(13px,2.4vw,24px) var(--sans); letter-spacing: -0.03em; color: #edebf3; font-variant-numeric: tabular-nums; }
+  .stat.pulse .val { color: var(--lavender); animation: pulse 1.6s ease-in-out infinite; display: inline-block; }
+  .stat .delta { font-size: clamp(5px,0.8vw,8px); color: var(--green); font-weight: 600; }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 30% { transform: scale(1.2); } }
+  .bars { display: flex; align-items: flex-end; gap: 3.5%; height: 34%; padding: 0 2%; border-bottom: 1px solid #2c2837; }
+  .bars i { flex: 1; background: linear-gradient(180deg, var(--lavender-deep), #4c2b8f); border-radius: 3px 3px 0 0; }
+  .caption-under { padding: 12px 16px; font-size: 13px; color: var(--ink-soft); border-top: 1px solid var(--line); }
+  .caption-under b { color: var(--ink); font-weight: 600; }
+
+  /* S6 devtools */
+  .devtools { background: #101014; aspect-ratio: 16/9; position: relative; display: grid; grid-template-columns: 55% 45%; }
+  .devtools .page { background: #111014; position: relative; }
+  .devtools .netpanel { background: #17171c; border-left: 1px solid #2a2a31; padding: 4% 3%; font-family: var(--mono); }
+  .net-tabs { display: flex; gap: 5%; font-size: clamp(6px,0.9vw,9px); color: #8a8a93; margin-bottom: 4%; }
+  .net-tabs b { color: #e4e4e9; border-bottom: 2px solid var(--lavender-deep); padding-bottom: 2px; }
+  .netrow { display: flex; justify-content: space-between; gap: 2%; font-size: clamp(6px,0.95vw,9.5px); color: #b8b8c0; padding: 2.2% 3%; border-radius: 5px; margin-bottom: 1.5%; white-space: nowrap; overflow: hidden; }
+  .netrow .st { color: var(--green); }
+  .netrow.hl { border: 1.5px solid var(--lavender); background: rgba(124,58,237,0.12); box-shadow: 0 0 14px -4px rgba(167,139,250,0.5); }
+
+  /* S7 card */
+  .f-card { background: #111014; aspect-ratio: 16/9; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3%; }
+  .f-card .lockup { display: flex; align-items: center; gap: 3%; }
+  .f-card .brandbig { font-weight: 800; letter-spacing: 0.16em; font-size: clamp(15px,3vw,30px); color: #edebf3; }
+  .f-card .q { width: clamp(38px,7vw,68px); aspect-ratio: 1; background: #edebf3; border-radius: 8px; padding: 1.2%; }
+  .f-card .lines { text-align: center; }
+  .f-card .l1 { font-weight: 700; letter-spacing: -0.03em; font-size: clamp(10px,1.8vw,18px); color: #edebf3; }
+  .f-card .l2 { font-size: clamp(8px,1.3vw,13px); color: var(--lavender); font-weight: 600; margin-top: 1%; }
+  .f-card .l3 { font-size: clamp(7px,1.1vw,11px); color: #b2acc0; margin-top: 2.5%; }
+  .f-card .prep { position: absolute; bottom: 6%; font-size: clamp(7px,1vw,10px); color: #847e93; letter-spacing: 0.08em; }
+
+  /* VO + audio meta under each frame */
+  .voblock { padding: 13px 16px 15px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 34px 1fr; gap: 12px; }
+  .voblock .mic { width: 34px; height: 34px; border-radius: 8px; background: var(--mist); display: flex; align-items: center; justify-content: center; color: var(--lavender); font-size: 15px; }
+  .voblock .txt { font-size: 13.5px; color: var(--ink); max-width: 68ch; }
+  .voblock .txt em { display: block; font-style: italic; color: var(--ink-faint); font-size: 12px; margin-top: 4px; }
+  .audmeta { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 16px 14px; }
+  .audmeta .am { font: 500 10px var(--mono); letter-spacing: 0.06em; color: var(--ink-faint); border: 1px dashed var(--line); border-radius: 6px; padding: 3px 8px; }
+  .audmeta .am.duck { color: var(--lavender); border-color: rgba(167,139,250,0.4); }
+
+  footer { margin-top: 50px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-faint); max-width: 72ch; }
+  footer b { color: var(--ink-soft); }
+
+  /* ---------- 45 sn sosyal varyant ---------- */
+  .social { margin-top: 70px; border-top: 1px solid var(--line); padding-top: 34px; }
+  .social h2.big { font-size: 22px; font-weight: 700; letter-spacing: -0.03em; margin: 0 0 4px; }
+  .social .sub { margin-bottom: 20px; }
+  .minirail { display: flex; gap: 3px; height: 30px; margin-bottom: 6px; }
+  .minirail .seg { font-size: 10px; }
+  .minitc { display: flex; justify-content: space-between; font: 500 10px var(--mono); color: var(--ink-faint); margin-bottom: 26px; }
+  .socrow { display: grid; grid-template-columns: 84px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .socrow:last-of-type { border-bottom: 0; }
+  .socrow .t { font: 600 13px var(--mono); color: var(--amber); font-variant-numeric: tabular-nums; }
+  .socrow .t small { display: block; color: var(--ink-faint); font-weight: 400; font-size: 10px; margin-top: 2px; }
+  .socrow h3 { font-size: 14px; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .socrow p { margin: 0 0 6px; font-size: 13px; color: var(--ink-soft); max-width: 68ch; }
+  .socrow .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cropdemo { display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 26px; }
+  .cropframe { position: relative; aspect-ratio: 16/9; background: #f6f4fb; border-radius: 8px; overflow: hidden; }
+  .cropframe .h { position: absolute; left: 4%; top: 14%; color: #1f1827; font-weight: 800; letter-spacing: -0.045em; line-height: 1.05; font-size: clamp(11px,2vw,19px); max-width: 46%; }
+  .cropzone { position: absolute; top: 0; bottom: 0; right: 8%; aspect-ratio: 9/16; height: 100%; border: 2px dashed var(--lavender); background: rgba(124,58,237,0.08); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 4%; }
+  .cropzone span { font: 600 9px var(--mono); letter-spacing: 0.1em; color: var(--lavender); background: rgba(17,16,20,0.75); padding: 3px 7px; border-radius: 5px; }
+  .cropnote { font-size: 12px; color: var(--ink-soft); max-width: 26ch; }
+  .cropnote b { color: var(--ink); }
+  @media (max-width: 720px) {
+    .socrow { grid-template-columns: 1fr; gap: 6px; }
+    .cropdemo { grid-template-columns: 1fr; }
+    .cropnote { max-width: none; }
+  }
+
+  @media (max-width: 720px) {
+    .scene { grid-template-columns: 1fr; gap: 8px; }
+    .scene .meta { text-align: left; display: flex; gap: 14px; align-items: baseline; }
+    .scene .meta .src { margin-top: 0; }
+    .legend { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .stat.pulse .val { animation: none; }
+    * { scroll-behavior: auto !important; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <span class="brand">THEYINE&nbsp;QR</span>
+    <h1>Demo Videosu — Simülasyon Finali</h1>
+    <span class="lockchip">v1.2 FINAL · TIMELINE KİLİTLİ</span>
+    <p class="sub">Üretim rehberi <b>v1.2</b>'ye göre iki kesimin birebir ön izlemesi: <b>ana film 1:50</b> (7 sahne, overlay #1–#9, hız rampaları, ses düzeni) ve <b>45 sn sosyal varyant</b> (sayfanın sonunda). ▶ ile playhead'i sahne sahne izleyin — her kare, finalde ekranda görünecek kompozisyonun mock'udur.</p>
+  </header>
+
+  <div class="deck">
+    <div class="transport">
+      <button class="playbtn" id="play">▶ Oynat</button>
+      <button class="playbtn" id="presentBtn" style="background:var(--mist);border:1px solid var(--line);color:var(--ink)">🎞 Sunum modu</button>
+      <span class="tc" id="tcread">0:00<small> / 1:50</small></span>
+      <button class="spd" data-s="1" aria-pressed="false">1×</button>
+      <button class="spd" data-s="4" aria-pressed="true">4×</button>
+      <button class="spd" data-s="8" aria-pressed="false">8×</button>
+      <div class="legend">
+        <span><i style="background:var(--amber)"></i>Kamera</span>
+        <span><i style="background:var(--lavender)"></i>Ekran</span>
+        <span><i style="background:var(--ink-faint)"></i>Kart</span>
+      </div>
+    </div>
+    <div class="rail">
+      <div class="segs" id="segs">
+        <div class="seg cam"  data-a="0"   data-b="15"  style="flex:15">S1</div>
+        <div class="seg scr"  data-a="15"  data-b="32"  style="flex:17">S2</div>
+        <div class="seg cam"  data-a="32"  data-b="52"  style="flex:20">S3</div>
+        <div class="seg scr"  data-a="52"  data-b="72"  style="flex:20">S4</div>
+        <div class="seg scr"  data-a="72"  data-b="86"  style="flex:14">S5</div>
+        <div class="seg scr"  data-a="86"  data-b="98"  style="flex:12">S6</div>
+        <div class="seg card" data-a="98"  data-b="110" style="flex:12">S7</div>
+      </div>
+      <div class="audiorow" aria-hidden="true">
+        <div class="a duck" style="flex:15"><span class="vo"></span></div>
+        <div class="a duck" style="flex:17"><span class="vo"></span></div>
+        <div class="a duck" style="flex:20"><span class="vo" style="inset:2px 55% 2px 6%"></span></div>
+        <div class="a duck" style="flex:20"><span class="vo"></span></div>
+        <div class="a" style="flex:14"><span class="vo" style="inset:2px 45% 2px 6%"></span></div>
+        <div class="a duck" style="flex:12"><span class="vo"></span></div>
+        <div class="a duck" style="flex:12"><span class="vo" style="inset:2px 12% 2px 6%"></span></div>
+      </div>
+      <div class="audiolabel">A1 VO (mor) · A2 müzik — VO altında −6 dB duck · mix −16 LUFS</div>
+      <div class="playhead" id="ph" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- ============ S1 ============ -->
+  <section class="scene" id="sc0" data-a="0" data-b="15">
+    <div class="meta">
+      <div class="t">0:00</div><div class="dur">15 sn</div>
+      <div class="src">Kaynak<b>Kamera 1A→1B→1C</b></div>
+    </div>
+    <div class="panelcard">
+      <div class="scenehead">
+        <h2>S1 · Restoran Atmosferi</h2>
+        <span class="chip cut">iç kesmeler: 12k dissolve</span>
+        <span class="chip">müzik başlar</span>
+      </div>
+      <div class="frame f-rest">
+        <span class="camnote">35mm · f/2.8 · DOLLY-IN · 2700K</span>
+        <span class="bokeh" style="width:52px;height:52px;left:12%;top:16%"></span>
+        <span class="bokeh" style="width:30px;height:30px;left:26%;top:32%;opacity:.7"></span>
+        <span class="bokeh" style="width:70px;height:70px;right:14%;top:12%;opacity:.8"></span>
+        <span class="bokeh" style="width:24px;height:24px;right:30%;top:38%;opacity:.5"></span>
+        <div class="tables"></div>
+        <span class="sil" style="left:14%;width:17%;height:16%"></span>
+        <span class="sil" style="left:44%;width:20%;height:20%;bottom:14%"></span>
+        <span class="sil" style="right:12%;width:15%;height:13%;bottom:22%"></span>
+        <div class="lower3" data-tc="8"><span class="num">OVERLAY #1 · 0:08</span>Modern restoranlar için dijital dönüşüm</div>
+      </div>
+      <div class="voblock">
+        <div class="mic" aria-hidden="true">🎙</div>
+        <div class="txt">"Mükemmel bir servis, detaylarda gizlidir. Peki menünüz, rezervasyonlarınız ve kampanyalarınız da aynı özenle yönetiliyor mu?"
+          <em>EN: "Great service lives in the details. Do your menu, reservations and campaigns get the same care?"</em>
+        </div>
+      </div>
+      <div class="audmeta">
+        <span class="am duck">A2 MÜZİK −6dB (VO altında)</span>
+        <span class="am">VO GİRİŞ @0:02</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ S2 ============ -->
+  <section class="scene" id="sc1" data-a="15" data-b="32">
+    <div class="meta">
+      <div class="t">0:15</div><div class="dur">17 sn</div>
+      <div class="src">Kaynak<b>S2-widget-open.webm ✅</b></div>
+    </div>
+    <div class="panelcard">
+      <div class="scenehead">
+        <h2>S2 · Widget Açılışı</h2>
+        <span class="chip cut">giriş: match-cut (telefon → sayfa)</span>
+        <span class="chip fx">panel açılışı %50 slow-mo</span>
+        <span class="chip sfx">SFX whoosh −24dB</span>
+      </div>
+      <div class="frame f-page">
+        <span class="fxbadge">%50 SLOW-MO</span>
+        <div class="nav">
+          <span class="logo">⬡ Theyine</span>
+          <span class="links"><i></i><i></i><i></i><i></i></span>
+          <span class="cta">Свържете се</span>
+        </div>
+        <div class="hero">
+          <div class="eyebrow">● ENTERPRISE · QR × РЕСТОРАНТИ</div>
+          <div class="h">Един QR код, който управлява целия ви ресторант</div>
+        </div>
+        <div class="qrtile"><svg class="qrsvg" viewBox="0 0 19 19" fill="currentColor" aria-hidden="true"><rect x="0" y="0" width="5" height="5" rx=".6" fill="none" stroke="currentColor" stroke-width=".9"/><rect x="1.6" y="1.6" width="1.8" height="1.8"/><rect x="14" y="0" width="5" height="5" rx=".6" fill="none" stroke="currentColor" stroke-width=".9"/><rect x="15.6" y="1.6" width="1.8" height="1.8"/><rect x="0" y="14" width="5" height="5" rx=".6" fill="none" stroke="currentColor" stroke-width=".9"/><rect x="1.6" y="15.6" width="1.8" height="1.8"/><rect x="7" y="1" width="1" height="1"/><rect x="9" y="2" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="8" y="4" width="1" height="1"/><rect x="12" y="4" width="1" height="1"/><rect x="6" y="7" width="1" height="1"/><rect x="2" y="8" width="1" height="1"/><rect x="4" y="10" width="1" height="1"/><rect x="8" y="8" width="1" height="1"/><rect x="10" y="7" width="1" height="1"/><rect x="12" y="9" width="1" height="1"/><rect x="14" y="8" width="1" height="1"/><rect x="16" y="7" width="1" height="1"/><rect x="17" y="10" width="1" height="1"/><rect x="7" y="11" width="1" height="1"/><rect x="9" y="12" width="1" height="1"/><rect x="11" y="11" width="1" height="1"/><rect x="13" y="13" width="1" height="1"/><rect x="15" y="12" width="1" height="1"/><rect x="8" y="15" width="1" height="1"/><rect x="10" y="16" width="1" height="1"/><rect x="12" y="15" width="1" height="1"/><rect x="16" y="16" width="1" height="1"/><rect x="14" y="17" width="1" height="1"/></svg></div>
+        <div class="wpanel">
+          <div class="rest">РЕСТОРАНТ СОФИЯ ГАРДЪН</div>
+          <div class="title">Happy Hour −20%</div>
+          <div class="desc">Всеки ден 16:00–18:00 — 20% отстъпка на всички коктейли.</div>
+          <div class="cta">Резервирай маса →</div>
+          <div class="powered">Задвижвано от THEYINE</div>
+        </div>
+        <div class="wbtn">Kapat</div>
+        <div class="lower3" data-tc="20"><span class="num">OVERLAY #2 · 0:20</span>Tek satır kod. Her web sitesine.</div>
+      </div>
+      <div class="voblock">
+        <div class="mic" aria-hidden="true">🎙</div>
+        <div class="txt">"THEYINE QR, web sitenize tek satır kodla eklenir. Misafiriniz tek dokunuşla menünüze ve kampanyalarınıza ulaşır — sitenizin hızından ve tasarımından hiçbir şey çalmadan."
+          <em>EN: "THEYINE QR is added to your website with a single line of code…"</em>
+        </div>
+      </div>
+      <div class="audmeta"><span class="am duck">A2 MÜZİK −6dB</span><span class="am">butonun ~2 sn geç belirmesi KESİLMEZ (lazy-load kanıtı)</span></div>
+    </div>
+  </section>
+
+  <!-- ============ S3 ============ -->
+  <section class="scene" id="sc2" data-a="32" data-b="52">
+    <div class="meta">
+      <div class="t">0:32</div><div class="dur">20 sn</div>
+      <div class="src">Kaynak<b>Kamera 3A · S3B ✅ · S3C ✅</b></div>
+    </div>
+    <div class="panelcard">
+      <div class="scenehead">
+        <h2>S3 · Misafir Deneyimi — The Quiet Corner</h2>
+        <span class="chip cut">3A→3B düz kesme</span>
+        <span class="chip">telefon mockup çerçevesi</span>
+      </div>
+      <div class="trip">
+        <div class="t-stand">
+          <span class="camnote">85mm · 45° ÜSTTEN</span>
+          <div class="stand"><div class="q"><svg class="qrsvg" viewBox="0 0 19 19" fill="#1c1917" aria-hidden="true"><rect x="0" y="0" width="5" height="5" rx=".6" fill="none" stroke="#1c1917" stroke-width=".9"/><rect x="1.6" y="1.6" width="1.8" height="1.8"/><rect x="14" y="0" width="5" height="5" rx=".6" fill="none" stroke="#1c1917" stroke-width=".9"/><rect x="15.6" y="1.6" width="1.8" height="1.8"/><rect x="0" y="14" width="5" height="5" rx=".6" fill="none" stroke="#1c1917" stroke-width=".9"/><rect x="1.6" y="15.6" width="1.8" height="1.8"/><rect x="8" y="2" width="1" height="1"/><rect x="10" y="3" width="1" height="1"/><rect x="7" y="8" width="1" height="1"/><rect x="9" y="9" width="1" height="1"/><rect x="12" y="7" width="1" height="1"/><rect x="15" y="9" width="1" height="1"/><rect x="3" y="9" width="1" height="1"/><rect x="8" y="12" width="1" height="1"/><rect x="11" y="13" width="1" height="1"/><rect x="14" y="15" width="1" height="1"/><rect x="9" y="16" width="1" height="1"/></svg></div></div>
+          <div class="subcap">0:32 · MASADA TARAMA</div>
+        </div>
+        <div style="background:#0b0a0d">
+          <div class="phone">
+            <div class="scr-land">
+              <div class="rest">THE QUIET CORNER</div>
+              <div class="title">Chef's Tasting Evening</div>
+              <div class="desc">Запазете маса за дегустационното меню на шефа — 5 блюда, всяка вечер от 19:00.</div>
+              <div class="cta">Резервирай маса →</div>
+            </div>
+          </div>
+          <div class="subcap">0:40 · KİŞİSELLEŞTİRİLMİŞ LANDING</div>
+        </div>
+        <div style="background:#0b0a0d">
+          <div class="phone">
+            <div class="contact"><div class="bar"></div><div class="fld"></div><div class="fld"></div><div class="fld" style="height:16%"></div><div class="send"></div></div>
+          </div>
+          <div class="subcap">0:48 · #CONTACT — YENİ SEKME</div>
+          <div class="lower3" style="left:auto;right:6%;bottom:14%" data-tc="36"><span class="num">OVERLAY #3 · 0:36</span>Taramadan rezervasyona — 10&nbsp;saniye</div>
+        </div>
+      </div>
+      <div class="voblock">
+        <div class="mic" aria-hidden="true">🎙</div>
+        <div class="txt">"Misafir deneyimi bu kadar basit: tara, incele, rezerve et. Uygulama yok, üyelik yok, bekleme yok."
+          <em>EN: "Scan, browse, reserve. No app, no sign-up, no waiting."</em>
+        </div>
+      </div>
+      <div class="audmeta"><span class="am duck">A2 MÜZİK −6dB (VO 0:32–0:40)</span><span class="am">VO sonrası müzik tam seviye</span></div>
+    </div>
+  </section>
+
+  <!-- ============ S4 ============ -->
+  <section class="scene" id="sc3" data-a="52" data-b="72">
+    <div class="meta">
+      <div class="t">0:52</div><div class="dur">20 sn</div>
+      <div class="src">Kaynak<b>OBS S4 (çekilecek)</b></div>
+    </div>
+    <div class="panelcard">
+      <div class="scenehead">
+        <h2>S4 · Canlı Analitik — Dashboard</h2>
+        <span class="chip cut">giriş: 14k dissolve · split-screen</span>
+        <span class="chip fx">sayaç 1.2× pulse</span>
+        <span class="chip sfx">SFX tick</span>
+      </div>
+      <div class="split">
+        <div style="background:#0b0a0d">
+          <div class="phone" style="width:38%">
+            <div class="scr-land">
+              <div class="rest">THE QUIET CORNER</div>
+              <div class="title">Chef's Tasting Evening</div>
+              <div class="cta" style="outline:2px solid rgba(124,58,237,.8);outline-offset:2px">Резервирай маса →</div>
+            </div>
+          </div>
+          <div class="subcap">CTA TIKLAMASI (tekrar, küçük çerçeve)</div>
+        </div>
+        <div class="dash">
+          <div class="row">
+            <div class="stat"><div class="lbl">Views</div><div class="val">57</div></div>
+            <div class="stat pulse"><div class="lbl">Clicks</div><div class="val">33</div><div class="delta">▲ +3</div></div>
+            <div class="stat pulse"><div class="lbl">Conversions</div><div class="val">18</div><div class="delta">▲ +3</div></div>
+          </div>
+          <div class="bars"><i style="height:34%"></i><i style="height:48%"></i><i style="height:41%"></i><i style="height:62%"></i><i style="height:55%"></i><i style="height:74%"></i><i style="height:96%"></i></div>
+          <div class="subcap" style="color:#847e93">SON 7 GÜN · quietcorner@theyine.com</div>
+        </div>
+        <div class="lower3" data-tc="56"><span class="num">OVERLAY #4 · 0:56</span>Görüntüleme → Tıklama → Dönüşüm. Gerçek zamanlı.</div>
+      </div>
+      <div class="voblock">
+        <div class="mic" aria-hidden="true">🎙</div>
+        <div class="txt">"Siz ise her şeyi anlık görürsünüz. Hangi kampanya kaç kez tarandı, kaç misafir menüyü açtı, kaçı rezervasyona dönüştü — tek panelde, gerçek zamanlı."
+          <em>EN: "Every scan, every click, every reservation — one dashboard, in real time."</em>
+        </div>
+      </div>
+      <div class="audmeta"><span class="am duck">A2 MÜZİK −6dB</span><span class="am">pulse yalnız artan sayaçlarda; flaş yok</span></div>
+    </div>
+  </section>
+
+  <!-- ============ S5 ============ -->
+  <section class="scene" id="sc4" data-a="72" data-b="86">
+    <div class="meta">
+      <div class="t">1:12</div><div class="dur">14 sn</div>
+      <div class="src">Kaynak<b>S5-dark-and-language.webm ✅</b></div>
+    </div>
+    <div class="panelcard">
+      <div class="scenehead">
+        <h2>S5 · Dark Mode + Dil</h2>
+        <span class="chip fx">tema geçişi %70 hız</span>
+        <span class="chip">BG → EN anlık çeviri</span>
+      </div>
+      <div class="frame f-page dark">
+        <span class="fxbadge">%70 HIZ</span>
+        <div class="nav">
+          <span class="logo">⬡ Theyine</span>
+          <span class="links"><i></i><i></i><i></i><i></i></span>
+          <span class="cta">Get in touch</span>
+        </div>
+        <div class="hero">
+          <div class="eyebrow" style="color:var(--lavender)">● ENTERPRISE · QR × RESTAURANTS</div>
+          <div class="h">One QR code that runs your whole restaurant</div>
+        </div>
+        <div class="qrtile"><svg class="qrsvg" viewBox="0 0 19 19" fill="currentColor" aria-hidden="true"><rect x="0" y="0" width="5" height="5" rx=".6" fill="none" stroke="currentColor" stroke-width=".9"/><rect x="1.6" y="1.6" width="1.8" height="1.8"/><rect x="14" y="0" width="5" height="5" rx=".6" fill="none" stroke="currentColor" stroke-width=".9"/><rect x="15.6" y="1.6" width="1.8" height="1.8"/><rect x="0" y="14" width="5" height="5" rx=".6" fill="none" stroke="currentColor" stroke-width=".9"/><rect x="1.6" y="15.6" width="1.8" height="1.8"/><rect x="8" y="2" width="1" height="1"/><rect x="10" y="3" width="1" height="1"/><rect x="7" y="8" width="1" height="1"/><rect x="9" y="9" width="1" height="1"/><rect x="12" y="7" width="1" height="1"/><rect x="15" y="9" width="1" height="1"/><rect x="3" y="9" width="1" height="1"/><rect x="8" y="12" width="1" height="1"/><rect x="11" y="13" width="1" height="1"/><rect x="14" y="15" width="1" height="1"/><rect x="9" y="16" width="1" height="1"/></svg></div>
+        <div class="wpanel dark">
+          <div class="rest">THE QUIET CORNER</div>
+          <div class="title">Chef's Tasting Evening</div>
+          <div class="desc">Запазете маса за дегустационното меню на шефа.</div>
+          <div class="cta">Резервирай маса →</div>
+          <div class="powered">Задвижвано от THEYINE</div>
+        </div>
+        <div class="wbtn">Kapat</div>
+        <div class="lower3" data-tc="74"><span class="num">OVERLAY #5 · 1:14</span>Markanıza ve misafirinize uyum sağlar</div>
+      </div>
+      <div class="voblock">
+        <div class="mic" aria-hidden="true">🎙</div>
+        <div class="txt">"Karanlık tema, çoklu dil — sistem misafirinize uyum sağlar, tersi değil."
+          <em>EN: "Dark mode, multiple languages — the system adapts to your guest."</em>
+        </div>
+      </div>
+      <div class="audmeta"><span class="am duck">A2 MÜZİK −6dB (kısa VO)</span><span class="am">tema geçişi tam ekran kalır — kesme yok</span></div>
+    </div>
+  </section>
+
+  <!-- ============ S6 ============ -->
+  <section class="scene" id="sc5" data-a="86" data-b="98">
+    <div class="meta">
+      <div class="t">1:26</div><div class="dur">12 sn</div>
+      <div class="src">Kaynak<b>OBS S6 (çekilecek)</b></div>
+    </div>
+    <div class="panelcard">
+      <div class="scenehead">
+        <h2>S6 · Teknik Güven — Tek Domain</h2>
+        <span class="chip fx">lavender vurgu kutuları (post)</span>
+        <span class="chip">müzik minimuma iner</span>
+      </div>
+      <div class="devtools">
+        <div class="page">
+          <div class="hero" style="padding:8% 6% 0">
+            <div class="eyebrow" style="color:var(--lavender);font-size:clamp(5px,0.8vw,8px);letter-spacing:.2em">● ENTERPRISE · QR × RESTAURANTS</div>
+            <div class="h" style="color:#edebf3;font-size:clamp(11px,2.2vw,20px);max-width:90%">One QR code that runs your whole restaurant</div>
+          </div>
+          <div class="wbtn" style="right:6%;bottom:8%">Menüyü Gör</div>
+        </div>
+        <div class="netpanel">
+          <div class="net-tabs"><span>Elements</span><span>Console</span><b>Network</b><span>Sources</span></div>
+          <div class="netrow" style="opacity:.55"><span>fd9d1056-…js</span><span class="st">200</span></div>
+          <div class="netrow hl"><span>embed.js</span><span class="st">200</span></div>
+          <div class="netrow hl"><span>quiet-corner-reserve?embed=true&amp;theme=dark</span><span class="st">200</span></div>
+          <div class="netrow hl"><span>POST /api/analytics/track</span><span class="st">200</span></div>
+          <div class="netrow" style="opacity:.55"><span>favicon.ico</span><span class="st">200</span></div>
+          <div class="subcap" style="position:static;text-align:left;margin-top:6%;color:#6f6f78">FİLTRE: qr.theyine.com · PRESERVE LOG ✓</div>
+        </div>
+        <div class="lower3" data-tc="88"><span class="num">OVERLAY #6 · 1:28</span>Kendi altyapınız. Tek domain. Kurumsal güvenlik.</div>
+      </div>
+      <div class="voblock">
+        <div class="mic" aria-hidden="true">🎙</div>
+        <div class="txt">"Teknik ekipler için: tüm zincir tek kurumsal domain üzerinde, güvenlik başlıklarıyla çalışır. IT onayı için sürpriz yok."
+          <em>EN: "The entire chain runs on one corporate domain. No surprises at IT review."</em>
+        </div>
+      </div>
+      <div class="audmeta"><span class="am duck">A2 MÜZİK MİNİMUM</span><span class="am">vurgu kutuları: #7C3AED · 2px · %60 + arka karartma</span></div>
+    </div>
+  </section>
+
+  <!-- ============ S7 ============ -->
+  <section class="scene" id="sc6" data-a="98" data-b="110">
+    <div class="meta">
+      <div class="t">1:38</div><div class="dur">12 sn</div>
+      <div class="src">Kaynak<b>Kamera 7A + kart grafiği</b></div>
+    </div>
+    <div class="panelcard">
+      <div class="scenehead">
+        <h2>S7 · Kapanış — Satış Kartı</h2>
+        <span class="chip cut">giriş: SERT KESME</span>
+        <span class="chip">string yükselmesi @1:44</span>
+        <span class="chip">kararma 1,5 sn → kart</span>
+      </div>
+      <div class="f-card">
+        <div class="lockup">
+          <div class="q"><svg class="qrsvg" viewBox="0 0 19 19" fill="#111014" aria-hidden="true"><rect x="0" y="0" width="5" height="5" rx=".6" fill="none" stroke="#111014" stroke-width=".9"/><rect x="1.6" y="1.6" width="1.8" height="1.8"/><rect x="14" y="0" width="5" height="5" rx=".6" fill="none" stroke="#111014" stroke-width=".9"/><rect x="15.6" y="1.6" width="1.8" height="1.8"/><rect x="0" y="14" width="5" height="5" rx=".6" fill="none" stroke="#111014" stroke-width=".9"/><rect x="1.6" y="15.6" width="1.8" height="1.8"/><rect x="8" y="2" width="1" height="1"/><rect x="10" y="3" width="1" height="1"/><rect x="7" y="8" width="1" height="1"/><rect x="9" y="9" width="1" height="1"/><rect x="12" y="7" width="1" height="1"/><rect x="15" y="9" width="1" height="1"/><rect x="3" y="9" width="1" height="1"/><rect x="8" y="12" width="1" height="1"/><rect x="11" y="13" width="1" height="1"/><rect x="14" y="15" width="1" height="1"/><rect x="9" y="16" width="1" height="1"/></svg></div>
+          <span class="brandbig">THEYINE</span>
+        </div>
+        <div class="lines">
+          <div class="l1" data-tc="100">Restoranınız için tam otomatik QR rezervasyon ve kampanya sistemi</div>
+          <div class="l2" data-tc="103">Menü → Kampanya → Rezervasyon. Tek kod.</div>
+          <div class="l3" data-tc="106">Bugün ücretsiz demo kurulum yapalım. · theyine.com/enterprise-qr</div>
+        </div>
+        <div class="prep">Prepared for The Quiet Corner</div>
+      </div>
+      <div class="voblock">
+        <div class="mic" aria-hidden="true">🎙</div>
+        <div class="txt">"THEYINE QR. Menüden rezervasyona, tek kodla, tamamen otomatik. Seçkin restoranlar için tasarlandı. Bugün ücretsiz demo kurulumunuzu yapalım."
+          <em>EN: "From menu to reservation — one code, fully automated. Let's set up your free demo today."</em>
+        </div>
+      </div>
+      <div class="audmeta"><span class="am duck">A2 MÜZİK: string girişi @1:44 → son 2 sn yalnız müzik çözülmesi</span><span class="am">overlay #7 @1:40 · #8 @1:43 · #9 @1:46 (sırayla fade-up)</span></div>
+    </div>
+  </section>
+
+  <!-- ============ 45 sn SOSYAL VARYANT ============ -->
+  <section class="social">
+    <h2 class="big">45 sn Sosyal Varyant — Simülasyon Akışı</h2>
+    <p class="sub">LinkedIn/YouTube (16:9) + Instagram/TikTok (9:16). Restoran atmosferi ve teknik sahne çıkarılır; ilk 3 saniye <b>cold-open</b> — panel açılış anı hook olarak öne alınır. Seslendirme yalnız S3+S4 cümleleri; gerisi overlay ile anlatılır.</p>
+
+    <div class="minirail">
+      <div class="seg scr" style="flex:3">HOOK</div>
+      <div class="seg scr" style="flex:9">S2</div>
+      <div class="seg cam" style="flex:14">S3</div>
+      <div class="seg scr" style="flex:10">S4</div>
+      <div class="seg card" style="flex:9">S7</div>
+    </div>
+    <div class="minitc"><span>0:00</span><span>0:03</span><span>0:12</span><span>0:26</span><span>0:36</span><span>0:45</span></div>
+
+    <div class="socrow">
+      <div class="t">0:00<small>3 sn</small></div>
+      <div>
+        <h3>COLD-OPEN — Panel açılış anı (hook)</h3>
+        <p>Bağlam yok, doğrudan aksiyon: "Menüyü Gör" tıklaması + panelin <b>%50 slow-mo</b> açılışı (S2-widget-open.webm'in son 1,5 sn'si yavaşlatılmış). Müzik ilk vuruşla başlar.</p>
+        <div class="tags"><span class="chip fx">%50 slow-mo</span><span class="chip sfx">whoosh</span><span class="chip cut">sessiz VO — yalnız müzik</span></div>
+      </div>
+    </div>
+
+    <div class="socrow">
+      <div class="t">0:03<small>9 sn</small></div>
+      <div>
+        <h3>S2 — Widget bağlamı</h3>
+        <p>Sayfa geniş planı: hero + QR karosu, buton belirmesi, panel tekrar normal hızda. Overlay <b>#2 @0:05</b>: "Tek satır kod. Her web sitesine."</p>
+        <div class="tags"><span class="chip">overlay #2</span><span class="chip cut">VO yok</span></div>
+      </div>
+    </div>
+
+    <div class="socrow">
+      <div class="t">0:12<small>14 sn</small></div>
+      <div>
+        <h3>S3 — Misafir akışı (Quiet Corner)</h3>
+        <p>Masada tarama → telefonda <b>THE QUIET CORNER / Chef's Tasting Evening</b> → CTA → #contact. Overlay <b>#3 @0:16</b>: "Taramadan rezervasyona — 10 saniye." VO-S3 burada girer: "Tara, incele, rezerve et. Uygulama yok, üyelik yok, bekleme yok."</p>
+        <div class="tags"><span class="chip">overlay #3</span><span class="chip duck" style="color:var(--lavender)">müzik −6dB duck</span></div>
+      </div>
+    </div>
+
+    <div class="socrow">
+      <div class="t">0:26<small>10 sn</small></div>
+      <div>
+        <h3>S4 — Sayaç artışı</h3>
+        <p>Split-screen: CTA tıklaması → dashboard yenilenir, clicks/conversions <b>1.2× pulse</b> ile artar. Overlay <b>#4 @0:28</b>: "Görüntüleme → Tıklama → Dönüşüm. Gerçek zamanlı." VO-S4 kısaltılmış: "Her tarama, her dönüşüm — tek panelde, gerçek zamanlı."</p>
+        <div class="tags"><span class="chip fx">1.2× pulse</span><span class="chip sfx">tick</span><span class="chip">overlay #4</span></div>
+      </div>
+    </div>
+
+    <div class="socrow">
+      <div class="t">0:36<small>9 sn</small></div>
+      <div>
+        <h3>S7 — Kapanış kartı</h3>
+        <p>Sert kesme → koyu kart: THEYINE + QR lockup, overlay <b>#9 @0:39</b>: "Bugün ücretsiz demo kurulum yapalım. · theyine.com/enterprise-qr". Genel sosyal kopyada "Prepared for The Quiet Corner" satırı <b>yer almaz</b>; yalnız müşteriye özel gönderimde kalır. Son 2 sn müzik çözülmesi.</p>
+        <div class="tags"><span class="chip cut">sert kesme</span><span class="chip">overlay #9</span></div>
+      </div>
+    </div>
+
+    <div class="cropdemo">
+      <div class="cropframe">
+        <div class="h">Един QR код, който управлява целия ви ресторант</div>
+        <div class="wbtn" style="right:11%;bottom:8%">Menüyü Gör</div>
+        <div class="wpanel" style="right:10%;bottom:20%;width:26%;height:60%">
+          <div class="rest">THE QUIET CORNER</div>
+          <div class="title">Chef's Tasting Evening</div>
+          <div class="cta">Резервирай маса →</div>
+          <div class="powered">THEYINE</div>
+        </div>
+        <div class="cropzone"><span>9:16 KIRPIM</span></div>
+      </div>
+      <div class="cropnote"><b>Dikey kırpım kuralı:</b> widget sağ altta olduğu için 9:16 kadraj <b>sağ yarıdan</b> alınır — panel ve buton tam kadrajda kalır, hero metni kısmen dışarıda kalabilir (overlay'ler zaten alt bantta).</div>
+    </div>
+  </section>
+
+  <footer>
+    <b>Simülasyon Finali — paket kapsamı:</b> ana film 1:50 (oynatılabilir timeline, 7 sahne karesi, overlay #1–#9, %50/%70 hız rampaları, 1.2× pulse, S6 lavender vurgu kutuları, TR+EN seslendirme, −6 dB ducking, "Prepared for The Quiet Corner" kartı) + 45 sn sosyal varyant akışı (cold-open, 9:16 kırpım kuralı). Gerçek render değildir; v1.2 rehberiyle birebir eşleşir. Kaynak durumu: S2, S3B, S3C, S5 ham kayıtları hazır (demo-footage/); S1, S3-A, S7 kamera ve S4, S6 OBS çekimleri beklemede.
+  </footer>
+</div>
+
+<div class="present" id="present" role="dialog" aria-label="Sunum modu">
+  <div class="bar">
+    <span class="name" id="pName">S1 · Restoran Atmosferi</span>
+    <span class="ptc" id="pTc">0:00 / 1:50</span>
+    <button class="exit" id="pExit">Esc · Çık</button>
+  </div>
+  <div class="stagewrap"><div class="stage" id="pStage"></div></div>
+  <div class="subline" id="pSub"></div>
+  <div class="prail"><i id="pProg"></i></div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var DUR = 110;
+  var t = 0, speed = 4, playing = false, raf = null, last = 0;
+  var ph = document.getElementById("ph");
+  var rail = document.querySelector(".rail");
+  var tcread = document.getElementById("tcread");
+  var scenes = Array.prototype.slice.call(document.querySelectorAll(".scene"));
+  var segs = Array.prototype.slice.call(document.querySelectorAll(".seg"));
+  var overlays = Array.prototype.slice.call(document.querySelectorAll("[data-tc]"));
+  var playBtn = document.getElementById("play");
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var lastScene = -1;
+
+  // ---------- Sunum modu ----------
+  var presenting = false, pScene = -1;
+  var present = document.getElementById("present");
+  var pStage = document.getElementById("pStage");
+  var pName = document.getElementById("pName");
+  var pTc = document.getElementById("pTc");
+  var pSub = document.getElementById("pSub");
+  var pProg = document.getElementById("pProg");
+  var pOverlays = [];
+
+  function fmt(s) { var m = Math.floor(s / 60), r = Math.floor(s % 60); return m + ":" + (r < 10 ? "0" : "") + r; }
+
+  function loadPScene(i) {
+    pScene = i;
+    var sc = scenes[i];
+    var visual = sc.querySelector(".frame, .trip, .split, .devtools, .f-card");
+    pStage.innerHTML = "";
+    if (visual) pStage.appendChild(visual.cloneNode(true));
+    pName.textContent = sc.querySelector(".scenehead h2").textContent;
+    var vo = sc.querySelector(".voblock .txt");
+    pSub.textContent = vo ? vo.childNodes[0].textContent.trim() : "";
+    pOverlays = Array.prototype.slice.call(pStage.querySelectorAll("[data-tc]"));
+  }
+
+  function renderPresent() {
+    pTc.textContent = fmt(t) + " / 1:50";
+    pProg.style.width = (t / DUR * 100) + "%";
+    var idx = -1;
+    scenes.forEach(function (sc, i) { if (t >= +sc.dataset.a && t < +sc.dataset.b) idx = i; });
+    if (idx < 0) idx = scenes.length - 1;
+    if (idx !== pScene) loadPScene(idx);
+    pOverlays.forEach(function (el) {
+      var tc = +el.dataset.tc;
+      el.style.transition = "opacity 0.4s";
+      el.style.opacity = t >= tc ? "1" : "0";
+    });
+  }
+
+  function enterPresent() {
+    presenting = true;
+    speed = 1; // sunumda gerçek zaman — video gibi akar
+    document.querySelectorAll(".spd").forEach(function (x) { x.setAttribute("aria-pressed", x.dataset.s === "1" ? "true" : "false"); });
+    present.classList.add("on");
+    document.body.style.overflow = "hidden";
+    pScene = -1;
+    if (t >= DUR) t = 0;
+    if (!playing) start(); else renderPresent();
+  }
+  function exitPresent() {
+    presenting = false;
+    present.classList.remove("on");
+    document.body.style.overflow = "";
+    if (playing) stop();
+  }
+
+  function render() {
+    if (presenting) { renderPresent(); return; }
+    tcread.innerHTML = fmt(t) + "<small> / 1:50</small>";
+    ph.style.left = (t / DUR * 100) + "%";
+    var idx = -1;
+    scenes.forEach(function (sc, i) {
+      var a = +sc.dataset.a, b = +sc.dataset.b;
+      var on = t >= a && t < b;
+      sc.classList.toggle("active", on);
+      segs[i].classList.toggle("now", on);
+      if (on) idx = i;
+    });
+    overlays.forEach(function (el) {
+      var tc = +el.dataset.tc;
+      el.style.opacity = (t >= tc || !playing) ? "1" : "0.18";
+      el.style.transition = "opacity 0.4s";
+    });
+    if (playing && idx !== lastScene && idx >= 0) {
+      lastScene = idx;
+      scenes[idx].scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
+    }
+  }
+
+  function tick(now) {
+    if (!playing) return;
+    t += ((now - last) / 1000) * speed;
+    last = now;
+    if (t >= DUR) { t = DUR; stop(); }
+    render();
+    if (playing) raf = requestAnimationFrame(tick);
+  }
+  function start() {
+    if (t >= DUR) t = 0;
+    playing = true; lastScene = -1;
+    ph.style.display = "block";
+    playBtn.textContent = "⏸ Durdur";
+    last = performance.now();
+    raf = requestAnimationFrame(tick);
+  }
+  function stop() {
+    playing = false;
+    if (raf) cancelAnimationFrame(raf);
+    playBtn.textContent = t >= DUR ? "↺ Baştan" : "▶ Oynat";
+    render();
+  }
+  playBtn.addEventListener("click", function () { playing ? stop() : start(); });
+
+  document.getElementById("presentBtn").addEventListener("click", enterPresent);
+  document.getElementById("pExit").addEventListener("click", exitPresent);
+  document.addEventListener("keydown", function (e) {
+    if (!presenting) return;
+    if (e.key === "Escape") exitPresent();
+    if (e.key === " ") { e.preventDefault(); playing ? stop() : start(); }
+  });
+
+  document.querySelectorAll(".spd").forEach(function (b) {
+    b.addEventListener("click", function () {
+      speed = +b.dataset.s;
+      document.querySelectorAll(".spd").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+    });
+  });
+
+  segs.forEach(function (seg, i) {
+    seg.addEventListener("click", function () {
+      t = +seg.dataset.a; ph.style.display = "block"; lastScene = -1;
+      render();
+      scenes[i].scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
+    });
+  });
+
+  render();
+})();
+</script>
+
+</body>
+</html>

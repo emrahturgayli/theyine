@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import QrHero from "@/components/qr/QrHero";
 import QrFeatures from "@/components/qr/QrFeatures";
+import DemoModal from "@/components/qr/DemoModal";
 import QRWidget from "@/components/QRWidget";
 import { QR_DEMO_CAMPAIGN } from "@/lib/qr";
 
@@ -53,6 +54,7 @@ export default function EnterpriseQrPage() {
         {/* promise → what you get; the floating widget is the live proof */}
         <QrHero />
         <QrFeatures />
+        <DemoModal />
       </main>
       <Footer />
       <QRWidget campaign={QR_DEMO_CAMPAIGN} />

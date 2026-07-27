@@ -94,6 +94,16 @@ function seed(): Store {
       title: "Chef's Tasting Evening",
       description:
         "Запазете маса за дегустационното меню на шефа — 5 блюда, всяка вечер от 19:00.",
+      titleI18n: {
+        bg: "Дегустационна вечер на шефа",
+        en: "Chef's Tasting Evening",
+        tr: "Şefin Tadım Gecesi",
+      },
+      descriptionI18n: {
+        bg: "Запазете маса за дегустационното меню на шефа — 5 блюда, всяка вечер от 19:00.",
+        en: "Reserve a table for the chef's tasting menu — 5 courses, every evening from 19:00.",
+        tr: "Şefin tadım menüsü için masanızı ayırtın — 5 tabak, her akşam 19:00'dan itibaren.",
+      },
       type: "reservation",
       targetUrl: "https://www.theyine.com/#contact",
       tags: ["sales-demo", "quiet-corner"],
