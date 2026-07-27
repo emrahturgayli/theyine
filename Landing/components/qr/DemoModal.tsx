@@ -14,7 +14,7 @@ import { trackEvent } from "@/lib/analytics";
  *
  * The interactive simulation remains archived at /demo/quiet-corner-sim.html.
  */
-const VIDEO_ID = "nc5gWpxI6IM";
+const VIDEO_ID = "EQmIE9WVkHA"; // THEYINE QR — 40s official demo
 const IFRAME_ID = "demoIframe";
 
 // YouTube IFrame API — minimal surface we use.
