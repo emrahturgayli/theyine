@@ -1,9 +1,76 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import Logo from "./Logo";
 import { useLanguage, LANGUAGES, type Language } from "@/hooks/useLanguage";
 import { useTheme } from "@/hooks/useTheme";
+
+/* ------------------------------------------------------------------ */
+/* Products dropdown — QR Menu & Restaurant / Virtual Try-On           */
+/* ------------------------------------------------------------------ */
+function ProductsMenu() {
+  const { t } = useLanguage();
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onClick(e: MouseEvent) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("mousedown", onClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, []);
+
+  const items = [
+    { href: "/enterprise-qr", title: t("nav.productsQr"), desc: t("nav.productsQrDesc") },
+    { href: "/enterprise-tryon", title: t("nav.productsTryon"), desc: t("nav.productsTryonDesc") },
+  ];
+
+  return (
+    <div ref={wrapRef} className="relative">
+      <button
+        type="button"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center gap-1 text-sm font-medium text-ink-soft transition-colors hover:text-ink"
+      >
+        {t("nav.products")}
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden className={`transition-transform ${open ? "rotate-180" : ""}`}>
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
+
+      {open && (
+        <div
+          role="menu"
+          className="animate-fade-in absolute left-1/2 z-50 mt-3 w-80 -translate-x-1/2 rounded-2xl border border-line bg-surface p-2 shadow-soft"
+        >
+          {items.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              role="menuitem"
+              onClick={() => setOpen(false)}
+              className="block rounded-xl px-4 py-3 transition-colors hover:bg-lavender-tint"
+            >
+              <div className="text-sm font-semibold text-ink">{item.title}</div>
+              <div className="mt-0.5 text-xs text-ink-soft">{item.desc}</div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 /* ------------------------------------------------------------------ */
 /* Language toggle — accessible pill dropdown (EN / BG / TR)           */
@@ -130,14 +197,18 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
+  // "Products" (QR + Try-On) render as their own dropdown on desktop, so
+  // they're not duplicated in this flat list — see ProductsMenu below.
   const links = [
     { label: t("nav.studio"), href: "#studio" },
     { label: t("nav.services"), href: "#services" },
     { label: t("nav.pricing"), href: "/enterprise-tryon#pricing" },
     { label: t("nav.work"), href: "#work" },
     { label: t("nav.method"), href: "#method" },
-    // Dedicated enterprise route (full page, not an in-page anchor).
-    { label: t("nav.tryonLink"), href: "/enterprise-tryon" },
+  ];
+  const productLinks = [
+    { label: t("nav.productsQr"), href: "/enterprise-qr" },
+    { label: t("nav.productsTryon"), href: "/enterprise-tryon" },
   ];
 
   useEffect(() => {
@@ -161,7 +232,11 @@ export default function Navbar() {
         </a>
 
         <div className="hidden items-center gap-9 lg:flex">
-          {links.map((link) => (
+          <a href={links[0].href} className="text-sm font-medium text-ink-soft transition-colors hover:text-ink">
+            {links[0].label}
+          </a>
+          <ProductsMenu />
+          {links.slice(1).map((link) => (
             <a
               key={link.href}
               href={link.href}
@@ -205,7 +280,29 @@ export default function Navbar() {
         }`}
       >
         <div className="container-shell flex flex-col gap-1 py-4">
-          {links.map((link) => (
+          <a
+            href={links[0].href}
+            onClick={() => setOpen(false)}
+            className="rounded-lg px-2 py-3 text-base font-medium text-ink-soft transition-colors hover:bg-mist hover:text-ink"
+          >
+            {links[0].label}
+          </a>
+
+          <span className="mt-2 px-2 text-xs font-semibold uppercase tracking-wide text-ink-faint">
+            {t("nav.products")}
+          </span>
+          {productLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              onClick={() => setOpen(false)}
+              className="rounded-lg px-2 py-3 text-base font-medium text-ink-soft transition-colors hover:bg-mist hover:text-ink"
+            >
+              {link.label}
+            </a>
+          ))}
+
+          {links.slice(1).map((link) => (
             <a
               key={link.href}
               href={link.href}
