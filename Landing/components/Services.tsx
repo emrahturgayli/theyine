@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Reveal from "./Reveal";
 import { useLanguage } from "@/hooks/useLanguage";
 
@@ -70,6 +71,23 @@ const ICONS: JSX.Element[] = [
   </svg>,
 ];
 
+// Destination per card, index-aligned with `services.items` (and ICONS above).
+// Items 0–5 are studio capabilities without a standalone page — they route to
+// the contact section. QR Menu & Restaurant has a live product page. Hotel &
+// Reservation is on the roadmap: same contact destination, marked as such so
+// the card doesn't imply a product page that doesn't exist yet.
+const HREFS = [
+  "#contact",
+  "#contact",
+  "#contact",
+  "#contact",
+  "#contact",
+  "#contact",
+  "/enterprise-qr",
+  "#contact",
+];
+const COMING_SOON = [false, false, false, false, false, false, false, true];
+
 export default function Services() {
   const { dict } = useLanguage();
   const services = dict.services;
@@ -85,23 +103,47 @@ export default function Services() {
           <p className="mt-4 text-lg text-ink-soft">{services.subtitle}</p>
         </Reveal>
 
-        {/* Two-column grid of horizontal cards */}
+        {/* Two-column grid of horizontal cards — the whole card is the link */}
         <div className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
           {services.items.map((service, i) => (
             <Reveal key={service.title} delay={(i % 2) * 90}>
-              <article className="card card-hover group flex h-full items-start gap-5 p-6">
+              <Link
+                href={HREFS[i]}
+                className="card card-hover group flex h-full items-start gap-5 p-6 outline-none transition-transform duration-300 hover:scale-[1.015] focus-visible:ring-2 focus-visible:ring-lavender focus-visible:ring-offset-2 focus-visible:ring-offset-canvas active:scale-[0.99]"
+              >
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-lavender-tint text-lavender transition-colors duration-300 group-hover:bg-lavender group-hover:text-white">
                   <span className="h-6 w-6">{ICONS[i]}</span>
                 </span>
-                <div>
-                  <h3 className="text-lg font-semibold text-ink">
-                    {service.title}
-                  </h3>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-semibold text-ink">
+                      {service.title}
+                    </h3>
+                    {COMING_SOON[i] && (
+                      <span className="rounded-full border border-line px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide text-ink-faint">
+                        {services.comingSoon}
+                      </span>
+                    )}
+                  </div>
                   <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
                     {service.description}
                   </p>
                 </div>
-              </article>
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden
+                  className="mt-1 shrink-0 text-ink-faint opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:text-lavender group-hover:opacity-100"
+                >
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </Link>
             </Reveal>
           ))}
         </div>

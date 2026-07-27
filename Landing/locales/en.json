@@ -6,7 +6,12 @@
     "method": "Method",
     "pricing": "Pricing",
     "tryonLink": "Shopify × AI Try-On",
-    "cta": "Let's talk"
+    "cta": "Let's talk",
+    "products": "Products",
+    "productsQr": "QR Menu & Restaurant",
+    "productsQrDesc": "Menus, campaigns and reservations behind one code",
+    "productsTryon": "Virtual Try-On",
+    "productsTryonDesc": "AI product photography for your Shopify catalog"
   },
   "hero": {
     "badge": "Creative AI Automation Studio",
@@ -23,6 +28,7 @@
     ]
   },
   "services": {
+    "comingSoon": "Soon",
     "eyebrow": "What we do",
     "title": "Hybrid intelligence for modern brands",
     "subtitle": "Design, automation and operational intelligence under one studio — built to simplify the complex and make work feel effortless.",
@@ -60,6 +66,20 @@
         "description": "Automated booking, guest flows and operations for modern hospitality."
       }
     ]
+  },
+  "home": {
+    "qrShowcase": {
+      "eyebrow": "Product · QR Menu & Restaurant",
+      "title": "One QR code that runs your whole restaurant",
+      "description": "Menus, campaigns and reservations behind a single scannable code — managed from one dashboard, measured in real time.",
+      "cta": "See the full demo"
+    },
+    "tryonShowcase": {
+      "eyebrow": "Product · Virtual Try-On",
+      "title": "Every product, on a model, automatically",
+      "description": "THEYINE dresses your Shopify catalog on the model you choose and writes the image straight back to your store — no studio, no shoot.",
+      "cta": "See how it works"
+    }
   },
   "gallery": {
     "eyebrow": "Capability map",

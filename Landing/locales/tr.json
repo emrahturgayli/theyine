@@ -6,7 +6,12 @@
     "method": "Yöntem",
     "pricing": "Fiyatlar",
     "tryonLink": "Shopify × AI Giydirme",
-    "cta": "İletişime geç"
+    "cta": "İletişime geç",
+    "products": "Ürünler",
+    "productsQr": "QR Menü & Restoran",
+    "productsQrDesc": "Menüler, kampanyalar ve rezervasyonlar tek kodun arkasında",
+    "productsTryon": "Sanal Giydirme",
+    "productsTryonDesc": "Shopify kataloğunuz için yapay zeka ürün fotoğrafçılığı"
   },
   "hero": {
     "badge": "Yaratıcı AI Otomasyon Stüdyosu",
@@ -23,6 +28,7 @@
     ]
   },
   "services": {
+    "comingSoon": "Yakında",
     "eyebrow": "Ne yapıyoruz",
     "title": "Modern markalar için hibrit zekâ",
     "subtitle": "Tasarım, otomasyon ve operasyonel zekâ tek bir stüdyoda — karmaşığı basitleştirmek ve işi zahmetsiz kılmak için.",
@@ -60,6 +66,20 @@
         "description": "Modern konaklama için otomatik rezervasyon, misafir akışları ve operasyonlar."
       }
     ]
+  },
+  "home": {
+    "qrShowcase": {
+      "eyebrow": "Ürün · QR Menü & Restoran",
+      "title": "Tüm restoranınızı yöneten tek bir QR kod",
+      "description": "Menüler, kampanyalar ve rezervasyonlar tek bir taranabilir kodun arkasında — tek panelden yönetilir, gerçek zamanlı ölçülür.",
+      "cta": "Tam demoyu görün"
+    },
+    "tryonShowcase": {
+      "eyebrow": "Ürün · Sanal Giydirme",
+      "title": "Her ürün, mankende, otomatik olarak",
+      "description": "THEYINE, Shopify kataloğunuzu seçtiğiniz mankene giydirir ve görseli doğrudan mağazanıza geri yazar — stüdyo yok, çekim yok.",
+      "cta": "Nasıl çalıştığını görün"
+    }
   },
   "gallery": {
     "eyebrow": "Yetenek haritası",
