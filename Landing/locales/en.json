@@ -15,21 +15,50 @@
     "subtitle": "THEYINE bridges technical precision and artistic vision — a premier AI automation studio crafting invisible power for visible results. Simple automation. Human clarity.",
     "ctaPrimary": "Get started",
     "ctaSecondary": "Our services",
-    "audience": ["Startups", "Creative agencies", "Hospitality", "SaaS founders"]
+    "audience": [
+      "Startups",
+      "Creative agencies",
+      "Hospitality",
+      "SaaS founders"
+    ]
   },
   "services": {
     "eyebrow": "What we do",
     "title": "Hybrid intelligence for modern brands",
     "subtitle": "Design, automation and operational intelligence under one studio — built to simplify the complex and make work feel effortless.",
     "items": [
-      { "title": "AI Automation Systems", "description": "End-to-end intelligent workflows that run your operations quietly in the background." },
-      { "title": "Workflow Optimization", "description": "We map, simplify and accelerate complex processes into clean, measurable flows." },
-      { "title": "Creative AI Tools", "description": "Custom generative tooling that extends your team's creative capacity." },
-      { "title": "Digital Design Systems", "description": "Scalable, consistent design foundations — a modern digital backbone for your brand." },
-      { "title": "Landing & Web Production", "description": "High-craft landing pages built in Next.js, Framer or Webflow — fast and refined." },
-      { "title": "Content & UGC Systems", "description": "AI-driven content pipelines that produce on-brand assets at scale." },
-      { "title": "QR Menu & Restaurant", "description": "Smart ordering and menu automation for hospitality operators." },
-      { "title": "Hotel & Reservation", "description": "Automated booking, guest flows and operations for modern hospitality." }
+      {
+        "title": "AI Automation Systems",
+        "description": "End-to-end intelligent workflows that run your operations quietly in the background."
+      },
+      {
+        "title": "Workflow Optimization",
+        "description": "We map, simplify and accelerate complex processes into clean, measurable flows."
+      },
+      {
+        "title": "Creative AI Tools",
+        "description": "Custom generative tooling that extends your team's creative capacity."
+      },
+      {
+        "title": "Digital Design Systems",
+        "description": "Scalable, consistent design foundations — a modern digital backbone for your brand."
+      },
+      {
+        "title": "Landing & Web Production",
+        "description": "High-craft landing pages built in Next.js, Framer or Webflow — fast and refined."
+      },
+      {
+        "title": "Content & UGC Systems",
+        "description": "AI-driven content pipelines that produce on-brand assets at scale."
+      },
+      {
+        "title": "QR Menu & Restaurant",
+        "description": "Smart ordering and menu automation for hospitality operators."
+      },
+      {
+        "title": "Hotel & Reservation",
+        "description": "Automated booking, guest flows and operations for modern hospitality."
+      }
     ]
   },
   "gallery": {
@@ -37,10 +66,50 @@
     "title": "Gallery of Intelligence",
     "subtitle": "Explore how THEYINE turns intelligence into outcomes — select a capability to see it in motion.",
     "capabilities": [
-      { "label": "Neural Synthesis", "title": "Neural Synthesis", "meta": "Predictive modeling visualization", "description": "We model patterns hidden in your data and turn them into predictive systems that anticipate, not just react — the intelligent core behind every automation.", "tags": ["AI Architecture", "Prediction", "Data"] },
-      { "label": "Flow Intelligence", "title": "Flow Intelligence", "meta": "Harmonious AI integration", "description": "Automation that moves with your team. We connect tools, data and decisions into seamless flows that remove friction and free people for higher work.", "tags": ["Automation", "Integration", "Ops"] },
-      { "label": "Creative Flow", "title": "Creative Flow", "meta": "Generative design systems", "description": "Generative design systems that scale your brand voice — on-brand assets, layouts and content produced with craft and consistency, at speed.", "tags": ["Generative", "Design", "Content"] },
-      { "label": "Adaptive Ops", "title": "Adaptive Ops", "meta": "Self-improving operations", "description": "Operational intelligence that measures, learns and refines itself. Your systems get sharper over time — quietly compounding efficiency every cycle.", "tags": ["Optimization", "Analytics", "Scale"] }
+      {
+        "label": "Neural Synthesis",
+        "title": "Neural Synthesis",
+        "meta": "Predictive modeling visualization",
+        "description": "We model patterns hidden in your data and turn them into predictive systems that anticipate, not just react — the intelligent core behind every automation.",
+        "tags": [
+          "AI Architecture",
+          "Prediction",
+          "Data"
+        ]
+      },
+      {
+        "label": "Flow Intelligence",
+        "title": "Flow Intelligence",
+        "meta": "Harmonious AI integration",
+        "description": "Automation that moves with your team. We connect tools, data and decisions into seamless flows that remove friction and free people for higher work.",
+        "tags": [
+          "Automation",
+          "Integration",
+          "Ops"
+        ]
+      },
+      {
+        "label": "Creative Flow",
+        "title": "Creative Flow",
+        "meta": "Generative design systems",
+        "description": "Generative design systems that scale your brand voice — on-brand assets, layouts and content produced with craft and consistency, at speed.",
+        "tags": [
+          "Generative",
+          "Design",
+          "Content"
+        ]
+      },
+      {
+        "label": "Adaptive Ops",
+        "title": "Adaptive Ops",
+        "meta": "Self-improving operations",
+        "description": "Operational intelligence that measures, learns and refines itself. Your systems get sharper over time — quietly compounding efficiency every cycle.",
+        "tags": [
+          "Optimization",
+          "Analytics",
+          "Scale"
+        ]
+      }
     ]
   },
   "method": {
@@ -48,10 +117,22 @@
     "title": "Methodology",
     "subtitle": "A systematic progression from conceptual intelligence to tangible automation.",
     "steps": [
-      { "title": "Discovery & Audit", "desc": "We map your processes, data and goals to find where intelligence creates leverage." },
-      { "title": "Architecture Design", "desc": "We design the automation and design system — the invisible backbone." },
-      { "title": "Implementation", "desc": "We build, integrate and ship fast, with craft at every layer." },
-      { "title": "Evolution", "desc": "We measure, refine and scale — your systems get smarter over time." }
+      {
+        "title": "Discovery & Audit",
+        "desc": "We map your processes, data and goals to find where intelligence creates leverage."
+      },
+      {
+        "title": "Architecture Design",
+        "desc": "We design the automation and design system — the invisible backbone."
+      },
+      {
+        "title": "Implementation",
+        "desc": "We build, integrate and ship fast, with craft at every layer."
+      },
+      {
+        "title": "Evolution",
+        "desc": "We measure, refine and scale — your systems get smarter over time."
+      }
     ]
   },
   "tryon": {
@@ -70,9 +151,18 @@
     "productName": "Basic Black T-Shirt",
     "proof": "Real output — “{product}” dressed on the model in seconds by the live automation.",
     "steps": [
-      { "title": "Pulls the product", "desc": "Automatically collects images of unprocessed products from your Shopify store." },
-      { "title": "Dresses the model", "desc": "AI fits the product onto your chosen brand model, realistically." },
-      { "title": "Writes back to store", "desc": "Adds the image to the product and tags it “done” — never processed twice." }
+      {
+        "title": "Pulls the product",
+        "desc": "Automatically collects images of unprocessed products from your Shopify store."
+      },
+      {
+        "title": "Dresses the model",
+        "desc": "AI fits the product onto your chosen brand model, realistically."
+      },
+      {
+        "title": "Writes back to store",
+        "desc": "Adds the image to the product and tags it “done” — never processed twice."
+      }
     ],
     "cta": "Automate my store"
   },
@@ -84,9 +174,39 @@
     "note": "Symbolic prices — the exact plan is finalized after a short discovery call.",
     "cta": "Get started",
     "plans": [
-      { "name": "Starter", "price": "€99", "unit": "/mo", "features": ["Up to 100 products / mo", "1 brand model", "Auto image + tagging", "Email support"] },
-      { "name": "Growth", "price": "€249", "unit": "/mo", "features": ["Up to 500 products / mo", "3 brand models", "Instagram Reels output", "Priority support"] },
-      { "name": "Scale", "price": "Custom", "unit": "", "features": ["Unlimited products", "Dedicated pipeline", "Custom integrations", "SLA & onboarding"] }
+      {
+        "name": "Starter",
+        "price": "€99",
+        "unit": "/mo",
+        "features": [
+          "Up to 100 products / mo",
+          "1 brand model",
+          "Auto image + tagging",
+          "Email support"
+        ]
+      },
+      {
+        "name": "Growth",
+        "price": "€249",
+        "unit": "/mo",
+        "features": [
+          "Up to 500 products / mo",
+          "3 brand models",
+          "Instagram Reels output",
+          "Priority support"
+        ]
+      },
+      {
+        "name": "Scale",
+        "price": "Custom",
+        "unit": "",
+        "features": [
+          "Unlimited products",
+          "Dedicated pipeline",
+          "Custom integrations",
+          "SLA & onboarding"
+        ]
+      }
     ]
   },
   "tryonPage": {
@@ -124,9 +244,18 @@
       "title": "Three systems, one seamless flow",
       "subtitle": "Connected once, running quietly in the background — scheduled or triggered on demand.",
       "steps": [
-        { "title": "Shopify", "desc": "Pulls product images from the collection you choose." },
-        { "title": "Fal.ai", "desc": "Virtual try-on dresses your model, then polls to completion." },
-        { "title": "Shopify", "desc": "Writes the generated image back and tags the product done." }
+        {
+          "title": "Shopify",
+          "desc": "Pulls product images from the collection you choose."
+        },
+        {
+          "title": "Fal.ai",
+          "desc": "Virtual try-on dresses your model, then polls to completion."
+        },
+        {
+          "title": "Shopify",
+          "desc": "Writes the generated image back and tags the product done."
+        }
       ],
       "runtime": "Runs 24/7 on Modal — scheduled or webhook-triggered, with retries and error alerts."
     },
@@ -135,10 +264,22 @@
       "title": "Proven on a live store",
       "subtitle": "Measured on the theyine-dev store during the pilot run.",
       "metrics": [
-        { "value": "~30s", "label": "per product" },
-        { "value": "100%", "label": "success rate" },
-        { "value": "€0", "label": "studio cost" },
-        { "value": "250+", "label": "catalog scale" }
+        {
+          "value": "~30s",
+          "label": "per product"
+        },
+        {
+          "value": "100%",
+          "label": "success rate"
+        },
+        {
+          "value": "€0",
+          "label": "studio cost"
+        },
+        {
+          "value": "250+",
+          "label": "catalog scale"
+        }
       ],
       "quote": "From a flat photo to an on-model image, written straight back to the store — no manual step in between.",
       "quoteBy": "THEYINE pilot · Shopify × Fal.ai"
@@ -159,7 +300,12 @@
   },
   "footer": {
     "tagline": "Creative AI Automation Studio for modern brands. Simple automation. Human clarity.",
-    "links": { "linkedin": "LinkedIn", "instagram": "Instagram", "privacy": "Privacy", "terms": "Terms" },
+    "links": {
+      "linkedin": "LinkedIn",
+      "instagram": "Instagram",
+      "privacy": "Privacy",
+      "terms": "Terms"
+    },
     "rights": "THEYINE Intelligence Studio. All rights reserved.",
     "crafted": "Crafted with intelligent automation."
   },
@@ -179,9 +325,18 @@
       "ctaSecondary": "Start a project",
       "demoTag": "Live campaign — scan or tap",
       "metrics": [
-        { "value": "1", "label": "Code per venue" },
-        { "value": "3", "label": "Flows — menu, booking, order" },
-        { "value": "24/7", "label": "Real-time analytics" }
+        {
+          "value": "1",
+          "label": "Code per venue"
+        },
+        {
+          "value": "3",
+          "label": "Flows — menu, booking, order"
+        },
+        {
+          "value": "24/7",
+          "label": "Real-time analytics"
+        }
       ]
     },
     "features": {
@@ -214,6 +369,12 @@
           "desc": "Guests scan and act — nothing to install, no sign-up. You manage everything from a PWA-ready admin panel."
         }
       ]
+    },
+    "demo": {
+      "title": "See the demo before the shoot",
+      "subtitle": "A scene-by-scene playable simulation of the full demo film — timeline, overlays and presentation mode.",
+      "watch": "Watch the demo",
+      "close": "Close"
     }
   }
 }
