@@ -5,6 +5,7 @@ import EnterpriseHero from "@/components/enterprise/EnterpriseHero";
 import InputsSection from "@/components/enterprise/InputsSection";
 import BeforeAfter from "@/components/enterprise/BeforeAfter";
 import Pipeline from "@/components/tryon/Pipeline";
+import TrustSection from "@/components/tryon/TrustSection";
 import CaseStudy from "@/components/tryon/CaseStudy";
 import CtaBand from "@/components/enterprise/CtaBand";
 import DemoVideo from "@/components/DemoVideo";
@@ -66,11 +67,12 @@ export default function EnterpriseTryOnPage() {
       )}
       <Navbar />
       <main>
-        {/* promise → inputs → proof → how → results → commit → watch → price */}
+        {/* promise → inputs → proof → how → trust → results → commit → watch → price */}
         <EnterpriseHero />
         <InputsSection />
         <BeforeAfter />
         <Pipeline />
+        <TrustSection />
         <CaseStudy />
         <CtaBand />
         <DemoVideo />

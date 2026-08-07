@@ -279,6 +279,25 @@
       ],
       "runtime": "Modal üzerinde 7/24 çalışır — zamanlı ya da webhook ile, retry ve hata bildirimiyle."
     },
+    "trust": {
+      "eyebrow": "Neden sağlam duruyor",
+      "title": "Teknik denetimden geçecek şekilde kuruldu",
+      "subtitle": "Kara kutu yok — aşağıdaki her iddia, çalışan sistemin gerçek bir parçasına karşılık geliyor.",
+      "items": [
+        {
+          "title": "Sorunsuz entegrasyon",
+          "desc": "Sistem, Shopify Admin API bilgileriniz ve bir koleksiyon filtresiyle bağlanır — özel bir uygulama ya da aylar süren geliştirme gerekmez."
+        },
+        {
+          "title": "Tahmin değil, ölçüm",
+          "desc": "Bu sitedeki her CTA ve pipeline etkileşimi GA4 üzerinden izleniyor — bir müşterinin otomasyonu devreye girdikten sonra sonucunu ölçerken de aynı disiplini uyguluyoruz."
+        },
+        {
+          "title": "Ölçeklenecek şekilde tasarlandı",
+          "desc": "Modal'ın sunucusuz altyapısında, ürün başına hata izolasyonu, otomatik yeniden deneme ve güvenli test modu ile çalışır — tek bir başarısız ürün toplu işlemi durdurmaz."
+        }
+      ]
+    },
     "caseStudy": {
       "eyebrow": "Pilot sonuçları",
       "title": "Canlı mağazada kanıtlandı",

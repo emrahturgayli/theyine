@@ -14,17 +14,17 @@
     "productsTryonDesc": "AI product photography for your Shopify catalog"
   },
   "hero": {
-    "badge": "Creative AI Automation Studio",
-    "titleA": "Empowering global innovation through ",
-    "titleB": "intelligent automation.",
-    "subtitle": "THEYINE bridges technical precision and artistic vision — a premier AI automation studio crafting invisible power for visible results. Simple automation. Human clarity.",
-    "ctaPrimary": "Get started",
-    "ctaSecondary": "Our services",
+    "badge": "Sofia-based AI Automation Studio",
+    "titleA": "Plug-and-play AI infrastructure for ",
+    "titleB": "e-commerce and B2B enterprise.",
+    "subtitle": "THEYINE builds automation pipelines that connect directly to the systems you already run — Shopify, your booking stack, your guest journey — and ship in days, not quarters. Sofia-based. Built for the EU market.",
+    "ctaPrimary": "Book an Enterprise Demo",
+    "ctaSecondary": "See our products",
     "audience": [
-      "Startups",
-      "Creative agencies",
-      "Hospitality",
-      "SaaS founders"
+      "E-commerce brands",
+      "Hospitality groups",
+      "B2B SaaS founders",
+      "Enterprise operators"
     ]
   },
   "services": {
@@ -234,9 +234,9 @@
     "seoDescription": "Automatically dress your Shopify products on a model with AI and write the images back to your store. Enterprise-grade, 24/7, multilingual.",
     "hero": {
       "eyebrow": "Enterprise · Shopify × AI",
-      "title": "Virtual try-on for your entire Shopify catalog",
-      "subtitle": "An end-to-end automation that turns plain product photos into on-model imagery — generated, written back to Shopify, and tagged, without a studio or a shoot.",
-      "ctaPrimary": "Start a project",
+      "title": "Enterprise-Grade Visual Commerce for Shopify",
+      "subtitle": "An end-to-end automation that turns plain product photos into on-model imagery for your entire catalog — generated, written back to Shopify, and tagged, without a studio or a shoot.",
+      "ctaPrimary": "Book an Enterprise Demo",
       "ctaSecondary": "Automate my store"
     },
     "inputs": {
@@ -270,7 +270,7 @@
         },
         {
           "title": "Fal.ai",
-          "desc": "Virtual try-on dresses your model, then polls to completion."
+          "desc": "Virtual try-on dresses your model via Fal.ai's virtual-try-on model, then polls to completion."
         },
         {
           "title": "Shopify",
@@ -278,6 +278,25 @@
         }
       ],
       "runtime": "Runs 24/7 on Modal — scheduled or webhook-triggered, with retries and error alerts."
+    },
+    "trust": {
+      "eyebrow": "Why this holds up",
+      "title": "Built to survive a technical audit",
+      "subtitle": "No black box — every claim below maps to a real part of the running system.",
+      "items": [
+        {
+          "title": "Seamless integration",
+          "desc": "The pipeline connects with your Shopify Admin API credentials and a collection filter — no custom app, no dev cycle measured in months."
+        },
+        {
+          "title": "Instrumented, not guessed",
+          "desc": "Every CTA and pipeline interaction on this site is tracked through GA4 — the same discipline we bring to measuring what a client's automation actually does once it ships."
+        },
+        {
+          "title": "Scalable by design",
+          "desc": "Deployed on Modal's serverless runtime with per-product error isolation, automatic retries, and a dry-run mode — a single failed product never stops the batch."
+        }
+      ]
     },
     "caseStudy": {
       "eyebrow": "Pilot results",
