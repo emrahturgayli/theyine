@@ -15,21 +15,22 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://theyine.com"),
-  title: "THEYINE | Creative AI Automation Studio",
+  title: "THEYINE | Plug-and-Play AI Infrastructure for E-Commerce & B2B",
   description:
-    "THEYINE is a creative AI automation studio for modern brands — design, automation and operational intelligence. Simple automation. Human clarity.",
+    "THEYINE is a Sofia-based AI automation studio building plug-and-play infrastructure for e-commerce and B2B enterprise — Shopify automation, QR-based guest journeys, and the systems behind them.",
   keywords: [
     "AI automation",
-    "creative studio",
+    "B2B SaaS",
+    "Shopify automation",
+    "enterprise infrastructure",
     "workflow optimization",
-    "design systems",
     "THEYINE",
   ],
   authors: [{ name: "THEYINE" }],
   openGraph: {
-    title: "THEYINE | Creative AI Automation Studio",
+    title: "THEYINE | Plug-and-Play AI Infrastructure for E-Commerce & B2B",
     description:
-      "Intelligent automation for modern brands. Simple automation. Human clarity.",
+      "Sofia-based AI automation studio. Enterprise infrastructure that ships in days, not quarters.",
     type: "website",
   },
 };

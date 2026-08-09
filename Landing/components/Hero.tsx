@@ -2,6 +2,7 @@
 
 import { TheyineMark } from "./Logo";
 import { useLanguage } from "@/hooks/useLanguage";
+import { trackEvent } from "@/lib/analytics";
 
 /**
  * Hero — bright, breathing, premium.
@@ -66,7 +67,11 @@ export default function Hero() {
           className="animate-fade-up mt-10 flex w-full flex-col gap-3 sm:w-auto sm:flex-row"
           style={{ animationDelay: "220ms" }}
         >
-          <a href="#contact" className="btn-primary w-full sm:w-auto">
+          <a
+            href="#contact"
+            onClick={() => trackEvent("cta_click", "home_hero_book_demo")}
+            className="btn-primary w-full sm:w-auto"
+          >
             {hero.ctaPrimary}
             <svg
               width="18"
@@ -82,7 +87,11 @@ export default function Hero() {
               <path d="M5 12h14M13 6l6 6-6 6" />
             </svg>
           </a>
-          <a href="#services" className="btn-secondary w-full sm:w-auto">
+          <a
+            href="#services"
+            onClick={() => trackEvent("cta_click", "home_hero_see_products")}
+            className="btn-secondary w-full sm:w-auto"
+          >
             {hero.ctaSecondary}
           </a>
         </div>
