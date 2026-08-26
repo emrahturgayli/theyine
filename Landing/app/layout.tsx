@@ -32,7 +32,43 @@ export const metadata: Metadata = {
     description:
       "Sofia-based AI automation studio. Enterprise infrastructure that ships in days, not quarters.",
     type: "website",
+    url: "https://www.theyine.com",
+    siteName: "Theyine",
+    images: [{ url: "/logo.png", width: 512, height: 512, alt: "Theyine logo" }],
   },
+  twitter: {
+    card: "summary",
+    title: "THEYINE | Plug-and-Play AI Infrastructure for E-Commerce & B2B",
+    description:
+      "Sofia-based AI automation studio. Enterprise infrastructure that ships in days, not quarters.",
+    images: ["/logo.png"],
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icons/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icons/favicon-64.png", sizes: "64x64", type: "image/png" },
+      { url: "/icons/favicon-128.png", sizes: "128x128", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/icons/favicon-128.png",
+  },
+};
+
+// Organization structured data so Google Search can surface the THEYINE
+// logo in search results and populate a Knowledge Panel.
+// NOTE: sameAs URLs are placeholders — replace with the real THEYINE
+// YouTube and LinkedIn profile URLs before this goes live.
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Theyine",
+  url: "https://www.theyine.com",
+  logo: "https://www.theyine.com/logo.png",
+  sameAs: [
+    "https://www.youtube.com/@theyine",
+    "https://www.linkedin.com/company/theyine",
+  ],
 };
 
 export const viewport: Viewport = {
@@ -50,6 +86,10 @@ export default function RootLayout({
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: noFlashScript }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
         <Analytics />
       </head>
       <body>
