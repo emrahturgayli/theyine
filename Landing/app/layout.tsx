@@ -57,8 +57,6 @@ export const metadata: Metadata = {
 
 // Organization structured data so Google Search can surface the THEYINE
 // logo in search results and populate a Knowledge Panel.
-// NOTE: sameAs URLs are placeholders — replace with the real THEYINE
-// YouTube and LinkedIn profile URLs before this goes live.
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -66,8 +64,8 @@ const organizationSchema = {
   url: "https://www.theyine.com",
   logo: "https://www.theyine.com/logo.png",
   sameAs: [
-    "https://www.youtube.com/@theyine",
-    "https://www.linkedin.com/company/theyine",
+    "https://www.youtube.com/@Emrahssandbox",
+    "https://www.linkedin.com/in/emrah-turgayli-7967a5178",
   ],
 };
 
