@@ -415,5 +415,44 @@
       "watch": "Demo izle",
       "close": "Kapat"
     }
+  },
+  "leadMagnet": {
+    "seoTitle": "Ücretsiz Yapay Zeka Rakip Analizi | Dupnitsa | THEYINE",
+    "seoDescription": "Dupnitsa'daki klinikler, eğitim kurumları ve esnaf için ücretsiz yapay zeka destekli rakip ve içerik istihbarat raporu. Rakipleriniz ne yapıyor, siz nerede geride kalıyorsunuz — 48 saat içinde e-postanızda.",
+    "hero": {
+      "badge": "Dupnitsa yerel işletmeleri için ücretsiz",
+      "titleA": "Rakipleriniz internette ne yapıyor, ",
+      "titleB": "siz bilmiyorsunuz.",
+      "subtitle": "THEYINE'in yapay zekası, bölgenizdeki rakiplerinizi tarar; içerik, fiyatlandırma ve dijital varlık açısından nerede öne çıktıklarını — ve sizin nerede fırsat kaçırdığınızı — tek bir raporda önünüze koyar.",
+      "trust": [
+        "48 saat içinde raporunuz e-postanızda",
+        "Kredi kartı gerekmez",
+        "Verileriniz üçüncü taraflarla paylaşılmaz"
+      ]
+    },
+    "form": {
+      "title": "Ücretsiz raporunuzu başlatın",
+      "subtitle": "Üç bilgi yeterli — gerisini yapay zeka halleder.",
+      "businessNameLabel": "İşletme Adı",
+      "businessNamePlaceholder": "Örn. Dupnitsa Diş Kliniği",
+      "sectorLabel": "Sektör",
+      "sectorPlaceholder": "Sektörünüzü seçin",
+      "sectors": [
+        { "value": "clinic", "label": "Klinik" },
+        { "value": "education", "label": "Eğitim Kurumu" },
+        { "value": "retail", "label": "Esnaf / Perakende" },
+        { "value": "other", "label": "Diğer" }
+      ],
+      "emailLabel": "E-posta Adresi",
+      "emailPlaceholder": "isim@isletmeniz.com",
+      "cta": "Ücretsiz Yapay Zeka Rakip Analizini Başlat",
+      "ctaLoading": "Gönderiliyor...",
+      "privacyNote": "Göndererek yalnızca bu rapor için sizinle iletişime geçmemizi kabul edersiniz. İstenmeyen e-posta yok.",
+      "successTitle": "Talebiniz alındı.",
+      "successBody": "Ekibimiz {businessName} için rakip analizini hazırlamaya başladı — rapor 48 saat içinde e-postanıza gelecek.",
+      "errorGeneric": "Bir şeyler ters gitti, lütfen tekrar deneyin.",
+      "errorInvalidEmail": "Lütfen geçerli bir e-posta adresi girin.",
+      "errorRequired": "Lütfen tüm alanları doldurun."
+    }
   }
 }

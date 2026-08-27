@@ -415,5 +415,44 @@
       "watch": "Watch the demo",
       "close": "Close"
     }
+  },
+  "leadMagnet": {
+    "seoTitle": "Free AI Competitor Analysis | Dupnitsa | THEYINE",
+    "seoDescription": "A free AI-powered competitor and content intelligence report for clinics, education providers and local retailers in Dupnitsa. See where your competitors are winning — and where you're losing ground — in your inbox within 48 hours.",
+    "hero": {
+      "badge": "Free for Dupnitsa local businesses",
+      "titleA": "You don't know what your competitors ",
+      "titleB": "are doing online.",
+      "subtitle": "THEYINE's AI scans your local competitors and lays out, in one report, where they're winning on content, pricing and digital presence — and where you're leaving opportunity on the table.",
+      "trust": [
+        "Your report lands in your inbox within 48 hours",
+        "No credit card required",
+        "Your data is never shared with third parties"
+      ]
+    },
+    "form": {
+      "title": "Start your free report",
+      "subtitle": "Three fields is all it takes — AI handles the rest.",
+      "businessNameLabel": "Business Name",
+      "businessNamePlaceholder": "e.g. Dupnitsa Dental Clinic",
+      "sectorLabel": "Sector",
+      "sectorPlaceholder": "Select your sector",
+      "sectors": [
+        { "value": "clinic", "label": "Clinic" },
+        { "value": "education", "label": "Educational Institution" },
+        { "value": "retail", "label": "Retail / Local Business" },
+        { "value": "other", "label": "Other" }
+      ],
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "name@yourbusiness.com",
+      "cta": "Start My Free AI Competitor Analysis",
+      "ctaLoading": "Sending...",
+      "privacyNote": "By submitting, you agree we may contact you about this report only. No spam.",
+      "successTitle": "Request received.",
+      "successBody": "Our team has started your competitor analysis for {businessName} — the report will land in your inbox within 48 hours.",
+      "errorGeneric": "Something went wrong, please try again.",
+      "errorInvalidEmail": "Please enter a valid email address.",
+      "errorRequired": "Please fill in all fields."
+    }
   }
 }
