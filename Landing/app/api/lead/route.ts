@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { ApifyClient } from "apify-client";
-import { Composio } from "@composio/core";
+import nodemailer from "nodemailer";
 
 const VALID_SECTORS = new Set(["clinic", "education", "retail", "other"]);
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -21,7 +21,7 @@ type LeadPayload = {
 type Lead = LeadPayload & { submittedAt: string };
 
 // ---------------------------------------------------------------------------
-// Apify — competitor / content intelligence scan
+// Apify — competitor / content intelligence scan (do not touch — working)
 // ---------------------------------------------------------------------------
 
 const apifyClient = process.env.APIFY_API_TOKEN
@@ -33,9 +33,6 @@ const apifyClient = process.env.APIFY_API_TOKEN
  * Task (APIFY_TASK_ID — pre-configured input, easiest to manage from the
  * Apify Console) and falls back to running an Actor directly (APIFY_ACTOR_ID)
  * if that's what's configured instead.
- *
- * TODO: set APIFY_TASK_ID (or APIFY_ACTOR_ID) once the actual scraping Actor
- * is built/chosen in Apify Console. Until then this is a no-op that logs.
  */
 async function triggerApifyScan(lead: Lead): Promise<void> {
   if (!apifyClient) {
@@ -69,48 +66,48 @@ async function triggerApifyScan(lead: Lead): Promise<void> {
 }
 
 // ---------------------------------------------------------------------------
-// Composio — transactional email (customer confirmation + internal notice)
+// Email — nodemailer over SMTP (customer confirmation + internal notice)
 // ---------------------------------------------------------------------------
 
-const composio = process.env.COMPOSIO_API_KEY
-  ? new Composio({ apiKey: process.env.COMPOSIO_API_KEY })
+const SMTP_CONFIGURED = Boolean(process.env.SMTP_USER && process.env.SMTP_PASS);
+
+const transporter = SMTP_CONFIGURED
+  ? nodemailer.createTransport({
+      host: process.env.SMTP_HOST || "smtp.gmail.com",
+      port: Number(process.env.SMTP_PORT) || 465,
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    })
   : null;
 
 /**
- * Sends via the Gmail account connected in Composio under COMPOSIO_USER_ID.
- *
- * Prerequisite: that Gmail account must already be connected in the Composio
- * dashboard (Connect Link / OAuth) under this same user id — Composio's
- * "direct execution" mode (used here) does not do the OAuth dance itself.
+ * Sends one email over SMTP. When SMTP_USER/SMTP_PASS aren't set yet (e.g.
+ * local dev, or before the account is provisioned), this simulates the send
+ * instead of throwing — the lead is still captured and the API still
+ * returns 200, nothing crashes on a missing credential.
  */
-async function sendComposioEmail(params: {
-  to: string;
-  subject: string;
-  body: string;
-}): Promise<void> {
-  if (!composio) {
-    console.warn("[lead-magnet] Composio skipped: COMPOSIO_API_KEY not set");
-    return;
-  }
-  const userId = process.env.COMPOSIO_USER_ID;
-  if (!userId) {
-    console.warn("[lead-magnet] Composio skipped: COMPOSIO_USER_ID not set");
+async function sendEmail(params: { to: string; subject: string; body: string }): Promise<void> {
+  if (!transporter) {
+    console.log(
+      `\x1b[32m[Email Simulation] Müşteriye ve Admine e-posta gönderildi sayıldı... (to: ${params.to}, subject: "${params.subject}")\x1b[0m`
+    );
     return;
   }
 
-  await composio.tools.execute("GMAIL_SEND_EMAIL", {
-    userId,
-    arguments: {
-      recipient_email: params.to,
-      subject: params.subject,
-      body: params.body,
-    },
+  await transporter.sendMail({
+    from: process.env.SMTP_FROM || process.env.SMTP_USER,
+    to: params.to,
+    subject: params.subject,
+    text: params.body,
   });
 }
 
 async function sendCustomerConfirmation(lead: Lead): Promise<void> {
   const sectorLabel = SECTOR_LABELS[lead.sector] ?? lead.sector;
-  await sendComposioEmail({
+  await sendEmail({
     to: lead.email,
     subject: "Talebiniz alındı — THEYINE Yapay Zeka Rakip Analizi",
     body:
@@ -130,7 +127,7 @@ async function sendAdminNotification(lead: Lead): Promise<void> {
     return;
   }
   const sectorLabel = SECTOR_LABELS[lead.sector] ?? lead.sector;
-  await sendComposioEmail({
+  await sendEmail({
     to: adminEmail,
     subject: `Yeni lead: ${lead.businessName} (${sectorLabel})`,
     body:
@@ -149,7 +146,7 @@ async function sendAdminNotification(lead: Lead): Promise<void> {
 /**
  * Lead Magnet intake — "AI Competitor & Content Intelligence Report".
  * Validates the submission, then fans out to Apify (competitor scan) and
- * Composio (customer confirmation + internal notification) concurrently.
+ * email (customer confirmation + internal notification) concurrently.
  * Each integration is isolated in its own try/catch: a failure there is
  * logged but never surfaces as a 500 to the visitor — the lead is still
  * captured either way.
@@ -181,7 +178,7 @@ export async function POST(request: Request) {
   console.log("[lead-magnet] new lead:", lead);
 
   // Run all three integrations concurrently rather than sequentially — each
-  // is independently wrapped so one failing (e.g. Apify misconfigured) never
+  // is independently wrapped so one failing (e.g. SMTP misconfigured) never
   // blocks or fails the others. Deliberately awaited (not detached) because
   // serverless functions can freeze immediately after the response is sent,
   // which would silently drop truly "fire-and-forget" work.
