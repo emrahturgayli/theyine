@@ -7,3 +7,6 @@
 npm-debug.log*
 .env*.local
 next-env.d.ts
+
+.vercel
+.env*

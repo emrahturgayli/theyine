@@ -7,22 +7,33 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "remotion:preview": "remotion studio src/remotion/index.ts",
+    "remotion:render": "remotion render src/remotion/index.ts LessonReel out/lesson-reel.mp4",
+    "remotion:render:props": "remotion render src/remotion/index.ts LessonReel out/lesson-reel.mp4 --props=src/remotion/props.json"
   },
   "dependencies": {
     "apify-client": "^2.25.0",
     "next": "^14.2.35",
     "nodemailer": "^9.0.6",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "zod": "4.4.3"
   },
   "devDependencies": {
+    "@remotion/captions": "4.0.518",
+    "@remotion/cli": "4.0.518",
+    "@remotion/player": "4.0.518",
+    "@remotion/renderer": "4.0.518",
+    "@remotion/transitions": "4.0.518",
+    "@remotion/zod-types": "4.0.518",
     "@types/node": "20.14.10",
     "@types/nodemailer": "^8.0.1",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
     "autoprefixer": "10.4.19",
     "postcss": "8.4.39",
+    "remotion": "4.0.518",
     "tailwindcss": "3.4.6",
     "typescript": "5.5.3"
   }

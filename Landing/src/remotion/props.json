@@ -1,0 +1,38 @@
+{
+  "topic": "Fotosentez Nasıl Çalışır?",
+  "platform": "shorts",
+  "captions": [],
+  "scenes": [
+    {
+      "id": "title",
+      "kind": "title",
+      "heading": "Fotosentez Nasıl Çalışır?",
+      "durationInSeconds": 3
+    },
+    {
+      "id": "content-0",
+      "kind": "content",
+      "body": "Bitkiler güneş ışığını, suyu ve karbondioksiti kullanarak kendi besinini üretir.",
+      "durationInSeconds": 5
+    },
+    {
+      "id": "content-1",
+      "kind": "content",
+      "body": "Bu işleme fotosentez denir ve yaprakların yeşil rengini veren klorofil sayesinde gerçekleşir.",
+      "durationInSeconds": 6
+    },
+    {
+      "id": "content-2",
+      "kind": "content",
+      "body": "Sonuç olarak bitki oksijen üretir — bizim soluduğumuz havanın kaynağı işte budur.",
+      "durationInSeconds": 5
+    },
+    {
+      "id": "outro",
+      "kind": "outro",
+      "heading": "THEYINE",
+      "body": "Devamı için takipte kal",
+      "durationInSeconds": 3
+    }
+  ]
+}
