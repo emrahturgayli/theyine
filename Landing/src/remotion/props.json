@@ -1,42 +1,60 @@
 {
-  "topic": "Bayes Teoremi",
+  "topic": "Bayes Teoremi ile Zihin Okuma",
   "platform": "reels",
   "scenes": [
     {
       "id": "title",
       "kind": "title",
-      "heading": "Bayes Teoremi",
+      "heading": "Bayes Teoremi ile Zihin Okuma",
       "durationInSeconds": 6.75
     },
     {
       "id": "content-0",
       "kind": "content",
-      "body": "Sınavda bu soruyu kaçıranların yüzde doksanı aynı hatayı yapıyor.",
-      "durationInSeconds": 5.786585365853658
+      "body": "Bunu bilmeden olasılık konusuna giriş yapma. Doktorun sana 'testin pozitif çıktı' dediği an, aslında az bir bilgi verdi.",
+      "durationInSeconds": 4.732292917166867
     },
     {
       "id": "content-1",
       "kind": "content",
-      "body": "Bayes Teoremi, elindeki yeni bilgiyle bir olayın olasılığını güncellemeni sağlar.",
-      "durationInSeconds": 7.2109756097560975
+      "body": "Bayes Teoremi sana gerçek olasılığı hesaplamayı öğretir. Formül basit görünür ama mantığı devrim niteliğinde.",
+      "durationInSeconds": 4.298499399759904
     },
     {
       "id": "content-2",
       "kind": "content",
-      "body": "Formül basit: P(A verilmiş B) eşittir P(B verilmiş A) çarpı P(A), bölü P(B).",
-      "durationInSeconds": 6.765853658536586
+      "body": "P A B eşittir P B A çarpı P A bölü P B. Yani sen önceki bilgini alırsın, yeni kanıtla güncellersin. Örnek verelim.",
+      "durationInSeconds": 4.495678271308523
     },
     {
       "id": "content-3",
       "kind": "content",
-      "body": "Yani önce ne bildiğini yaz, sonra yeni kanıt geldiğinde tahminini güncelle.",
-      "durationInSeconds": 6.676829268292683
+      "body": "Bir hastalık toplumda yüzde bir görülüyor. Test doğruluğu yüzde doksan.",
+      "durationInSeconds": 2.7999399759903967
     },
     {
       "id": "content-4",
       "kind": "content",
-      "body": "Bir sonraki sınavda bu adımı atlarsan, doğru cevabı bilerek kaybedersin.",
-      "durationInSeconds": 6.409756097560976
+      "body": "Sen testin pozitif çıktığında hasta olma ihtimalinin yüzde doksan olduğunu düşünürsün. Yanlış. Gerçek sayı çok daha düşük çıkar.",
+      "durationInSeconds": 5.047779111644657
+    },
+    {
+      "id": "content-5",
+      "kind": "content",
+      "body": "Çünkü nadir olaylarda yanlış pozitifler devreye girer. Bayes seni bu tuzağa düşürmez. Sınavda karşına çıktığında önce olayları tanımla.",
+      "durationInSeconds": 5.323829531812725
+    },
+    {
+      "id": "content-6",
+      "kind": "content",
+      "body": "Sonra koşullu olasılıkları yaz. Son olarak formülü uygula. Bu mantığı bir kez kavrayan asla unutmuyor.",
+      "durationInSeconds": 4.022448979591837
+    },
+    {
+      "id": "content-7",
+      "kind": "content",
+      "body": "Çünkü bu sadece matematik değil, doğru düşünme biçimi.",
+      "durationInSeconds": 2.12953181272509
     },
     {
       "id": "outro",
