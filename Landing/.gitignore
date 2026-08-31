@@ -10,3 +10,6 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# Generated TTS narration (scripts/generate-video.ts) — build output, not source.
+/src/remotion/public/audio
