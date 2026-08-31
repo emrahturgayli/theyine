@@ -1,68 +1,75 @@
 {
-  "topic": "Bayes Teoremi ile Zihin Okuma",
+  "topic": "Bayes Teoremi 45 Saniyede",
   "platform": "reels",
   "scenes": [
     {
       "id": "title",
       "kind": "title",
-      "heading": "Bayes Teoremi ile Zihin Okuma",
-      "durationInSeconds": 6.75
+      "heading": "Bayes Teoremi 45 Saniyede",
+      "durationInSeconds": 10.382399999999999
     },
     {
       "id": "content-0",
       "kind": "content",
-      "body": "Bunu bilmeden olasılık konusuna giriş yapma. Doktorun sana 'testin pozitif çıktı' dediği an, aslında az bir bilgi verdi.",
-      "durationInSeconds": 4.732292917166867
+      "body": "Bunu bilmeden olasılık sınavına girme. Herkes koşullu olasılığı ezberliyor ama kimse mantığını anlamıyor.",
+      "durationInSeconds": 5.7542368763557485
     },
     {
       "id": "content-1",
       "kind": "content",
-      "body": "Bayes Teoremi sana gerçek olasılığı hesaplamayı öğretir. Formül basit görünür ama mantığı devrim niteliğinde.",
-      "durationInSeconds": 4.298499399759904
+      "body": "Bayes Teoremi aslında çok basit bir soruya cevap veriyor: Yeni bir bilgi öğrendiğinde, bir olayın olasılığı nasıl değişir?",
+      "durationInSeconds": 6.6858752277657265
     },
     {
       "id": "content-2",
       "kind": "content",
-      "body": "P A B eşittir P B A çarpı P A bölü P B. Yani sen önceki bilgini alırsın, yeni kanıtla güncellersin. Örnek verelim.",
-      "durationInSeconds": 4.495678271308523
+      "body": "Diyelim ki bir hastalık testi pozitif çıktı. Herkes hemen hastayım diye paniklemeye başlar.",
+      "durationInSeconds": 4.987005292841648
     },
     {
       "id": "content-3",
       "kind": "content",
-      "body": "Bir hastalık toplumda yüzde bir görülüyor. Test doğruluğu yüzde doksan.",
-      "durationInSeconds": 2.7999399759903967
+      "body": "Ama gerçek olasılık, hem testin doğruluğuna hem de hastalığın toplumdaki yaygınlığına bağlı. İşte formül burada devreye giriyor.",
+      "durationInSeconds": 7.0146887635574835
     },
     {
       "id": "content-4",
       "kind": "content",
-      "body": "Sen testin pozitif çıktığında hasta olma ihtimalinin yüzde doksan olduğunu düşünürsün. Yanlış. Gerçek sayı çok daha düşük çıkar.",
-      "durationInSeconds": 5.047779111644657
+      "body": "P A verilen B, P B verilen A çarpı P A, bölü P B. Yani önceki bilgini, yeni kanıtla güncelliyorsun.",
+      "durationInSeconds": 5.425423340563991
     },
     {
       "id": "content-5",
       "kind": "content",
-      "body": "Çünkü nadir olaylarda yanlış pozitifler devreye girer. Bayes seni bu tuzağa düşürmez. Sınavda karşına çıktığında önce olayları tanımla.",
-      "durationInSeconds": 5.323829531812725
+      "body": "Sınavda bu formülü gördüğünde önce olayları net tanımla. A hangi olay, B hangi kanıt. Sonra pay ve paydayı ayrı ayrı hesapla.",
+      "durationInSeconds": 6.8502819956616054
     },
     {
       "id": "content-6",
       "kind": "content",
-      "body": "Sonra koşullu olasılıkları yaz. Son olarak formülü uygula. Bu mantığı bir kez kavrayan asla unutmuyor.",
-      "durationInSeconds": 4.022448979591837
+      "body": "Karıştırmadan, adım adım ilerle. Bayes Teoremi sadece matematik değil, gerçek hayatta karar verme biçimin.",
+      "durationInSeconds": 5.809039132321041
     },
     {
       "id": "content-7",
       "kind": "content",
-      "body": "Çünkü bu sadece matematik değil, doğru düşünme biçimi.",
-      "durationInSeconds": 2.12953181272509
+      "body": "Doktorlar, mühendisler, yapay zeka sistemleri hepsi bunu kullanıyor.",
+      "durationInSeconds": 3.7265534056399128
+    },
+    {
+      "id": "content-8",
+      "kind": "content",
+      "body": "Şimdi bu mantığı kafanda otur, çünkü sınavda seni bekleyen soru tam olarak bu.",
+      "durationInSeconds": 4.274575965292841
     },
     {
       "id": "outro",
       "kind": "outro",
       "heading": "THEYINE",
       "body": "Devamı için takipte kal",
-      "durationInSeconds": 5.3999999999999995
+      "durationInSeconds": 8.305919999999999
     }
   ],
-  "captions": []
+  "captions": [],
+  "audioSrc": "audio/bayes-teoremi-45-saniyede.mp3"
 }
