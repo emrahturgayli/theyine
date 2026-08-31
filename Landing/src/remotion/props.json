@@ -1,38 +1,50 @@
 {
-  "topic": "Fotosentez Nasıl Çalışır?",
-  "platform": "shorts",
-  "captions": [],
+  "topic": "Bayes Teoremi",
+  "platform": "reels",
   "scenes": [
     {
       "id": "title",
       "kind": "title",
-      "heading": "Fotosentez Nasıl Çalışır?",
-      "durationInSeconds": 3
+      "heading": "Bayes Teoremi",
+      "durationInSeconds": 6.75
     },
     {
       "id": "content-0",
       "kind": "content",
-      "body": "Bitkiler güneş ışığını, suyu ve karbondioksiti kullanarak kendi besinini üretir.",
-      "durationInSeconds": 5
+      "body": "Sınavda bu soruyu kaçıranların yüzde doksanı aynı hatayı yapıyor.",
+      "durationInSeconds": 5.786585365853658
     },
     {
       "id": "content-1",
       "kind": "content",
-      "body": "Bu işleme fotosentez denir ve yaprakların yeşil rengini veren klorofil sayesinde gerçekleşir.",
-      "durationInSeconds": 6
+      "body": "Bayes Teoremi, elindeki yeni bilgiyle bir olayın olasılığını güncellemeni sağlar.",
+      "durationInSeconds": 7.2109756097560975
     },
     {
       "id": "content-2",
       "kind": "content",
-      "body": "Sonuç olarak bitki oksijen üretir — bizim soluduğumuz havanın kaynağı işte budur.",
-      "durationInSeconds": 5
+      "body": "Formül basit: P(A verilmiş B) eşittir P(B verilmiş A) çarpı P(A), bölü P(B).",
+      "durationInSeconds": 6.765853658536586
+    },
+    {
+      "id": "content-3",
+      "kind": "content",
+      "body": "Yani önce ne bildiğini yaz, sonra yeni kanıt geldiğinde tahminini güncelle.",
+      "durationInSeconds": 6.676829268292683
+    },
+    {
+      "id": "content-4",
+      "kind": "content",
+      "body": "Bir sonraki sınavda bu adımı atlarsan, doğru cevabı bilerek kaybedersin.",
+      "durationInSeconds": 6.409756097560976
     },
     {
       "id": "outro",
       "kind": "outro",
       "heading": "THEYINE",
       "body": "Devamı için takipte kal",
-      "durationInSeconds": 3
+      "durationInSeconds": 5.3999999999999995
     }
-  ]
+  ],
+  "captions": []
 }

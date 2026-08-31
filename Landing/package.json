@@ -10,9 +10,12 @@
     "lint": "next lint",
     "remotion:preview": "remotion studio src/remotion/index.ts",
     "remotion:render": "remotion render src/remotion/index.ts LessonReel out/lesson-reel.mp4",
-    "remotion:render:props": "remotion render src/remotion/index.ts LessonReel out/lesson-reel.mp4 --props=src/remotion/props.json"
+    "remotion:render:props": "remotion render src/remotion/index.ts LessonReel out/lesson-reel.mp4 --props=src/remotion/props.json",
+    "generate:video": "tsx scripts/generate-video.ts"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^4.0.46",
+    "ai": "^7.0.85",
     "apify-client": "^2.25.0",
     "next": "^14.2.35",
     "nodemailer": "^9.0.6",
@@ -21,6 +24,7 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
+    "@remotion/bundler": "4.0.518",
     "@remotion/captions": "4.0.518",
     "@remotion/cli": "4.0.518",
     "@remotion/player": "4.0.518",
@@ -35,6 +39,7 @@
     "postcss": "8.4.39",
     "remotion": "4.0.518",
     "tailwindcss": "3.4.6",
+    "tsx": "^4.23.13",
     "typescript": "5.5.3"
   }
 }
