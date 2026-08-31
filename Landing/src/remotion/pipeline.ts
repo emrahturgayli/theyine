@@ -1,0 +1,159 @@
+import { existsSync, mkdirSync } from "fs";
+import { join } from "path";
+import { randomUUID } from "crypto";
+import { bundle } from "@remotion/bundler";
+import { renderMedia, selectComposition } from "@remotion/renderer";
+import { generateLessonRequest } from "./skill/generateLessonRequest";
+import { generateNarration } from "./skill/generateNarration";
+import { buildLessonReelProps } from "./skill/promptToProps";
+
+/**
+ * The engine behind both `npm run generate:video` (scripts/generate-video.ts)
+ * and the `/studio` web UI (app/api/generate-video/route.ts) — free text in,
+ * a rendered, narrated, resynced .mp4 out. Kept here rather than duplicated
+ * in each caller so the two stay in lockstep.
+ */
+
+export type PipelineEvent =
+  | { step: "script"; status: "start" }
+  | { step: "script"; status: "done"; topic: string; platform: string; script: string }
+  | { step: "narration"; status: "start" }
+  | { step: "narration"; status: "done"; durationInSeconds: number }
+  | { step: "render"; status: "start"; totalFrames: number }
+  | { step: "render"; status: "progress"; renderedFrames: number; totalFrames: number }
+  | { step: "render"; status: "done" }
+  | { step: "done"; fileName: string };
+
+export type PipelineOptions = {
+  /**
+   * Absolute path to src/remotion/index.ts. Must be passed in rather than
+   * derived from `__dirname` here: this module gets webpack-bundled when
+   * imported from the Next.js API route, and a bundled `__dirname` points
+   * into `.next/server/...`, not the real source tree — each caller knows
+   * its own true path (the CLI via its own unbundled `__dirname`, the API
+   * route via `process.cwd()`, which Next keeps pointed at the project root
+   * for Node route handlers).
+   */
+  entryPoint: string;
+  /** Directory Remotion serves static assets (the narration mp3) from. */
+  remotionPublicDir: string;
+  /** Directory the final .mp4 gets written to. */
+  outputDir: string;
+  onEvent?: (event: PipelineEvent) => void;
+};
+
+export type PipelineResult = {
+  /** Absolute filesystem path to the rendered .mp4. */
+  videoPath: string;
+  /** Just the filename, e.g. "bayes-teoremi-a1b2c3d4.mp4". */
+  fileName: string;
+  topic: string;
+  platform: string;
+  script: string;
+  narrationDurationSeconds: number;
+};
+
+function slugify(text: string): string {
+  return (
+    text
+      .toLowerCase()
+      .normalize("NFKD")
+      .replace(/[̀-ͯ]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "")
+      .slice(0, 60) || "lesson-reel"
+  );
+}
+
+// Bundling (webpack) the composition takes several seconds and produces the
+// same output every time — memoize it per warm process (dev server, or a
+// warm serverless instance) instead of re-bundling on every single request.
+let cachedBundleLocation: Promise<string> | null = null;
+function getBundleLocation(entryPoint: string, remotionPublicDir: string): Promise<string> {
+  if (!cachedBundleLocation) {
+    cachedBundleLocation = bundle({ entryPoint, publicDir: remotionPublicDir });
+  }
+  return cachedBundleLocation;
+}
+
+/**
+ * Runs the full pipeline: LLM script generation -> TTS narration -> scene
+ * timing resynced to the real narration length -> render. Emits progress
+ * via `onEvent` so a caller (CLI or streaming API route) can show live
+ * status without polling.
+ */
+export async function generateLessonVideo(
+  input: string,
+  options: PipelineOptions
+): Promise<PipelineResult> {
+  const emit = (event: PipelineEvent) => options.onEvent?.(event);
+
+  emit({ step: "script", status: "start" });
+  const llmOutput = await generateLessonRequest(input);
+  emit({
+    step: "script",
+    status: "done",
+    topic: llmOutput.topic,
+    platform: llmOutput.platform,
+    script: llmOutput.script,
+  });
+
+  // A short random suffix keeps concurrent requests (two people generating
+  // at once, or the same topic twice) from colliding on the same filename.
+  const slug = `${slugify(llmOutput.topic)}-${randomUUID().slice(0, 8)}`;
+
+  const audioDir = join(options.remotionPublicDir, "audio");
+  if (!existsSync(audioDir)) mkdirSync(audioDir, { recursive: true });
+  const audioFileName = `${slug}.mp3`;
+  const audioPath = join(audioDir, audioFileName);
+
+  emit({ step: "narration", status: "start" });
+  const narration = await generateNarration(llmOutput.script, audioPath);
+  emit({ step: "narration", status: "done", durationInSeconds: narration.durationInSeconds });
+
+  // Resync to the *actual* narration length rather than the LLM's
+  // text-length guess, so visuals and voice never drift apart.
+  const props = buildLessonReelProps({
+    ...llmOutput,
+    durationInSeconds: narration.durationInSeconds,
+    narrationAudioSrc: `audio/${audioFileName}`,
+  });
+
+  if (!existsSync(options.outputDir)) mkdirSync(options.outputDir, { recursive: true });
+  const fileName = `${slug}.mp4`;
+  const outputPath = join(options.outputDir, fileName);
+
+  const bundleLocation = await getBundleLocation(options.entryPoint, options.remotionPublicDir);
+  const composition = await selectComposition({
+    serveUrl: bundleLocation,
+    id: "LessonReel",
+    inputProps: props,
+  });
+
+  emit({ step: "render", status: "start", totalFrames: composition.durationInFrames });
+  await renderMedia({
+    composition,
+    serveUrl: bundleLocation,
+    codec: "h264",
+    outputLocation: outputPath,
+    inputProps: props,
+    onProgress: ({ renderedFrames }) =>
+      emit({
+        step: "render",
+        status: "progress",
+        renderedFrames,
+        totalFrames: composition.durationInFrames,
+      }),
+  });
+  emit({ step: "render", status: "done" });
+  emit({ step: "done", fileName });
+
+  return {
+    videoPath: outputPath,
+    fileName,
+    topic: llmOutput.topic,
+    platform: llmOutput.platform,
+    script: llmOutput.script,
+    narrationDurationSeconds: narration.durationInSeconds,
+  };
+}

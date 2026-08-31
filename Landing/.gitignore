@@ -13,3 +13,7 @@ next-env.d.ts
 
 # Generated TTS narration (scripts/generate-video.ts) — build output, not source.
 /src/remotion/public/audio
+
+# Videos rendered by /studio (app/api/generate-video/route.ts) — user-generated
+# content written at runtime, not source.
+/public/generated
