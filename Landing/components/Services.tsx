@@ -72,17 +72,19 @@ const ICONS: JSX.Element[] = [
 ];
 
 // Destination per card, index-aligned with `services.items` (and ICONS above).
-// Items 0–5 are studio capabilities without a standalone page — they route to
-// the contact section. QR Menu & Restaurant has a live product page. Hotel &
-// Reservation is on the roadmap: same contact destination, marked as such so
-// the card doesn't imply a product page that doesn't exist yet.
+// Most studio capabilities don't have a standalone page yet and route to the
+// contact section. Three now have live product pages: Content & UGC Systems
+// routes to the AI Video Studio (the closest real product to that capability),
+// QR Menu & Restaurant to its product page. Hotel & Reservation is on the
+// roadmap: contact destination, marked as such so the card doesn't imply a
+// product page that doesn't exist yet.
 const HREFS = [
   "#contact",
   "#contact",
   "#contact",
   "#contact",
   "#contact",
-  "#contact",
+  "/studio",
   "/enterprise-qr",
   "#contact",
 ];

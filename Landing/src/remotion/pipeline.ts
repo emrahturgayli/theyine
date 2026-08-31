@@ -35,10 +35,23 @@ export type PipelineOptions = {
    * for Node route handlers).
    */
   entryPoint: string;
-  /** Directory Remotion serves static assets (the narration mp3) from. */
+  /**
+   * Directory Remotion serves static assets (the narration mp3) from. Must
+   * be writable at runtime — on Vercel that means os.tmpdir() (`/tmp`), NOT
+   * a path under the deployed project (`process.cwd()`/src/...), which is
+   * read-only in production.
+   */
   remotionPublicDir: string;
-  /** Directory the final .mp4 gets written to. */
+  /** Directory the final .mp4 gets written to. Same writability rule as above. */
   outputDir: string;
+  /**
+   * Webpack's persistent build cache defaults to `<project>/node_modules/.cache`
+   * (see @remotion/bundler's webpack-cache.js) — also read-only on Vercel.
+   * Pass `false` in any environment where that directory isn't writable;
+   * bundling is still memoized in-process either way (see below), so this
+   * only costs a re-bundle on cold start, not on every request.
+   */
+  enableBundleCaching?: boolean;
   onEvent?: (event: PipelineEvent) => void;
 };
 
@@ -47,6 +60,8 @@ export type PipelineResult = {
   videoPath: string;
   /** Just the filename, e.g. "bayes-teoremi-a1b2c3d4.mp4". */
   fileName: string;
+  /** Absolute filesystem path to the narration mp3 (for callers that want to clean it up). */
+  narrationAudioPath: string;
   topic: string;
   platform: string;
   script: string;
@@ -69,9 +84,16 @@ function slugify(text: string): string {
 // same output every time — memoize it per warm process (dev server, or a
 // warm serverless instance) instead of re-bundling on every single request.
 let cachedBundleLocation: Promise<string> | null = null;
-function getBundleLocation(entryPoint: string, remotionPublicDir: string): Promise<string> {
+function getBundleLocation(
+  entryPoint: string,
+  remotionPublicDir: string,
+  enableCaching: boolean
+): Promise<string> {
   if (!cachedBundleLocation) {
-    cachedBundleLocation = bundle({ entryPoint, publicDir: remotionPublicDir });
+    // bundle()'s own output dir (the compiled webpack assets, distinct from
+    // the webpack *cache* enableCaching controls) already defaults to a
+    // fresh os.tmpdir() subfolder when left unspecified — safe as-is.
+    cachedBundleLocation = bundle({ entryPoint, publicDir: remotionPublicDir, enableCaching });
   }
   return cachedBundleLocation;
 }
@@ -123,7 +145,11 @@ export async function generateLessonVideo(
   const fileName = `${slug}.mp4`;
   const outputPath = join(options.outputDir, fileName);
 
-  const bundleLocation = await getBundleLocation(options.entryPoint, options.remotionPublicDir);
+  const bundleLocation = await getBundleLocation(
+    options.entryPoint,
+    options.remotionPublicDir,
+    options.enableBundleCaching ?? true
+  );
   const composition = await selectComposition({
     serveUrl: bundleLocation,
     id: "LessonReel",
@@ -151,6 +177,7 @@ export async function generateLessonVideo(
   return {
     videoPath: outputPath,
     fileName,
+    narrationAudioPath: audioPath,
     topic: llmOutput.topic,
     platform: llmOutput.platform,
     script: llmOutput.script,

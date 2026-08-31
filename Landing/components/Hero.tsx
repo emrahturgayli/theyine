@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { TheyineMark } from "./Logo";
 import { useLanguage } from "@/hooks/useLanguage";
 import { trackEvent } from "@/lib/analytics";
@@ -62,17 +63,18 @@ export default function Hero() {
           {hero.subtitle}
         </p>
 
-        {/* CTAs */}
+        {/* CTAs — the AI Studio is the flagship self-serve product, so it
+            leads; booking a demo is the secondary, higher-touch path. */}
         <div
           className="animate-fade-up mt-10 flex w-full flex-col gap-3 sm:w-auto sm:flex-row"
           style={{ animationDelay: "220ms" }}
         >
-          <a
-            href="#contact"
-            onClick={() => trackEvent("cta_click", "home_hero_book_demo")}
+          <Link
+            href="/studio"
+            onClick={() => trackEvent("cta_click", "home_hero_studio")}
             className="btn-primary w-full sm:w-auto"
           >
-            {hero.ctaPrimary}
+            {hero.ctaStudio}
             <svg
               width="18"
               height="18"
@@ -86,15 +88,27 @@ export default function Hero() {
             >
               <path d="M5 12h14M13 6l6 6-6 6" />
             </svg>
-          </a>
+          </Link>
           <a
-            href="#services"
-            onClick={() => trackEvent("cta_click", "home_hero_see_products")}
+            href="#contact"
+            onClick={() => trackEvent("cta_click", "home_hero_book_demo")}
             className="btn-secondary w-full sm:w-auto"
           >
-            {hero.ctaSecondary}
+            {hero.ctaPrimary}
           </a>
         </div>
+
+        <a
+          href="#services"
+          onClick={() => trackEvent("cta_click", "home_hero_see_products")}
+          className="link-arrow animate-fade-up mt-6"
+          style={{ animationDelay: "280ms" }}
+        >
+          {hero.ctaSecondary}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </a>
 
         {/* Trust strip */}
         <div

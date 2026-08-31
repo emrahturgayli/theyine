@@ -11,13 +11,18 @@
     "productsQr": "QR Menu & Restaurant",
     "productsQrDesc": "Menus, campaigns and reservations behind one code",
     "productsTryon": "Virtual Try-On",
-    "productsTryonDesc": "AI product photography for your Shopify catalog"
+    "productsTryonDesc": "AI product photography for your Shopify catalog",
+    "aiStudio": "AI Video Studio",
+    "restaurantQr": "Restaurant & QR",
+    "virtualTryOn": "Virtual Try-On",
+    "flagshipPricing": "Pricing"
   },
   "hero": {
     "badge": "Sofia-based AI Automation Studio",
     "titleA": "Plug-and-play AI infrastructure for ",
     "titleB": "e-commerce and B2B enterprise.",
     "subtitle": "THEYINE builds automation pipelines that connect directly to the systems you already run — Shopify, your booking stack, your guest journey — and ship in days, not quarters. Sofia-based. Built for the EU market.",
+    "ctaStudio": "Try the AI Video Studio",
     "ctaPrimary": "Book an Enterprise Demo",
     "ctaSecondary": "See our products",
     "audience": [

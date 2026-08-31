@@ -11,13 +11,18 @@
     "productsQr": "QR Menü & Restoran",
     "productsQrDesc": "Menüler, kampanyalar ve rezervasyonlar tek kodun arkasında",
     "productsTryon": "Sanal Giydirme",
-    "productsTryonDesc": "Shopify kataloğunuz için yapay zeka ürün fotoğrafçılığı"
+    "productsTryonDesc": "Shopify kataloğunuz için yapay zeka ürün fotoğrafçılığı",
+    "aiStudio": "AI Video Stüdyosu",
+    "restaurantQr": "Restoran & QR",
+    "virtualTryOn": "Virtual Try-On",
+    "flagshipPricing": "Fiyatlandırma"
   },
   "hero": {
     "badge": "Sofya merkezli AI Otomasyon Stüdyosu",
     "titleA": "E-ticaret ve B2B kurumsal için ",
     "titleB": "tak-çalıştır yapay zeka altyapısı.",
     "subtitle": "THEYINE, zaten kullandığınız sistemlere — Shopify, rezervasyon altyapınız, misafir yolculuğunuz — doğrudan bağlanan otomasyon hatları kurar ve bunları çeyreklerle değil, günlerle ölçülen sürede canlıya alır. Sofya merkezli. AB pazarı için inşa edildi.",
+    "ctaStudio": "AI Video Stüdyosunu Deneyin",
     "ctaPrimary": "Kurumsal Demo Ayırt",
     "ctaSecondary": "Ürünlerimizi gör",
     "audience": [

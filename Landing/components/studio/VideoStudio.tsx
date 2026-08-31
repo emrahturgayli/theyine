@@ -7,6 +7,7 @@ type Phase = "idle" | "script" | "narration" | "render" | "done" | "error";
 
 type ScriptInfo = { topic: string; platform: string };
 type RenderProgress = { rendered: number; total: number };
+type VideoResult = { url: string; fileName: string };
 
 type PipelineEvent =
   | { step: "script"; status: "start" }
@@ -17,7 +18,16 @@ type PipelineEvent =
   | { step: "render"; status: "progress"; renderedFrames: number; totalFrames: number }
   | { step: "render"; status: "done" }
   | { step: "done"; fileName: string }
+  | { step: "video-ready"; fileName: string; mediaType: string; base64: string }
   | { step: "error"; message: string };
+
+/** Decodes the base64 payload straight into a Blob URL — no servable file path needed. */
+function base64ToBlobUrl(base64: string, mediaType: string): string {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return URL.createObjectURL(new Blob([bytes], { type: mediaType }));
+}
 
 const STEPS: { phase: Extract<Phase, "script" | "narration" | "render">; label: string }[] = [
   { phase: "script", label: "Yapay Zeka Senaryosu Hazırlanıyor" },
@@ -45,9 +55,10 @@ export default function VideoStudio() {
   const [scriptInfo, setScriptInfo] = useState<ScriptInfo | null>(null);
   const [narrationSeconds, setNarrationSeconds] = useState<number | null>(null);
   const [renderProgress, setRenderProgress] = useState<RenderProgress | null>(null);
-  const [videoFileName, setVideoFileName] = useState<string | null>(null);
+  const [video, setVideo] = useState<VideoResult | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const videoUrlRef = useRef<string | null>(null);
 
   function handleEvent(event: PipelineEvent) {
     switch (event.step) {
@@ -69,9 +80,14 @@ export default function VideoStudio() {
         break;
       case "done":
         setPhase("done");
-        setVideoFileName(event.fileName);
+        break;
+      case "video-ready": {
+        const url = base64ToBlobUrl(event.base64, event.mediaType);
+        videoUrlRef.current = url;
+        setVideo({ url, fileName: event.fileName });
         trackEvent("cta_click", "studio_generate_success");
         break;
+      }
       case "error":
         setPhase("error");
         setErrorMessage(event.message);
@@ -80,11 +96,13 @@ export default function VideoStudio() {
   }
 
   function reset() {
+    if (videoUrlRef.current) URL.revokeObjectURL(videoUrlRef.current);
+    videoUrlRef.current = null;
     setPhase("idle");
     setScriptInfo(null);
     setNarrationSeconds(null);
     setRenderProgress(null);
-    setVideoFileName(null);
+    setVideo(null);
     setErrorMessage(null);
   }
 
@@ -93,11 +111,13 @@ export default function VideoStudio() {
     if (!prompt.trim() || isGenerating(phase)) return;
 
     trackEvent("cta_click", "studio_generate_start");
+    if (videoUrlRef.current) URL.revokeObjectURL(videoUrlRef.current);
+    videoUrlRef.current = null;
     setPhase("script");
     setScriptInfo(null);
     setNarrationSeconds(null);
     setRenderProgress(null);
-    setVideoFileName(null);
+    setVideo(null);
     setErrorMessage(null);
 
     const controller = new AbortController();
@@ -292,19 +312,19 @@ export default function VideoStudio() {
         )}
 
         {/* Result */}
-        {phase === "done" && videoFileName && (
+        {phase === "done" && video && (
           <div
             className="animate-fade-up mt-8 flex flex-col items-center gap-6 rounded-xl2 border border-line/60 bg-surface/70 p-7 shadow-soft backdrop-blur-xl sm:p-9"
           >
             <video
               controls
               className="aspect-[9/16] w-full max-w-[300px] rounded-xl2 bg-black shadow-soft"
-              src={`/generated/${videoFileName}`}
+              src={video.url}
             />
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
               <a
-                href={`/generated/${videoFileName}`}
-                download
+                href={video.url}
+                download={video.fileName}
                 onClick={() => trackEvent("cta_click", "studio_download")}
                 className="btn-primary w-full sm:w-auto"
               >
