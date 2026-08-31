@@ -6,68 +6,68 @@
       "id": "title",
       "kind": "title",
       "heading": "Bayes Teoremi 45 Saniyede",
-      "durationInSeconds": 10.382399999999999
+      "durationInSeconds": 10.7784
     },
     {
       "id": "content-0",
       "kind": "content",
-      "body": "Bunu bilmeden olasılık sınavına girme. Herkes koşullu olasılığı ezberliyor ama kimse mantığını anlamıyor.",
-      "durationInSeconds": 5.7542368763557485
+      "body": "Bunu bilmeden olasılık sınavına girme. Herkes koşullu olasılığı yanlış öğreniyor, sen öğrenmeyeceksin.",
+      "durationInSeconds": 5.777967343412526
     },
     {
       "id": "content-1",
       "kind": "content",
-      "body": "Bayes Teoremi aslında çok basit bir soruya cevap veriyor: Yeni bir bilgi öğrendiğinde, bir olayın olasılığı nasıl değişir?",
-      "durationInSeconds": 6.6858752277657265
+      "body": "Diyelim ki bir hastalık testi pozitif çıktı. Herkes panikler ve 'kesin hastayım' der. Ama gerçek hikaye bu değil.",
+      "durationInSeconds": 6.401081468682505
     },
     {
       "id": "content-2",
       "kind": "content",
-      "body": "Diyelim ki bir hastalık testi pozitif çıktı. Herkes hemen hastayım diye paniklemeye başlar.",
-      "durationInSeconds": 4.987005292841648
+      "body": "Bayes Teoremi sana der ki, önce olayın baştaki ihtimaline bak. Buna ön olasılık denir. Sonra yeni bilgi geldiğinde bu ihtimali güncellersin.",
+      "durationInSeconds": 7.930543412526998
     },
     {
       "id": "content-3",
       "kind": "content",
-      "body": "Ama gerçek olasılık, hem testin doğruluğuna hem de hastalığın toplumdaki yaygınlığına bağlı. İşte formül burada devreye giriyor.",
-      "durationInSeconds": 7.0146887635574835
+      "body": "Formül basit. P A verilen B, P B verilen A çarpı P A, bölü P B. Yani yeni kanıtla eski inancını güncelliyorsun.",
+      "durationInSeconds": 6.28778799136069
     },
     {
       "id": "content-4",
       "kind": "content",
-      "body": "P A verilen B, P B verilen A çarpı P A, bölü P B. Yani önceki bilgini, yeni kanıtla güncelliyorsun.",
-      "durationInSeconds": 5.425423340563991
+      "body": "Testin yüzde doksan doğru olması, senin hasta olma ihtimalinin yüzde doksan olduğu anlamına gelmez.",
+      "durationInSeconds": 5.608027127429805
     },
     {
       "id": "content-5",
       "kind": "content",
-      "body": "Sınavda bu formülü gördüğünde önce olayları net tanımla. A hangi olay, B hangi kanıt. Sonra pay ve paydayı ayrı ayrı hesapla.",
-      "durationInSeconds": 6.8502819956616054
+      "body": "Hastalığın toplumda ne kadar nadir olduğunu da hesaba katman lazım. İşte sınavda herkesin düştüğü tuzak burası. Sen artık düşmeyeceksin.",
+      "durationInSeconds": 7.703956457883369
     },
     {
       "id": "content-6",
       "kind": "content",
-      "body": "Karıştırmadan, adım adım ilerle. Bayes Teoremi sadece matematik değil, gerçek hayatta karar verme biçimin.",
-      "durationInSeconds": 5.809039132321041
+      "body": "Bayes Teoremi sadece formül değil, doğru düşünme biçimi.",
+      "durationInSeconds": 3.1722173650107988
     },
     {
       "id": "content-7",
       "kind": "content",
-      "body": "Doktorlar, mühendisler, yapay zeka sistemleri hepsi bunu kullanıyor.",
-      "durationInSeconds": 3.7265534056399128
+      "body": "Bir dahaki sefere olasılık sorusu görünce, önce ön bilgiye bak, sonra kanıtla güncelle.",
+      "durationInSeconds": 4.928266263498919
     },
     {
       "id": "content-8",
       "kind": "content",
-      "body": "Şimdi bu mantığı kafanda otur, çünkü sınavda seni bekleyen soru tam olarak bu.",
-      "durationInSeconds": 4.274575965292841
+      "body": "Bu mantığı bir kez kavrarsan, bütün koşullu olasılık soruları çocuk oyuncağı olur.",
+      "durationInSeconds": 4.645032570194384
     },
     {
       "id": "outro",
       "kind": "outro",
       "heading": "THEYINE",
       "body": "Devamı için takipte kal",
-      "durationInSeconds": 8.305919999999999
+      "durationInSeconds": 8.62272
     }
   ],
   "captions": [],
