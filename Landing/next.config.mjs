@@ -14,6 +14,16 @@ const nextConfig = {
       "@rspack/core",
       "esbuild",
     ],
+    // @remotion/bundler's `entryPoint` (src/remotion/index.ts, which pulls
+    // in Root.tsx and everything under src/remotion) is a runtime string,
+    // not a static `import` — Next's output file tracing only bundles files
+    // it can see referenced via actual imports, so without this the whole
+    // src/remotion tree is silently left out of the deployed function and
+    // webpack fails at runtime with "Module not found: Can't resolve
+    // './Root'" (it's just not there in /var/task).
+    outputFileTracingIncludes: {
+      "/api/generate-video": ["./src/remotion/**/*"],
+    },
   },
   async redirects() {
     return [
