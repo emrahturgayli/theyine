@@ -14,6 +14,7 @@ const nextConfig = {
       "@remotion/captions",
       "@remotion/transitions",
       "remotion",
+      "@sparticuz/chromium",
       "@rspack/core",
       "esbuild",
     ],
@@ -37,19 +38,21 @@ const nextConfig = {
     // time with "Module not found" one package at a time as each is hit.
     // Listed explicitly here instead, so all three ship at once.
     //
-    // node_modules/.remotion is where scripts/ensure-remotion-browser.mjs
-    // (the "prebuild" script) downloads Chrome Headless Shell *during the
-    // build* — see that script for why runtime download doesn't work on
-    // Vercel at all. Shipping it here means the function finds an
-    // already-downloaded browser at runtime and never tries to write
-    // anything for it.
+    // On Vercel, pipeline.ts dynamically imports @sparticuz/chromium instead
+    // of using Remotion's own downloaded browser (its Chrome Headless Shell
+    // is missing OS-level shared libraries — libnspr4.so and friends — in
+    // Vercel's Lambda image; no download-location fix changes that, only a
+    // differently-built Chromium does). @vercel/nft generally follows
+    // dynamic `import()` on its own, but it's listed explicitly here too —
+    // this project has hit enough tracing surprises to not rely on that
+    // alone for something this load-bearing.
     outputFileTracingIncludes: {
       "/api/generate-video": [
         "./src/remotion/**/*",
         "./node_modules/remotion/**/*",
         "./node_modules/@remotion/captions/**/*",
         "./node_modules/@remotion/transitions/**/*",
-        "./node_modules/.remotion/**/*",
+        "./node_modules/@sparticuz/chromium/**/*",
       ],
     },
   },

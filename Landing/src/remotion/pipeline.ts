@@ -8,6 +8,30 @@ import { generateNarration } from "./skill/generateNarration";
 import { buildLessonReelProps } from "./skill/promptToProps";
 
 /**
+ * Remotion's own Chrome Headless Shell download works fine locally (and its
+ * default launch flags — --no-sandbox, --disable-setuid-sandbox,
+ * --single-process, --no-zygote, see open-browser.js — are already tuned for
+ * serverless), but the binary itself is missing OS-level shared libraries
+ * (libnspr4.so and friends) that simply aren't installed in Vercel's Lambda
+ * base image: "error while loading shared libraries: libnspr4.so". No amount
+ * of file-tracing or pre-downloading fixes that — the .so files don't exist
+ * in that environment at all. @sparticuz/chromium ships a Chromium build
+ * with those bundled specifically for AWS Lambda/Vercel-style environments,
+ * and self-extracts to /tmp on first use — nothing here needs to write to
+ * the read-only project directory.
+ */
+let cachedBrowserExecutable: Promise<string> | null = null;
+function getBrowserExecutable(): Promise<string> | undefined {
+  if (!process.env.VERCEL) return undefined;
+  if (!cachedBrowserExecutable) {
+    cachedBrowserExecutable = import("@sparticuz/chromium").then((mod) =>
+      mod.default.executablePath()
+    );
+  }
+  return cachedBrowserExecutable;
+}
+
+/**
  * The engine behind both `npm run generate:video` (scripts/generate-video.ts)
  * and the `/studio` web UI (app/api/generate-video/route.ts) — free text in,
  * a rendered, narrated, resynced .mp4 out. Kept here rather than duplicated
@@ -166,10 +190,12 @@ export async function generateLessonVideo(
     options.remotionPublicDir,
     options.enableBundleCaching ?? true
   );
+  const browserExecutable = await getBrowserExecutable();
   const composition = await selectComposition({
     serveUrl: bundleLocation,
     id: "LessonReel",
     inputProps: props,
+    browserExecutable,
   });
 
   emit({ step: "render", status: "start", totalFrames: composition.durationInFrames });
@@ -179,6 +205,7 @@ export async function generateLessonVideo(
     codec: "h264",
     outputLocation: outputPath,
     inputProps: props,
+    browserExecutable,
     onProgress: ({ renderedFrames }) =>
       emit({
         step: "render",
