@@ -46,6 +46,18 @@ const nextConfig = {
     // dynamic `import()` on its own, but it's listed explicitly here too —
     // this project has hit enough tracing surprises to not rely on that
     // alone for something this load-bearing.
+    //
+    // @remotion/renderer resolves ffmpeg/ffprobe/its compositor binary from
+    // a platform-specific native package — get-executable-path.js does
+    // `require('@remotion/compositor-linux-x64-gnu')` (or -musl/-darwin-*/
+    // -win32-* depending on process.platform/arch) at *runtime*, one of six
+    // literal-but-conditionally-reached requires. Only the Windows variant
+    // is installed in this Windows dev environment, so it's the only one
+    // that showed up in a local trace; Vercel's Linux glibc runtime needs
+    // -linux-x64-gnu specifically (confirmed by the actual production
+    // error: "ENOENT ... @remotion/compositor-linux-x64-gnu/ffprobe"). musl
+    // is included too as a safety net in case Vercel's base image ever
+    // isn't glibc-based.
     outputFileTracingIncludes: {
       "/api/generate-video": [
         "./src/remotion/**/*",
@@ -53,6 +65,8 @@ const nextConfig = {
         "./node_modules/@remotion/captions/**/*",
         "./node_modules/@remotion/transitions/**/*",
         "./node_modules/@sparticuz/chromium/**/*",
+        "./node_modules/@remotion/compositor-linux-x64-gnu/**/*",
+        "./node_modules/@remotion/compositor-linux-x64-musl/**/*",
       ],
     },
   },
