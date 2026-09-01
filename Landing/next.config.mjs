@@ -11,6 +11,9 @@ const nextConfig = {
       "@remotion/bundler",
       "@remotion/renderer",
       "@remotion/media-parser",
+      "@remotion/captions",
+      "@remotion/transitions",
+      "remotion",
       "@rspack/core",
       "esbuild",
     ],
@@ -21,8 +24,25 @@ const nextConfig = {
     // src/remotion tree is silently left out of the deployed function and
     // webpack fails at runtime with "Module not found: Can't resolve
     // './Root'" (it's just not there in /var/task).
+    //
+    // The same blind spot applies one level deeper: tracing a glob-included
+    // file copies its *source*, but (unlike a real `import`) never walks
+    // that source's own imports to pull in their node_modules packages.
+    // pipeline.ts's direct imports (@remotion/bundler, @remotion/renderer,
+    // @remotion/media-parser, ai, zod, @ai-sdk/*) are traced correctly and
+    // proven working in production — script generation and TTS both
+    // succeeded live. What's only reachable through the glob above
+    // (Root.tsx -> remotion; LessonReel.tsx -> @remotion/transitions;
+    // CaptionLayer.tsx -> @remotion/captions) is not, and fails at render
+    // time with "Module not found" one package at a time as each is hit.
+    // Listed explicitly here instead, so all three ship at once.
     outputFileTracingIncludes: {
-      "/api/generate-video": ["./src/remotion/**/*"],
+      "/api/generate-video": [
+        "./src/remotion/**/*",
+        "./node_modules/remotion/**/*",
+        "./node_modules/@remotion/captions/**/*",
+        "./node_modules/@remotion/transitions/**/*",
+      ],
     },
   },
   async redirects() {
