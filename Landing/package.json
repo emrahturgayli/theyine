@@ -5,6 +5,7 @@
   "description": "THEYINE — Creative AI Automation Studio landing page",
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/ensure-remotion-browser.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

@@ -50,7 +50,13 @@ export function LessonReel({ scenes, captions, audioSrc }: LessonReelProps) {
         ))}
       </TransitionSeries>
 
-      {audioSrc && <Audio src={audioSrc.startsWith("http") ? audioSrc : staticFile(audioSrc)} />}
+      {/* http(s):// and data: URLs are used as-is; a bare relative path
+          (e.g. hand-written in props.json) is resolved via
+          staticFile()/publicDir. Pipeline-generated audio is always a
+          data: URL — see the narrationAudioSrc comment in pipeline.ts. */}
+      {audioSrc && (
+        <Audio src={/^(https?|data):/.test(audioSrc) ? audioSrc : staticFile(audioSrc)} />
+      )}
       {captions.length > 0 && <CaptionLayer captions={captions} />}
     </AbsoluteFill>
   );

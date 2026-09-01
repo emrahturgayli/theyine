@@ -36,12 +36,20 @@ const nextConfig = {
     // CaptionLayer.tsx -> @remotion/captions) is not, and fails at render
     // time with "Module not found" one package at a time as each is hit.
     // Listed explicitly here instead, so all three ship at once.
+    //
+    // node_modules/.remotion is where scripts/ensure-remotion-browser.mjs
+    // (the "prebuild" script) downloads Chrome Headless Shell *during the
+    // build* — see that script for why runtime download doesn't work on
+    // Vercel at all. Shipping it here means the function finds an
+    // already-downloaded browser at runtime and never tries to write
+    // anything for it.
     outputFileTracingIncludes: {
       "/api/generate-video": [
         "./src/remotion/**/*",
         "./node_modules/remotion/**/*",
         "./node_modules/@remotion/captions/**/*",
         "./node_modules/@remotion/transitions/**/*",
+        "./node_modules/.remotion/**/*",
       ],
     },
   },

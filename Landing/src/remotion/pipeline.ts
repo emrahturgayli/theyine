@@ -36,10 +36,14 @@ export type PipelineOptions = {
    */
   entryPoint: string;
   /**
-   * Directory Remotion serves static assets (the narration mp3) from. Must
-   * be writable at runtime — on Vercel that means os.tmpdir() (`/tmp`), NOT
-   * a path under the deployed project (`process.cwd()`/src/...), which is
-   * read-only in production.
+   * Where the narration mp3 is written on disk (under an `audio/`
+   * subfolder) — only for @remotion/media-parser to measure its duration
+   * (see generateNarration.ts); it's never served from here, the rendered
+   * composition gets the audio inline as a data: URL instead (see the
+   * narrationAudioSrc comment below). Must still be writable at runtime —
+   * on Vercel that means os.tmpdir() (`/tmp`), NOT a path under the
+   * deployed project (`process.cwd()`/src/...), which is read-only in
+   * production.
    */
   remotionPublicDir: string;
   /** Directory the final .mp4 gets written to. Same writability rule as above. */
@@ -135,10 +139,22 @@ export async function generateLessonVideo(
 
   // Resync to the *actual* narration length rather than the LLM's
   // text-length guess, so visuals and voice never drift apart.
+  //
+  // narrationAudioSrc is a data: URL (the mp3 embedded inline), not a
+  // "audio/xxx.mp3" path served via staticFile()/publicDir or a file://
+  // path. Both of those were tried and both break here: @remotion/bundler
+  // snapshots publicDir into the bundle at bundle() time, and the bundle is
+  // memoized per warm process (getBundleLocation) — a file written *after*
+  // that snapshot 404s against an already-cached bundle on every request
+  // but the first. And Remotion's asset downloader flatly rejects file://
+  // sources ("Can only download URLs starting with http:// or https://").
+  // A data: URL sidesteps both — Remotion special-cases it (no HTTP
+  // fetch/file lookup at all, see download-and-map-assets-to-file.js) and
+  // it's self-contained regardless of bundle/server state.
   const props = buildLessonReelProps({
     ...llmOutput,
     durationInSeconds: narration.durationInSeconds,
-    narrationAudioSrc: `audio/${audioFileName}`,
+    narrationAudioSrc: `data:${narration.mediaType};base64,${narration.base64}`,
   });
 
   if (!existsSync(options.outputDir)) mkdirSync(options.outputDir, { recursive: true });

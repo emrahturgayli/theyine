@@ -20,6 +20,9 @@ export type NarrationResult = {
   /** Local filesystem path the mp3 was written to (same as the `outputPath` argument). */
   path: string;
   durationInSeconds: number;
+  /** Base64-encoded mp3 bytes, for embedding as a data: URL (see pipeline.ts). */
+  base64: string;
+  mediaType: string;
 };
 
 /**
@@ -57,5 +60,10 @@ export async function generateNarration(
     reader: nodeReader,
   });
 
-  return { path: outputPath, durationInSeconds: slowDurationInSeconds };
+  return {
+    path: outputPath,
+    durationInSeconds: slowDurationInSeconds,
+    base64: audio.base64,
+    mediaType: audio.mediaType,
+  };
 }
