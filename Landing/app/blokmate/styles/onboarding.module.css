@@ -1,0 +1,149 @@
+/* OnboardingModal — first-visit walkthrough for /blokmate. */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(11, 15, 26, 0.55);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease both;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 30rem;
+  border-radius: 1.25rem;
+  background: var(--onboarding-card-bg, #fff);
+  color: var(--onboarding-card-fg, #1f1827);
+  box-shadow: 0 24px 60px -20px rgba(31, 24, 39, 0.35);
+  padding: 2rem;
+  animation: slideUp 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+:global(.dark) .card {
+  --onboarding-card-bg: #1a181f;
+  --onboarding-card-fg: #edebf3;
+}
+
+.stepIndicators {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: center;
+}
+
+.stepDot {
+  height: 0.4rem;
+  width: 0.4rem;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.25);
+  transition: width 0.2s ease, background 0.2s ease;
+}
+
+.stepDotActive {
+  width: 1.5rem;
+  background: #2563eb;
+}
+
+.title {
+  margin-top: 1.25rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.body {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  text-align: center;
+  opacity: 0.75;
+}
+
+.actions {
+  margin-top: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+@media (min-width: 480px) {
+  .actions {
+    flex-direction: row;
+  }
+}
+
+.ctaPrimary,
+.ctaSecondary {
+  flex: 1;
+  min-height: 44px;
+  border-radius: 999px;
+  padding: 0 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.ctaPrimary {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+}
+.ctaPrimary:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.ctaSecondary {
+  background: transparent;
+  color: var(--onboarding-card-fg, #1f1827);
+  border: 1px solid rgba(31, 24, 39, 0.15);
+}
+:global(.dark) .ctaSecondary {
+  border-color: rgba(237, 235, 243, 0.2);
+}
+.ctaSecondary:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.skip {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.5;
+  cursor: pointer;
+}
+.skip:hover {
+  opacity: 1;
+}
+
+.demoWrap {
+  margin-top: 1.5rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}

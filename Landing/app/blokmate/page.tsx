@@ -10,6 +10,7 @@ import PricingSummary from "./components/PricingSummary";
 import Testimonials from "./components/Testimonials";
 import LeadMagnet from "./components/LeadMagnet";
 import Footer from "./components/Footer";
+import OnboardingModal from "./components/OnboardingModal";
 
 // Service structured data — helps this landing page surface for
 // local-business "building/apartment management software" search intent.
@@ -32,6 +33,7 @@ export default function BlokmatePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
       />
+      <OnboardingModal />
       <Navbar />
       <main>
         <Hero />

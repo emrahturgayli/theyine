@@ -18,10 +18,22 @@
     "ctaDemo": "Request a Free Demo",
     "ctaStart": "Get Started",
     "stats": [
-      { "value": "30%", "label": "faster collection" },
-      { "value": "8h", "label": "saved per month" },
-      { "value": "1", "label": "tap to pay dues" },
-      { "value": "0", "label": "lost spreadsheets" }
+      {
+        "value": "30%",
+        "label": "faster collection"
+      },
+      {
+        "value": "8h",
+        "label": "saved per month"
+      },
+      {
+        "value": "1",
+        "label": "tap to pay dues"
+      },
+      {
+        "value": "0",
+        "label": "lost spreadsheets"
+      }
     ]
   },
   "howItWorks": {
@@ -84,19 +96,33 @@
         "name": "Starter",
         "price": "Free",
         "unit": "up to 20 units",
-        "features": ["Dues tracking", "Basic announcements", "Email support"]
+        "features": [
+          "Dues tracking",
+          "Basic announcements",
+          "Email support"
+        ]
       },
       {
         "name": "Standard",
         "price": "On request",
         "unit": "20-100 units",
-        "features": ["Everything in Starter", "Online payment", "Ticket management", "Priority support"]
+        "features": [
+          "Everything in Starter",
+          "Online payment",
+          "Ticket management",
+          "Priority support"
+        ]
       },
       {
         "name": "Enterprise",
         "price": "Custom",
         "unit": "100+ units / multi-site",
-        "features": ["Everything in Standard", "Multi-building management", "Custom integrations", "Dedicated account manager"]
+        "features": [
+          "Everything in Standard",
+          "Multi-building management",
+          "Custom integrations",
+          "Dedicated account manager"
+        ]
       }
     ]
   },
@@ -106,6 +132,17 @@
     "subtitle": "From dues tracking to collection, announcements to maintenance — the whole flow in one video.",
     "cta": "Watch the demo",
     "badge": "Video coming soon"
+  },
+  "onboarding": {
+    "title": "Welcome to BlokMate",
+    "step1": "Manage your apartment or site from one dashboard — dues tracking, announcements, maintenance requests and reports, all in one place.",
+    "step2": "Dues, announcements, payments and reports — BlokMate's four core features lighten your management workload.",
+    "step3": "This is what your building will look like in BlokMate — a sample unit, a dues card and an announcement.",
+    "ctaStart": "Get Started",
+    "ctaDemo": "Request a Demo",
+    "skip": "Close",
+    "stepLabel": "Step {current} of {total}",
+    "next": "Continue"
   },
   "testimonials": [
     {
@@ -127,10 +164,22 @@
     "sectorLabel": "Sector",
     "sectorPlaceholder": "Select your sector",
     "sectors": [
-      { "value": "apartment", "label": "Apartment" },
-      { "value": "office", "label": "Office / Site" },
-      { "value": "mixed", "label": "Mixed" },
-      { "value": "other", "label": "Other" }
+      {
+        "value": "apartment",
+        "label": "Apartment"
+      },
+      {
+        "value": "office",
+        "label": "Office / Site"
+      },
+      {
+        "value": "mixed",
+        "label": "Mixed"
+      },
+      {
+        "value": "other",
+        "label": "Other"
+      }
     ],
     "websiteLabel": "Website (optional)",
     "websitePlaceholder": "https://...",
@@ -148,11 +197,23 @@
     "tagline": "The platform for digitizing building management.",
     "rights": "BlokMate — a THEYINE product. All rights reserved.",
     "quickLinksTitle": "Quick Links",
-    "quickLinks": { "howItWorks": "How It Works", "features": "Features", "pricing": "Pricing", "blog": "Blog" },
+    "quickLinks": {
+      "howItWorks": "How It Works",
+      "features": "Features",
+      "pricing": "Pricing",
+      "blog": "Blog"
+    },
     "supportTitle": "Support",
-    "supportLinks": { "contact": "Contact", "demo": "Request a Demo" },
+    "supportLinks": {
+      "contact": "Contact",
+      "demo": "Request a Demo"
+    },
     "legalTitle": "Legal",
-    "links": { "privacy": "Privacy", "terms": "Terms", "gdpr": "GDPR" }
+    "links": {
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "gdpr": "GDPR"
+    }
   },
   "blog": {
     "title": "BlokMate Blog",

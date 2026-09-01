@@ -18,10 +18,22 @@
     "ctaDemo": "Ücretsiz Demo Talep Et",
     "ctaStart": "Hemen Başla",
     "stats": [
-      { "value": "%30", "label": "daha hızlı tahsilat" },
-      { "value": "8sa", "label": "ayda kazanılan zaman" },
-      { "value": "1", "label": "tıkla aidat ödeme" },
-      { "value": "0", "label": "kayıp Excel dosyası" }
+      {
+        "value": "%30",
+        "label": "daha hızlı tahsilat"
+      },
+      {
+        "value": "8sa",
+        "label": "ayda kazanılan zaman"
+      },
+      {
+        "value": "1",
+        "label": "tıkla aidat ödeme"
+      },
+      {
+        "value": "0",
+        "label": "kayıp Excel dosyası"
+      }
     ]
   },
   "howItWorks": {
@@ -84,19 +96,33 @@
         "name": "Başlangıç",
         "price": "Ücretsiz",
         "unit": "20 daireye kadar",
-        "features": ["Aidat takibi", "Temel duyurular", "E-posta desteği"]
+        "features": [
+          "Aidat takibi",
+          "Temel duyurular",
+          "E-posta desteği"
+        ]
       },
       {
         "name": "Standart",
         "price": "Talep üzerine",
         "unit": "20-100 daire",
-        "features": ["Tüm Başlangıç özellikleri", "Online ödeme", "Arıza/talep yönetimi", "Öncelikli destek"]
+        "features": [
+          "Tüm Başlangıç özellikleri",
+          "Online ödeme",
+          "Arıza/talep yönetimi",
+          "Öncelikli destek"
+        ]
       },
       {
         "name": "Kurumsal",
         "price": "Özel",
         "unit": "100+ daire / çoklu site",
-        "features": ["Tüm Standart özellikleri", "Çoklu bina yönetimi", "Özel entegrasyonlar", "Hesap yöneticisi"]
+        "features": [
+          "Tüm Standart özellikleri",
+          "Çoklu bina yönetimi",
+          "Özel entegrasyonlar",
+          "Hesap yöneticisi"
+        ]
       }
     ]
   },
@@ -106,6 +132,17 @@
     "subtitle": "Aidat takibinden tahsilata, duyurulardan arıza yönetimine — tüm akışı tek videoda izleyin.",
     "cta": "Demoyu izle",
     "badge": "Video yakında"
+  },
+  "onboarding": {
+    "title": "BlokMate'e Hoş Geldiniz",
+    "step1": "Apartman ve site yönetiminizi tek panelden yönetin — aidat takibinden duyurulara, arıza taleplerinden raporlamaya kadar her şey burada.",
+    "step2": "Aidatlar, duyurular, ödemeler ve raporlar — BlokMate'in dört temel özelliği yönetim yükünüzü hafifletir.",
+    "step3": "Binanız BlokMate'te böyle görünecek — örnek bir daire, aidat kartı ve duyuru.",
+    "ctaStart": "Hemen Başla",
+    "ctaDemo": "Demo Talep Et",
+    "skip": "Kapat",
+    "stepLabel": "Adım {current} / {total}",
+    "next": "Devam Et"
   },
   "testimonials": [
     {
@@ -127,10 +164,22 @@
     "sectorLabel": "Sektör",
     "sectorPlaceholder": "Sektörünüzü seçin",
     "sectors": [
-      { "value": "apartment", "label": "Apartman" },
-      { "value": "office", "label": "Ofis / Site" },
-      { "value": "mixed", "label": "Karma" },
-      { "value": "other", "label": "Diğer" }
+      {
+        "value": "apartment",
+        "label": "Apartman"
+      },
+      {
+        "value": "office",
+        "label": "Ofis / Site"
+      },
+      {
+        "value": "mixed",
+        "label": "Karma"
+      },
+      {
+        "value": "other",
+        "label": "Diğer"
+      }
     ],
     "websiteLabel": "Website (opsiyonel)",
     "websitePlaceholder": "https://...",
@@ -148,11 +197,23 @@
     "tagline": "Apartman ve site yönetimini dijitalleştiren platform.",
     "rights": "BlokMate — bir THEYINE ürünüdür. Tüm hakları saklıdır.",
     "quickLinksTitle": "Hızlı Bağlantılar",
-    "quickLinks": { "howItWorks": "Nasıl Çalışır", "features": "Özellikler", "pricing": "Fiyatlandırma", "blog": "Blog" },
+    "quickLinks": {
+      "howItWorks": "Nasıl Çalışır",
+      "features": "Özellikler",
+      "pricing": "Fiyatlandırma",
+      "blog": "Blog"
+    },
     "supportTitle": "Destek",
-    "supportLinks": { "contact": "İletişim", "demo": "Demo Talep Et" },
+    "supportLinks": {
+      "contact": "İletişim",
+      "demo": "Demo Talep Et"
+    },
     "legalTitle": "Yasal",
-    "links": { "privacy": "Gizlilik", "terms": "Koşullar", "gdpr": "KVKK / GDPR" }
+    "links": {
+      "privacy": "Gizlilik",
+      "terms": "Koşullar",
+      "gdpr": "KVKK / GDPR"
+    }
   },
   "blog": {
     "title": "BlokMate Blog",
