@@ -1,0 +1,182 @@
+{
+  "meta": {
+    "title": "BlokMate | Apartman ve Site Yönetiminde Dijital Rahatlık",
+    "description": "BlokMate; aidat takibi, tahsilat, duyurular ve arıza taleplerini tek panelde toplayan apartman/site yönetim yazılımı."
+  },
+  "nav": {
+    "howItWorks": "Nasıl Çalışır",
+    "features": "Özellikler",
+    "pricing": "Fiyatlandırma",
+    "blog": "Blog",
+    "cta": "Ücretsiz Demo Talep Et"
+  },
+  "hero": {
+    "badge": "Apartman & Site Yönetimi için Dijital Platform",
+    "titleA": "Apartman ve Site Yönetiminde ",
+    "titleB": "Dijital Rahatlığa Taşının.",
+    "subtitle": "Aidat takibi, tahsilat, duyurular ve arıza talepleri artık dağınık Excel dosyalarında değil — tek bir panelde, gerçek zamanlı ve yöneticinize kolaylık sağlayacak şekilde.",
+    "ctaDemo": "Ücretsiz Demo Talep Et",
+    "ctaStart": "Hemen Başla",
+    "stats": [
+      { "value": "%30", "label": "daha hızlı tahsilat" },
+      { "value": "8sa", "label": "ayda kazanılan zaman" },
+      { "value": "1", "label": "tıkla aidat ödeme" },
+      { "value": "0", "label": "kayıp Excel dosyası" }
+    ]
+  },
+  "howItWorks": {
+    "eyebrow": "Nasıl Çalışır",
+    "title": "5 dakikanızı alacak kurulum",
+    "subtitle": "Bina bilgilerinizi ekleyin, sakinleri davet edin, aidat takibine başlayın.",
+    "steps": [
+      {
+        "title": "Binanızı ekleyin",
+        "desc": "Bina, daire ve sakin bilgilerinizi tek seferde sisteme aktarın — Excel'den içe aktarım da desteklenir."
+      },
+      {
+        "title": "Aidat düzenini kurun",
+        "desc": "Aylık aidat tutarını, son ödeme tarihini ve hatırlatma kurallarını belirleyin — sistem gerisini otomatik yürütür."
+      },
+      {
+        "title": "Yönetime geçin",
+        "desc": "Sakinleriniz tek tıkla öder, siz duyuru ve arıza taleplerini tek panelden takip edersiniz."
+      }
+    ]
+  },
+  "features": {
+    "eyebrow": "Özellikler",
+    "title": "Bina yönetimini yüke dönüştüren sorunlara kesin çözüm",
+    "subtitle": "Yöneticilerin gerçek ihtiyaçlarından yola çıkarak tasarlandı.",
+    "items": [
+      {
+        "title": "Aidat takibi ve tahsilat",
+        "desc": "Kim ödedi, kim borçlu — tek bakışta görün. Otomatik hatırlatmalar tahsilat oranınızı artırır."
+      },
+      {
+        "title": "Tek tıkla ödeme",
+        "desc": "Sakinleriniz banka havalesi, kart veya online ödeme ile aidatlarını saniyeler içinde öder."
+      },
+      {
+        "title": "Duyurular ve bildirimler",
+        "desc": "Bina geneli duyurularınız anında tüm sakinlere ulaşır — kağıt ilan panosuna veda edin."
+      },
+      {
+        "title": "Arıza ve talep yönetimi",
+        "desc": "Sakinler arıza bildirir, siz durumu takip edip kapatırsınız — hiçbir talep kaybolmaz."
+      },
+      {
+        "title": "Excel'den 5 dakikada geçiş",
+        "desc": "Mevcut kayıtlarınızı içe aktarın, sıfırdan başlamak zorunda kalmayın."
+      },
+      {
+        "title": "Güvenli altyapı",
+        "desc": "Verileriniz şifreli olarak saklanır, yalnızca yetkili kişiler erişebilir."
+      }
+    ]
+  },
+  "pricing": {
+    "eyebrow": "Fiyatlandırma",
+    "title": "Bina büyüklüğünüze uygun, basit fiyatlandırma",
+    "subtitle": "Gizli ücret yok — kesin fiyat kısa bir görüşme sonrası netleşir.",
+    "cta": "Fiyat teklifi al",
+    "plans": [
+      {
+        "name": "Başlangıç",
+        "price": "Ücretsiz",
+        "unit": "20 daireye kadar",
+        "features": ["Aidat takibi", "Temel duyurular", "E-posta desteği"]
+      },
+      {
+        "name": "Standart",
+        "price": "Talep üzerine",
+        "unit": "20-100 daire",
+        "features": ["Tüm Başlangıç özellikleri", "Online ödeme", "Arıza/talep yönetimi", "Öncelikli destek"]
+      },
+      {
+        "name": "Kurumsal",
+        "price": "Özel",
+        "unit": "100+ daire / çoklu site",
+        "features": ["Tüm Standart özellikleri", "Çoklu bina yönetimi", "Özel entegrasyonlar", "Hesap yöneticisi"]
+      }
+    ]
+  },
+  "demo": {
+    "eyebrow": "Canlı İzleyin",
+    "title": "60 saniyede BlokMate'i görün",
+    "subtitle": "Aidat takibinden tahsilata, duyurulardan arıza yönetimine — tüm akışı tek videoda izleyin.",
+    "cta": "Demoyu izle",
+    "badge": "Video yakında"
+  },
+  "testimonials": [
+    {
+      "quote": "Excel dosyalarıyla uğraşmayı bıraktık. Artık kim ödedi kim ödemedi tek bakışta belli — aidat tahsilatımız gözle görülür şekilde arttı.",
+      "author": "Site Yöneticisi",
+      "role": "120 daireli site, Sofya"
+    },
+    {
+      "quote": "Sakinlerimiz artık aidatını tek tıkla ödüyor. Kağıt ilan panosuna asla dönmeyiz — duyurular anında herkese ulaşıyor.",
+      "author": "Apartman Yöneticisi",
+      "role": "45 daireli apartman, Dupnitsa"
+    }
+  ],
+  "leadForm": {
+    "title": "Ücretsiz demo talep edin",
+    "subtitle": "Birkaç bilgi yeterli — ekibimiz kısa sürede sizinle iletişime geçer.",
+    "buildingNameLabel": "Bina / Site Adı",
+    "buildingNamePlaceholder": "Örn. Güneşli Sitesi",
+    "sectorLabel": "Sektör",
+    "sectorPlaceholder": "Sektörünüzü seçin",
+    "sectors": [
+      { "value": "apartment", "label": "Apartman" },
+      { "value": "office", "label": "Ofis / Site" },
+      { "value": "mixed", "label": "Karma" },
+      { "value": "other", "label": "Diğer" }
+    ],
+    "websiteLabel": "Website (opsiyonel)",
+    "websitePlaceholder": "https://...",
+    "emailLabel": "E-posta Adresi",
+    "emailPlaceholder": "isim@siteniz.com",
+    "cta": "Ücretsiz Demo Talep Et",
+    "ctaLoading": "Gönderiliyor...",
+    "successTitle": "Talebiniz alındı.",
+    "successBody": "BlokMate ekibi kısa sürede sizinle iletişime geçecek.",
+    "errorGeneric": "Bir şeyler ters gitti, lütfen tekrar deneyin.",
+    "errorRequired": "Lütfen tüm zorunlu alanları doldurun.",
+    "errorInvalidEmail": "Lütfen geçerli bir e-posta adresi girin."
+  },
+  "footer": {
+    "tagline": "Apartman ve site yönetimini dijitalleştiren platform.",
+    "rights": "BlokMate — bir THEYINE ürünüdür. Tüm hakları saklıdır.",
+    "quickLinksTitle": "Hızlı Bağlantılar",
+    "quickLinks": { "howItWorks": "Nasıl Çalışır", "features": "Özellikler", "pricing": "Fiyatlandırma", "blog": "Blog" },
+    "supportTitle": "Destek",
+    "supportLinks": { "contact": "İletişim", "demo": "Demo Talep Et" },
+    "legalTitle": "Yasal",
+    "links": { "privacy": "Gizlilik", "terms": "Koşullar", "gdpr": "KVKK / GDPR" }
+  },
+  "blog": {
+    "title": "BlokMate Blog",
+    "subtitle": "Bina yönetimi, aidat tahsilatı ve dijitalleşme üzerine yazılar.",
+    "backToHome": "Ana sayfaya dön",
+    "posts": [
+      {
+        "slug": "aidat-tahsilat-oranini-artirmak",
+        "title": "Aidat Tahsilat Oranınızı Artırmanın 5 Yolu",
+        "excerpt": "Otomatik hatırlatmalardan online ödemeye — tahsilat oranını yükselten pratik adımlar.",
+        "date": "2026-08-15"
+      },
+      {
+        "slug": "excelden-dijitale-gecis",
+        "title": "Excel'den Dijital Yönetime Geçiş Rehberi",
+        "excerpt": "Mevcut kayıtlarınızı kaybetmeden dijital bir sisteme geçmenin adım adım yolu.",
+        "date": "2026-07-28"
+      },
+      {
+        "slug": "site-yoneticisinin-gunluk-yuku",
+        "title": "Site Yöneticisinin Görünmeyen Günlük Yükü",
+        "excerpt": "Yöneticilerin zamanının nereye gittiğini ve nasıl geri kazanılacağını inceliyoruz.",
+        "date": "2026-07-10"
+      }
+    ]
+  }
+}

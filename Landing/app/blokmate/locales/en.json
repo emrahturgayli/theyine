@@ -1,0 +1,182 @@
+{
+  "meta": {
+    "title": "BlokMate | Digital Ease for Building Management",
+    "description": "BlokMate brings dues tracking, collection, announcements and maintenance requests into one dashboard for apartment and site managers."
+  },
+  "nav": {
+    "howItWorks": "How It Works",
+    "features": "Features",
+    "pricing": "Pricing",
+    "blog": "Blog",
+    "cta": "Request a Free Demo"
+  },
+  "hero": {
+    "badge": "A Digital Platform for Building Management",
+    "titleA": "Move Building Management to ",
+    "titleB": "Digital Ease.",
+    "subtitle": "Dues tracking, collection, announcements and maintenance requests — no more scattered spreadsheets. One dashboard, real-time, built to make a manager's life easier.",
+    "ctaDemo": "Request a Free Demo",
+    "ctaStart": "Get Started",
+    "stats": [
+      { "value": "30%", "label": "faster collection" },
+      { "value": "8h", "label": "saved per month" },
+      { "value": "1", "label": "tap to pay dues" },
+      { "value": "0", "label": "lost spreadsheets" }
+    ]
+  },
+  "howItWorks": {
+    "eyebrow": "How It Works",
+    "title": "A 5-minute setup",
+    "subtitle": "Add your building, invite residents, start tracking dues.",
+    "steps": [
+      {
+        "title": "Add your building",
+        "desc": "Import your building, unit and resident data in one go — spreadsheet import supported."
+      },
+      {
+        "title": "Set up your dues cycle",
+        "desc": "Set the monthly amount, due date and reminder rules — the system handles the rest automatically."
+      },
+      {
+        "title": "Start managing",
+        "desc": "Residents pay in one tap, you track announcements and maintenance requests from a single dashboard."
+      }
+    ]
+  },
+  "features": {
+    "eyebrow": "Features",
+    "title": "A real fix for what turns building management into a burden",
+    "subtitle": "Designed around what managers actually need.",
+    "items": [
+      {
+        "title": "Dues tracking & collection",
+        "desc": "See who's paid and who owes at a glance. Automatic reminders raise your collection rate."
+      },
+      {
+        "title": "One-tap payment",
+        "desc": "Residents pay their dues in seconds via bank transfer, card or online payment."
+      },
+      {
+        "title": "Announcements & notifications",
+        "desc": "Building-wide announcements reach every resident instantly — say goodbye to the paper notice board."
+      },
+      {
+        "title": "Maintenance & ticket management",
+        "desc": "Residents report issues, you track and close them — nothing falls through the cracks."
+      },
+      {
+        "title": "Switch from Excel in 5 minutes",
+        "desc": "Import your existing records — no starting from scratch."
+      },
+      {
+        "title": "Secure by design",
+        "desc": "Your data is stored encrypted, accessible only to authorized people."
+      }
+    ]
+  },
+  "pricing": {
+    "eyebrow": "Pricing",
+    "title": "Simple pricing that fits your building's size",
+    "subtitle": "No hidden fees — an exact quote after a short call.",
+    "cta": "Get a quote",
+    "plans": [
+      {
+        "name": "Starter",
+        "price": "Free",
+        "unit": "up to 20 units",
+        "features": ["Dues tracking", "Basic announcements", "Email support"]
+      },
+      {
+        "name": "Standard",
+        "price": "On request",
+        "unit": "20-100 units",
+        "features": ["Everything in Starter", "Online payment", "Ticket management", "Priority support"]
+      },
+      {
+        "name": "Enterprise",
+        "price": "Custom",
+        "unit": "100+ units / multi-site",
+        "features": ["Everything in Standard", "Multi-building management", "Custom integrations", "Dedicated account manager"]
+      }
+    ]
+  },
+  "demo": {
+    "eyebrow": "Watch Live",
+    "title": "See BlokMate in 60 seconds",
+    "subtitle": "From dues tracking to collection, announcements to maintenance — the whole flow in one video.",
+    "cta": "Watch the demo",
+    "badge": "Video coming soon"
+  },
+  "testimonials": [
+    {
+      "quote": "We stopped wrestling with spreadsheets. Now who's paid and who hasn't is clear at a glance — our collection rate has visibly improved.",
+      "author": "Site Manager",
+      "role": "120-unit site, Sofia"
+    },
+    {
+      "quote": "Our residents pay their dues in one tap now. We'll never go back to the paper notice board — announcements reach everyone instantly.",
+      "author": "Building Manager",
+      "role": "45-unit building, Dupnitsa"
+    }
+  ],
+  "leadForm": {
+    "title": "Request a free demo",
+    "subtitle": "Just a few details — our team will reach out shortly.",
+    "buildingNameLabel": "Building / Site Name",
+    "buildingNamePlaceholder": "e.g. Sunrise Residences",
+    "sectorLabel": "Sector",
+    "sectorPlaceholder": "Select your sector",
+    "sectors": [
+      { "value": "apartment", "label": "Apartment" },
+      { "value": "office", "label": "Office / Site" },
+      { "value": "mixed", "label": "Mixed" },
+      { "value": "other", "label": "Other" }
+    ],
+    "websiteLabel": "Website (optional)",
+    "websitePlaceholder": "https://...",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "name@yoursite.com",
+    "cta": "Request a Free Demo",
+    "ctaLoading": "Sending...",
+    "successTitle": "Request received.",
+    "successBody": "The BlokMate team will reach out to you shortly.",
+    "errorGeneric": "Something went wrong, please try again.",
+    "errorRequired": "Please fill in all required fields.",
+    "errorInvalidEmail": "Please enter a valid email address."
+  },
+  "footer": {
+    "tagline": "The platform for digitizing building management.",
+    "rights": "BlokMate — a THEYINE product. All rights reserved.",
+    "quickLinksTitle": "Quick Links",
+    "quickLinks": { "howItWorks": "How It Works", "features": "Features", "pricing": "Pricing", "blog": "Blog" },
+    "supportTitle": "Support",
+    "supportLinks": { "contact": "Contact", "demo": "Request a Demo" },
+    "legalTitle": "Legal",
+    "links": { "privacy": "Privacy", "terms": "Terms", "gdpr": "GDPR" }
+  },
+  "blog": {
+    "title": "BlokMate Blog",
+    "subtitle": "Writing on building management, dues collection and going digital.",
+    "backToHome": "Back to home",
+    "posts": [
+      {
+        "slug": "aidat-tahsilat-oranini-artirmak",
+        "title": "5 Ways to Improve Your Dues Collection Rate",
+        "excerpt": "From automatic reminders to online payment — practical steps that raise your collection rate.",
+        "date": "2026-08-15"
+      },
+      {
+        "slug": "excelden-dijitale-gecis",
+        "title": "A Guide to Moving from Spreadsheets to Digital Management",
+        "excerpt": "How to migrate to a digital system step by step, without losing your existing records.",
+        "date": "2026-07-28"
+      },
+      {
+        "slug": "site-yoneticisinin-gunluk-yuku",
+        "title": "The Invisible Daily Load of a Site Manager",
+        "excerpt": "Where a manager's time actually goes, and how to get it back.",
+        "date": "2026-07-10"
+      }
+    ]
+  }
+}
