@@ -42,6 +42,7 @@ export default function TicketsPage() {
       await load();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Bilinmeyen hata");
+      setStatus("error");
     } finally {
       setSubmitting(false);
     }

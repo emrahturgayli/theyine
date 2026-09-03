@@ -1,14 +1,38 @@
 "use client";
 
-import { getBlokmateSupabaseBrowser } from "@/lib/blokmate-supabase-browser";
+import { getBlokmateSupabaseBrowser, getBlokmateSessionClaims } from "@/lib/blokmate-supabase-browser";
 
 /**
- * Entity CRUD for the authenticated BlokMate dashboard pages. Every call
+ * Entity CRUD for the authenticated BlokMate dashboard pages. Every read
  * goes through the anon-key browser client — RLS (migrations 002/003) is
- * what actually scopes results to the caller's tenant (and, for
- * residents, their own unit); nothing here passes or trusts a tenant_id
- * from the client for that reason.
+ * what actually scopes SELECTs to the caller's tenant (and, for
+ * residents, their own unit); reads never pass or trust a tenant_id from
+ * the client for that reason.
+ *
+ * Writes are different: every operational table's tenant_id column is
+ * NOT NULL (migration 002), so an insert with no tenant_id in the payload
+ * fails outright — RLS's `with check` never even gets a chance to run,
+ * Postgres rejects it at the NOT NULL constraint first. requireTenantId()
+ * below reads the caller's tenant_id off their JWT claims (via
+ * getBlokmateSessionClaims — populated by the Custom Access Token hook
+ * from public.users.tenant_id, see supabase/migrations/003_fix_role_claim_collision.sql)
+ * and every create* function includes it explicitly. This is NOT a
+ * security boundary — a malicious client could still pass a fabricated
+ * tenant_id, and RLS's `with check (tenant_id = blokmate_jwt_tenant_id())`
+ * is what actually rejects that. It exists purely so a legitimate,
+ * correctly-scoped insert doesn't fail the NOT NULL check before RLS is
+ * even consulted.
  */
+
+async function requireTenantId(): Promise<string> {
+  const claims = await getBlokmateSessionClaims();
+  if (!claims) {
+    throw new Error(
+      "Tenant bilgisi bulunamadı — oturumun süresi dolmuş olabilir. Lütfen tekrar giriş yapın."
+    );
+  }
+  return claims.tenant_id;
+}
 
 export type Building = { id: string; name: string; address: string | null; unit_count: number };
 export type Unit = { id: string; building_id: string; label: string; owner_name: string | null };
@@ -59,7 +83,10 @@ export async function listBuildings(): Promise<Building[]> {
 }
 
 export async function createBuilding(input: { name: string; address?: string }): Promise<void> {
-  const { error } = await client().from("buildings").insert({ name: input.name, address: input.address || null });
+  const tenant_id = await requireTenantId();
+  const { error } = await client()
+    .from("buildings")
+    .insert({ name: input.name, address: input.address || null, tenant_id });
   if (error) throw new Error(error.message);
 }
 
@@ -70,9 +97,10 @@ export async function listUnits(): Promise<Unit[]> {
 }
 
 export async function createUnit(input: { building_id: string; label: string; owner_name?: string }): Promise<void> {
+  const tenant_id = await requireTenantId();
   const { error } = await client()
     .from("units")
-    .insert({ building_id: input.building_id, label: input.label, owner_name: input.owner_name || null });
+    .insert({ building_id: input.building_id, label: input.label, owner_name: input.owner_name || null, tenant_id });
   if (error) throw new Error(error.message);
 }
 
@@ -91,11 +119,13 @@ export async function createInvoice(input: {
   due_date: string;
   description?: string;
 }): Promise<void> {
+  const tenant_id = await requireTenantId();
   const { error } = await client().from("invoices").insert({
     unit_id: input.unit_id,
     amount_cents: input.amount_cents,
     due_date: input.due_date,
     description: input.description || null,
+    tenant_id,
   });
   if (error) throw new Error(error.message);
 }
@@ -119,9 +149,10 @@ export async function listAnnouncements(): Promise<Announcement[]> {
 }
 
 export async function createAnnouncement(input: { building_id: string; title: string; body: string }): Promise<void> {
+  const tenant_id = await requireTenantId();
   const { error } = await client()
     .from("announcements")
-    .insert({ building_id: input.building_id, title: input.title, body: input.body });
+    .insert({ building_id: input.building_id, title: input.title, body: input.body, tenant_id });
   if (error) throw new Error(error.message);
 }
 
@@ -135,11 +166,13 @@ export async function listTickets(): Promise<Ticket[]> {
 }
 
 export async function createTicket(input: { building_id: string; unit_id?: string; subject: string; body?: string }): Promise<void> {
+  const tenant_id = await requireTenantId();
   const { error } = await client().from("tickets").insert({
     building_id: input.building_id,
     unit_id: input.unit_id || null,
     subject: input.subject,
     body: input.body || null,
+    tenant_id,
   });
   if (error) throw new Error(error.message);
 }
