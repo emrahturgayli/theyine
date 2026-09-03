@@ -1,10 +1,15 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { listInvoices, createInvoice, listUnits, type Invoice, type Unit } from "@/lib/blokmate-data";
+import { listInvoices, createInvoice, listUnits, markInvoicePaid, type Invoice, type Unit } from "@/lib/blokmate-data";
+import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
+import { useBlokmateToast } from "@/lib/blokmate-toast";
 import InvoiceTable from "../components/InvoiceTable";
 
 export default function InvoicesPage() {
+  const { claims } = useBlokmateAuth();
+  const toast = useBlokmateToast();
+  const canManage = claims?.role === "manager" || claims?.role === "accountant";
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [units, setUnits] = useState<Unit[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
@@ -40,11 +45,25 @@ export default function InvoicesPage() {
       setAmount("");
       setDueDate("");
       await load();
+      toast.success("Aidat oluşturuldu.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Bilinmeyen hata");
+      const message = err instanceof Error ? err.message : "Bilinmeyen hata";
+      setError(message);
       setStatus("error");
+      toast.error(message);
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleMarkPaid(invoice: Invoice) {
+    try {
+      await markInvoicePaid(invoice);
+      await load();
+      toast.success("Fatura ödendi olarak işaretlendi.");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Bilinmeyen hata";
+      toast.error(message);
     }
   }
 
@@ -108,7 +127,13 @@ export default function InvoicesPage() {
         <p className="text-sm text-ink-faint">Önce bir daire eklemelisin.</p>
       )}
 
-      <InvoiceTable invoices={invoices} loading={status === "loading"} unitLabel={unitLabel} />
+      <InvoiceTable
+        invoices={invoices}
+        loading={status === "loading"}
+        unitLabel={unitLabel}
+        canManage={canManage}
+        onMarkPaid={handleMarkPaid}
+      />
     </div>
   );
 }

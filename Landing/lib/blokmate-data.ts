@@ -130,6 +130,42 @@ export async function createInvoice(input: {
   if (error) throw new Error(error.message);
 }
 
+/**
+ * Manager-only quick action: records a full payment against an invoice
+ * and flips its status to "paid". Both writes go through the anon-key
+ * client — RLS's payments_insert/invoices_update policies
+ * (supabase/migrations/002_add_tenant_id_and_rls.sql) already restrict
+ * this to role in ('manager', 'accountant'), so a resident calling this
+ * directly would get rejected server-side even if the UI didn't hide the
+ * button. Not wrapped in a DB transaction (no RPC for that exists yet) —
+ * if the invoice update fails after the payment insert succeeds, the
+ * payment row still exists (money was recorded) but the invoice stays
+ * "unpaid"; surfaced as an error so the manager knows to recheck rather
+ * than silently mismatching.
+ */
+export async function markInvoicePaid(
+  invoice: Pick<Invoice, "id" | "amount_cents">,
+  method: "bank_transfer" | "card" | "cash" | "other" = "cash"
+): Promise<void> {
+  const tenant_id = await requireTenantId();
+  const supabase = client();
+
+  const { error: paymentError } = await supabase.from("payments").insert({
+    invoice_id: invoice.id,
+    amount_cents: invoice.amount_cents,
+    method,
+    tenant_id,
+  });
+  if (paymentError) throw new Error(paymentError.message);
+
+  const { error: invoiceError } = await supabase.from("invoices").update({ status: "paid" }).eq("id", invoice.id);
+  if (invoiceError) {
+    throw new Error(
+      `Ödeme kaydedildi ancak fatura durumu güncellenemedi: ${invoiceError.message}`
+    );
+  }
+}
+
 export async function listPayments(): Promise<Payment[]> {
   const { data, error } = await client()
     .from("payments")

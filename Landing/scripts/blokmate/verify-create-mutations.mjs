@@ -64,6 +64,20 @@ async function main() {
     record("createInvoice equivalent insert succeeds", !error && !!invoice, error?.message);
   }
 
+  // markInvoicePaid equivalent: payment insert + invoice status update, same shape as lib/blokmate-data.ts.
+  if (invoice) {
+    const { error: payErr } = await client
+      .from("payments")
+      .insert({ invoice_id: invoice.id, amount_cents: invoice.amount_cents, method: "cash", tenant_id: claims.tenant_id });
+    record("markInvoicePaid: payment insert succeeds", !payErr, payErr?.message);
+
+    const { error: updErr } = await client.from("invoices").update({ status: "paid" }).eq("id", invoice.id);
+    record("markInvoicePaid: invoice status update succeeds", !updErr, updErr?.message);
+
+    const { data: paidInvoice } = await client.from("invoices").select("status").eq("id", invoice.id).single();
+    record("invoice status is now 'paid'", paidInvoice?.status === "paid", paidInvoice?.status);
+  }
+
   if (building) {
     const { error } = await client
       .from("announcements")

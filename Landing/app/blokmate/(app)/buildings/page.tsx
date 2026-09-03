@@ -2,9 +2,11 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { listBuildings, createBuilding, type Building } from "@/lib/blokmate-data";
+import { useBlokmateToast } from "@/lib/blokmate-toast";
 import BuildingList from "../components/BuildingList";
 
 export default function BuildingsPage() {
+  const toast = useBlokmateToast();
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [error, setError] = useState<string | null>(null);
@@ -34,9 +36,12 @@ export default function BuildingsPage() {
       setName("");
       setAddress("");
       await load();
+      toast.success("Bina eklendi.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Bilinmeyen hata");
+      const message = err instanceof Error ? err.message : "Bilinmeyen hata";
+      setError(message);
       setStatus("error");
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }

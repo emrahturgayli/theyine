@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { Invoice } from "@/lib/blokmate-data";
 
 const STATUS_LABELS: Record<Invoice["status"], string> = {
@@ -20,11 +21,28 @@ export default function InvoiceTable({
   invoices,
   loading,
   unitLabel,
+  canManage = false,
+  onMarkPaid,
 }: {
   invoices: Invoice[];
   loading: boolean;
   unitLabel: (unitId: string) => string;
+  /** Manager/accountant only — RLS enforces this server-side regardless, this just hides the button for residents. */
+  canManage?: boolean;
+  onMarkPaid?: (invoice: Invoice) => Promise<void>;
 }) {
+  const [markingId, setMarkingId] = useState<string | null>(null);
+
+  async function handleMarkPaid(inv: Invoice) {
+    if (!onMarkPaid || markingId) return;
+    setMarkingId(inv.id);
+    try {
+      await onMarkPaid(inv);
+    } finally {
+      setMarkingId(null);
+    }
+  }
+
   return (
     <div className="card overflow-x-auto">
       <table className="w-full text-left text-sm">
@@ -34,33 +52,51 @@ export default function InvoiceTable({
             <th className="px-4 py-3">Tutar</th>
             <th className="px-4 py-3">Son ödeme</th>
             <th className="px-4 py-3">Durum</th>
+            {canManage && <th className="px-4 py-3" />}
           </tr>
         </thead>
         <tbody className="divide-y divide-line">
           {loading && (
             <tr>
-              <td colSpan={4} className="px-4 py-6 text-center text-ink-faint">Yükleniyor…</td>
+              <td colSpan={canManage ? 5 : 4} className="px-4 py-6 text-center text-ink-faint">Yükleniyor…</td>
             </tr>
           )}
           {!loading && invoices.length === 0 && (
             <tr>
-              <td colSpan={4} className="px-4 py-6 text-center text-ink-faint">Kayıt yok.</td>
+              <td colSpan={canManage ? 5 : 4} className="px-4 py-6 text-center text-ink-faint">Kayıt yok.</td>
             </tr>
           )}
-          {invoices.map((inv) => (
-            <tr key={inv.id}>
-              <td className="px-4 py-3 font-medium text-ink">{unitLabel(inv.unit_id)}</td>
-              <td className="px-4 py-3 text-ink-soft">
-                {(inv.amount_cents / 100).toFixed(2)} {inv.currency}
-              </td>
-              <td className="px-4 py-3 text-ink-soft">{inv.due_date}</td>
-              <td className="px-4 py-3">
-                <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_STYLES[inv.status]}`}>
-                  {STATUS_LABELS[inv.status]}
-                </span>
-              </td>
-            </tr>
-          ))}
+          {invoices.map((inv) => {
+            const payable = inv.status === "unpaid" || inv.status === "overdue";
+            return (
+              <tr key={inv.id}>
+                <td className="px-4 py-3 font-medium text-ink">{unitLabel(inv.unit_id)}</td>
+                <td className="px-4 py-3 text-ink-soft">
+                  {(inv.amount_cents / 100).toFixed(2)} {inv.currency}
+                </td>
+                <td className="px-4 py-3 text-ink-soft">{inv.due_date}</td>
+                <td className="px-4 py-3">
+                  <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_STYLES[inv.status]}`}>
+                    {STATUS_LABELS[inv.status]}
+                  </span>
+                </td>
+                {canManage && (
+                  <td className="px-4 py-3 text-right">
+                    {payable && onMarkPaid && (
+                      <button
+                        type="button"
+                        onClick={() => handleMarkPaid(inv)}
+                        disabled={markingId === inv.id}
+                        className="min-h-[32px] rounded-md border border-line px-2.5 text-xs font-semibold text-ink-soft transition-colors hover:border-green-500 hover:text-green-600 disabled:opacity-60"
+                      >
+                        {markingId === inv.id ? "İşleniyor…" : "Ödendi olarak işaretle"}
+                      </button>
+                    )}
+                  </td>
+                )}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

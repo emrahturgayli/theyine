@@ -2,9 +2,11 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { listAnnouncements, createAnnouncement, listBuildings, type Announcement, type Building } from "@/lib/blokmate-data";
+import { useBlokmateToast } from "@/lib/blokmate-toast";
 import AnnouncementList from "../components/AnnouncementList";
 
 export default function AnnouncementsPage() {
+  const toast = useBlokmateToast();
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
@@ -40,9 +42,12 @@ export default function AnnouncementsPage() {
       setTitle("");
       setBody("");
       await load();
+      toast.success("Duyuru yayınlandı.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Bilinmeyen hata");
+      const message = err instanceof Error ? err.message : "Bilinmeyen hata";
+      setError(message);
       setStatus("error");
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
