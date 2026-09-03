@@ -60,6 +60,38 @@ function QrMock() {
   );
 }
 
+/** Miniature dashboard mock — a compact preview of BlokMate's manager panel, blue accent to read as a distinct sub-brand from the lavender THEYINE palette. */
+function BlokmateMock() {
+  return (
+    <div className="mx-auto max-w-md overflow-hidden rounded-xl2 border border-line bg-surface shadow-soft">
+      <div className="flex items-center justify-between border-b border-line bg-mist/50 px-5 py-3">
+        <span className="text-sm font-semibold text-ink">BlokMate</span>
+        <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[0.65rem] font-semibold text-blue-600 dark:bg-blue-950/50">
+          Panel
+        </span>
+      </div>
+      <div className="grid grid-cols-2 gap-3 p-5">
+        <div className="rounded-xl border border-line p-3">
+          <div className="text-[0.65rem] font-medium uppercase tracking-wide text-ink-faint">Toplam daire</div>
+          <div className="mt-1 text-lg font-bold text-ink">32</div>
+        </div>
+        <div className="rounded-xl border border-line p-3">
+          <div className="text-[0.65rem] font-medium uppercase tracking-wide text-ink-faint">Toplam borç</div>
+          <div className="mt-1 text-lg font-bold text-red-600">1.240 лв</div>
+        </div>
+        <div className="rounded-xl border border-line p-3">
+          <div className="text-[0.65rem] font-medium uppercase tracking-wide text-ink-faint">Ödenen</div>
+          <div className="mt-1 text-lg font-bold text-green-600">28</div>
+        </div>
+        <div className="rounded-xl border border-line p-3">
+          <div className="text-[0.65rem] font-medium uppercase tracking-wide text-ink-faint">Açık talep</div>
+          <div className="mt-1 text-lg font-bold text-amber-600">3</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function TryOnMock() {
   return (
     <div className="relative mx-auto aspect-[4/3] max-w-md overflow-hidden rounded-xl2 border border-line bg-mist">
@@ -84,7 +116,7 @@ interface Props {
   description: string;
   ctaLabel: string;
   ctaHref: string;
-  visual: "qr" | "tryon";
+  visual: "qr" | "tryon" | "blokmate";
   reverse?: boolean;
   analyticsLabel: string;
 }
@@ -129,7 +161,7 @@ export default function ProductShowcase({
               </svg>
             </Link>
           </div>
-          <div>{visual === "qr" ? <QrMock /> : <TryOnMock />}</div>
+          <div>{visual === "qr" ? <QrMock /> : visual === "tryon" ? <TryOnMock /> : <BlokmateMock />}</div>
         </Reveal>
       </div>
     </section>

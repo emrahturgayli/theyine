@@ -15,9 +15,9 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://theyine.com"),
-  title: "THEYINE | Plug-and-Play AI Infrastructure for E-Commerce & B2B",
+  title: "THEYINE | AI Infrastructure for E-Commerce & B2B + BlokMate SaaS",
   description:
-    "THEYINE is a Sofia-based AI automation studio building plug-and-play infrastructure for e-commerce and B2B enterprise — Shopify automation, QR-based guest journeys, and the systems behind them.",
+    "THEYINE is a Sofia-based AI automation studio building plug-and-play infrastructure for e-commerce and B2B enterprise — Shopify automation, QR-based guest journeys, and BlokMate, our multi-tenant SaaS for apartment and site management (dues, collection, announcements, tickets, invoicing).",
   keywords: [
     "AI automation",
     "B2B SaaS",
@@ -25,12 +25,16 @@ export const metadata: Metadata = {
     "enterprise infrastructure",
     "workflow optimization",
     "THEYINE",
+    "BlokMate",
+    "bina yönetim sistemi",
+    "site yönetim yazılımı",
+    "apartment management SaaS",
   ],
   authors: [{ name: "THEYINE" }],
   openGraph: {
-    title: "THEYINE | Plug-and-Play AI Infrastructure for E-Commerce & B2B",
+    title: "THEYINE | AI Infrastructure for E-Commerce & B2B + BlokMate SaaS",
     description:
-      "Sofia-based AI automation studio. Enterprise infrastructure that ships in days, not quarters.",
+      "Sofia-based AI automation studio. Enterprise infrastructure that ships in days, not quarters — plus BlokMate, our apartment/site management SaaS.",
     type: "website",
     url: "https://www.theyine.com",
     siteName: "Theyine",
@@ -38,9 +42,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "THEYINE | Plug-and-Play AI Infrastructure for E-Commerce & B2B",
+    title: "THEYINE | AI Infrastructure for E-Commerce & B2B + BlokMate SaaS",
     description:
-      "Sofia-based AI automation studio. Enterprise infrastructure that ships in days, not quarters.",
+      "Sofia-based AI automation studio. Enterprise infrastructure that ships in days, not quarters — plus BlokMate, our apartment/site management SaaS.",
     images: ["/logo.png"],
   },
   icons: {

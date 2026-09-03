@@ -137,6 +137,7 @@ export default function Navbar() {
     { label: t("nav.aiStudio"), href: "/studio" },
     { label: t("nav.restaurantQr"), href: "/enterprise-qr" },
     { label: t("nav.virtualTryOn"), href: "/enterprise-tryon" },
+    { label: t("nav.blokmate"), href: "/blokmate" },
     { label: t("nav.flagshipPricing"), href: "/enterprise-tryon#pricing" },
   ];
 
@@ -177,6 +178,13 @@ export default function Navbar() {
             <LanguageToggle />
             <ThemeToggle />
           </div>
+
+          <Link
+            href="/blokmate/login"
+            className="hidden items-center rounded-full border border-blue-600 px-4 py-2 text-sm font-semibold text-blue-600 transition-colors hover:bg-blue-600 hover:text-white lg:inline-flex"
+          >
+            {t("nav.blokmateLogin")}
+          </Link>
 
           <a href="#contact" className="hidden btn-primary lg:inline-flex">
             {t("nav.cta")}
@@ -219,7 +227,14 @@ export default function Navbar() {
             <LanguageToggle />
             <ThemeToggle />
           </div>
-          <a href="#contact" onClick={() => setOpen(false)} className="btn-primary mt-3 w-full">
+          <Link
+            href="/blokmate/login"
+            onClick={() => setOpen(false)}
+            className="mt-3 inline-flex w-full items-center justify-center rounded-full border border-blue-600 px-4 py-2.5 text-sm font-semibold text-blue-600"
+          >
+            {t("nav.blokmateLogin")}
+          </Link>
+          <a href="#contact" onClick={() => setOpen(false)} className="btn-primary mt-2 w-full">
             {t("nav.cta")}
           </a>
         </div>

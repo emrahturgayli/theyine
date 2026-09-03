@@ -10,7 +10,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 
 export default function Home() {
   const { dict } = useLanguage();
-  const { qrShowcase, tryonShowcase } = dict.home;
+  const { qrShowcase, tryonShowcase, blokmateShowcase } = dict.home;
 
   return (
     <>
@@ -37,6 +37,15 @@ export default function Home() {
           ctaLabel={tryonShowcase.cta}
           ctaHref="/enterprise-tryon"
           analyticsLabel="home_tryon_showcase"
+        />
+        <ProductShowcase
+          visual="blokmate"
+          eyebrow={blokmateShowcase.eyebrow}
+          title={blokmateShowcase.title}
+          description={blokmateShowcase.description}
+          ctaLabel={blokmateShowcase.cta}
+          ctaHref="/blokmate/register"
+          analyticsLabel="home_blokmate_showcase"
         />
         <Services />
         <Gallery />
