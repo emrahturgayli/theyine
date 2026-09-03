@@ -6,7 +6,29 @@ import { sendEmail } from "@/lib/email";
  * transactional-email placeholder. Server-only — SUPABASE_SERVICE_ROLE_KEY
  * bypasses Row Level Security, so never import this into client code, and
  * never log the key itself.
+ *
+ * For the browser-side (anon key, RLS-enforced) client, see
+ * lib/blokmate-supabase-browser.ts instead — that one is safe to import
+ * into client components.
  */
+
+/**
+ * Auth/JWT claims — see supabase/migrations/003_fix_role_claim_collision.sql
+ * (which supersedes 002's version of the same hook). `tenant_id` and
+ * `blokmate_role` are injected into every user's access token by a
+ * Postgres "Custom Access Token" Auth Hook (public.custom_access_token_hook),
+ * not by any code in this file — there is no client-side way to set JWT
+ * claims, they're minted by Supabase Auth itself. The claim is named
+ * `blokmate_role`, not `role` — Supabase's own `role` claim is reserved
+ * (PostgREST uses it to pick a Postgres role for the request), so this
+ * type's `role` field is a *decoded/renamed* view of `blokmate_role`, not
+ * a literal JWT key. This type documents the shape every RLS policy in
+ * that migration assumes is present.
+ */
+export type BlokmateJwtClaims = {
+  tenant_id: string;
+  role: "manager" | "resident" | "accountant" | "auditor" | "staff";
+};
 
 // ---------------------------------------------------------------------------
 // Supabase

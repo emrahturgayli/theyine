@@ -3,9 +3,12 @@
 /**
  * Manager view mockup — a preview of the panel a building manager sees:
  * overdue payers, new requests, and current balance. Rendered with
- * representative placeholder data (no live backend wiring exists yet) so
- * the landing page can show what the product looks like before anyone
- * signs up.
+ * representative placeholder data because this component is embedded in
+ * the public, logged-out /blokmate marketing page — there's no tenant
+ * session here to query with. The real, RLS-enforced equivalent of this
+ * data lives in lib/blokmate-dashboard-data.ts (fetchManagerDashboard /
+ * fetchResidentDashboard); wire that in once an authenticated dashboard
+ * route exists, don't point this marketing preview at live data.
  */
 
 const MOCK_UNPAID = [

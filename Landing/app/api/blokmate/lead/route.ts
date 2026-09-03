@@ -34,6 +34,12 @@ type Lead = {
  * the two succeeds (or at minimum the console.log a few lines down) still
  * captures the lead.
  *
+ * Tenant isolation: this route INSERTs a new `tenants` row — it's the one
+ * BlokMate write path that legitimately has no tenant_id to scope by yet,
+ * since the tenant doesn't exist until this insert creates it. RLS
+ * (supabase/migrations/002_add_tenant_id_and_rls.sql) doesn't apply here
+ * either way: this uses the service_role key, which bypasses RLS.
+ *
  * Required env vars — see .env.example:
  *   NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY  (Supabase insert)
  *   SMTP_USER, SMTP_PASS, SMTP_HOST, SMTP_PORT           (confirmation email)

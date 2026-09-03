@@ -22,6 +22,12 @@ import { getBlokmateSupabase } from "@/lib/blokmate";
  *    unique constraint on payments.reference (the provider's event/charge
  *    id) so a retried delivery doesn't double-record the same payment.
  *
+ * Tenant isolation: this route uses the service_role key, which bypasses
+ * RLS (supabase/migrations/002_add_tenant_id_and_rls.sql) entirely — the
+ * invoice-lookup-then-insert pattern below is what actually prevents a
+ * payment from being attributed to the wrong tenant, RLS provides no
+ * backstop here the way it does for client-side dashboard queries.
+ *
  * Env vars: NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (writes),
  * and whichever of STRIPE_SECRET_KEY/STRIPE_WEBHOOK_SECRET or
  * IYZICO_API_KEY/IYZICO_SECRET_KEY the chosen provider needs.
@@ -68,8 +74,27 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, simulated: true });
   }
 
+  // payments.tenant_id is NOT NULL (migration 002) and the webhook payload
+  // has no notion of tenant — it only names an invoice. Look the invoice
+  // up first so the payment row is tagged with *that invoice's* tenant,
+  // never a client-supplied value: nothing in this request is trusted
+  // enough to assert its own tenant_id.
+  const { data: invoice, error: invoiceLookupError } = await supabase
+    .from("invoices")
+    .select("id, tenant_id")
+    .eq("id", payload.invoiceId)
+    .maybeSingle();
+  if (invoiceLookupError) {
+    console.error("[blokmate-payments] invoice lookup failed:", invoiceLookupError.message);
+    return NextResponse.json({ error: "db_read_failed" }, { status: 500 });
+  }
+  if (!invoice) {
+    return NextResponse.json({ error: "invoice_not_found" }, { status: 404 });
+  }
+
   const { error: paymentError } = await supabase.from("payments").insert({
-    invoice_id: payload.invoiceId,
+    invoice_id: invoice.id,
+    tenant_id: invoice.tenant_id,
     amount_cents: payload.amountCents,
     method: "card",
     reference: payload.reference ?? null,
@@ -79,10 +104,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "db_write_failed" }, { status: 500 });
   }
 
+  // service_role bypasses RLS, so this .eq("tenant_id", ...) isn't required
+  // for correctness (invoice.id + invoice.tenant_id are already consistent
+  // by construction, from the lookup above) — kept anyway as an explicit,
+  // defense-in-depth guard against ever widening this update's WHERE
+  // clause later without re-adding tenant scoping.
   const { error: invoiceError } = await supabase
     .from("invoices")
     .update({ status: "paid" })
-    .eq("id", payload.invoiceId);
+    .eq("id", invoice.id)
+    .eq("tenant_id", invoice.tenant_id);
   if (invoiceError) {
     console.error("[blokmate-payments] invoice status update failed:", invoiceError.message);
     // Payment is already recorded — don't fail the webhook over a status

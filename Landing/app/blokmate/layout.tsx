@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { BlokmateLanguageProvider } from "@/hooks/useBlokmateLanguage";
+import { BlokmateAuthProvider } from "@/lib/blokmate-auth-context";
 
 export const metadata: Metadata = {
   title: "BlokMate | Apartman ve Site Yönetiminde Dijital Rahatlık",
@@ -9,5 +10,9 @@ export const metadata: Metadata = {
 };
 
 export default function BlokmateLayout({ children }: { children: React.ReactNode }) {
-  return <BlokmateLanguageProvider>{children}</BlokmateLanguageProvider>;
+  return (
+    <BlokmateLanguageProvider>
+      <BlokmateAuthProvider>{children}</BlokmateAuthProvider>
+    </BlokmateLanguageProvider>
+  );
 }
