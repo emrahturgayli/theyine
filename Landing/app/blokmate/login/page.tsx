@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
+import PasswordInput from "@/components/PasswordInput";
 
 export default function BlokmateLoginPage() {
   const router = useRouter();
@@ -53,13 +54,13 @@ export default function BlokmateLoginPage() {
             <label htmlFor="password" className="text-sm font-medium text-ink">
               Şifre
             </label>
-            <input
+            <PasswordInput
               id="password"
-              type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:border-blue-500"
+              className="mt-1"
+              autoComplete="current-password"
             />
           </div>
 

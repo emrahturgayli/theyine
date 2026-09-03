@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getBlokmateSupabaseBrowser } from "@/lib/blokmate-supabase-browser";
+import PasswordInput from "@/components/PasswordInput";
 
 type Role = "manager" | "resident";
 
@@ -25,6 +26,7 @@ export default function BlokmateRegisterPage() {
   const [tenantCode, setTenantCode] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [errorCount, setErrorCount] = useState(0);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -34,7 +36,8 @@ export default function BlokmateRegisterPage() {
     const supabase = getBlokmateSupabaseBrowser();
     if (!supabase) {
       setStatus("error");
-      setError("Supabase yapılandırılmamış.");
+      setError("Supabase yapılandırılmamış. Lütfen yöneticiye bildir.");
+      setErrorCount((c) => c + 1);
       return;
     }
 
@@ -42,6 +45,7 @@ export default function BlokmateRegisterPage() {
     if (signUpError || !signUpData.session) {
       setStatus("error");
       setError(signUpError?.message ?? "Kayıt oluşturulamadı — e-posta onayı gerekiyor olabilir.");
+      setErrorCount((c) => c + 1);
       return;
     }
 
@@ -60,6 +64,7 @@ export default function BlokmateRegisterPage() {
     if (!res.ok) {
       setStatus("error");
       setError(body.error ?? "Kayıt tamamlanamadı.");
+      setErrorCount((c) => c + 1);
       return;
     }
 
@@ -129,14 +134,14 @@ export default function BlokmateRegisterPage() {
             <label htmlFor="password" className="text-sm font-medium text-ink">
               Şifre
             </label>
-            <input
+            <PasswordInput
               id="password"
-              type="password"
               required
               minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:border-blue-500"
+              className="mt-1"
+              autoComplete="new-password"
             />
           </div>
 
@@ -170,9 +175,18 @@ export default function BlokmateRegisterPage() {
           )}
 
           {status === "error" && (
-            <p role="alert" className="text-sm text-red-600">
-              {error}
-            </p>
+            <div role="alert">
+              <p className="text-sm text-red-600">{error}</p>
+              {errorCount >= 2 && (
+                <p className="mt-1 text-xs text-ink-faint">
+                  Eğer bu hata devam ederse lütfen{" "}
+                  <a href="mailto:destek@theyine.com" className="font-semibold text-blue-600">
+                    destek@theyine.com
+                  </a>{" "}
+                  ile iletişime geçin.
+                </p>
+              )}
+            </div>
           )}
 
           <button
