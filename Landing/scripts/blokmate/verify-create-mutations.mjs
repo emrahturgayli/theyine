@@ -53,6 +53,32 @@ async function main() {
     record("createUnit equivalent insert succeeds", !error && !!unit, error?.message);
   }
 
+  // updateBuilding / updateUnit equivalents
+  if (building) {
+    const { error } = await client.from("buildings").update({ name: "E2E Test Bina (edited)" }).eq("id", building.id);
+    record("updateBuilding equivalent succeeds", !error, error?.message);
+    const { data: reread } = await client.from("buildings").select("name").eq("id", building.id).single();
+    record("building name actually changed", reread?.name === "E2E Test Bina (edited)", reread?.name);
+  }
+  if (unit) {
+    const { error } = await client.from("units").update({ label: "E2E-1-edited" }).eq("id", unit.id);
+    record("updateUnit equivalent succeeds", !error, error?.message);
+  }
+
+  // deleteBuilding equivalent — on a disposable second building, so the
+  // main `building` used by later steps stays intact.
+  const { data: disposableBuilding } = await client
+    .from("buildings")
+    .insert({ name: "E2E Disposable Bina", address: null, tenant_id: claims.tenant_id })
+    .select()
+    .single();
+  if (disposableBuilding) {
+    const { error } = await client.from("buildings").delete().eq("id", disposableBuilding.id);
+    record("deleteBuilding equivalent succeeds", !error, error?.message);
+    const { data: goneCheck } = await client.from("buildings").select("id").eq("id", disposableBuilding.id);
+    record("deleted building no longer appears in list query", (goneCheck?.length ?? 0) === 0);
+  }
+
   let invoice = null;
   if (unit) {
     const { data, error } = await client
@@ -103,6 +129,34 @@ async function main() {
   // proving tenant_id was really the missing piece, not something else.
   const { error: oldShapeErr } = await client.from("buildings").insert({ name: "should fail", address: null });
   record("insert WITHOUT tenant_id still fails (confirms root cause)", !!oldShapeErr, oldShapeErr?.message);
+
+  // Negative control for migration 006: a resident (same tenant, no
+  // manager/accountant role) must NOT be able to update or delete a
+  // building. If 006 hasn't been applied yet, these two checks fail —
+  // that's the test correctly catching the pre-006 gap, not a bug here.
+  const residentEmail = `${TAG}-resident@theyine.com`;
+  const { data: residentAuth } = await admin.auth.admin.createUser({ email: residentEmail, password, email_confirm: true });
+  await admin.from("users").insert({ id: residentAuth.user.id, tenant_id: tenant.id, full_name: "Resident", email: residentEmail, role: "resident" });
+  const residentClient = createClient(url, anonKey, { auth: { persistSession: false } });
+  await residentClient.auth.signInWithPassword({ email: residentEmail, password });
+
+  if (building) {
+    const { error: residentUpdateErr, count: residentUpdateCount } = await residentClient
+      .from("buildings")
+      .update({ name: "resident should not be able to do this" })
+      .eq("id", building.id)
+      .select("id", { count: "exact" });
+    // RLS on UPDATE without a matching row silently affects 0 rows rather
+    // than erroring — check the affected count, not just `error`.
+    record(
+      "resident CANNOT update a building (migration 006)",
+      !!residentUpdateErr || (residentUpdateCount ?? 0) === 0,
+      residentUpdateErr?.message ?? `rows affected: ${residentUpdateCount}`
+    );
+  }
+
+  await admin.from("users").delete().eq("id", residentAuth.user.id);
+  await admin.auth.admin.deleteUser(residentAuth.user.id);
 
   // Cleanup
   await admin.from("tickets").delete().eq("building_id", building?.id ?? "");

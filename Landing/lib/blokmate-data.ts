@@ -90,6 +90,27 @@ export async function createBuilding(input: { name: string; address?: string }):
   if (error) throw new Error(error.message);
 }
 
+/**
+ * tenant_id is intentionally NOT part of the update payload — RLS's
+ * `using` clause already requires the existing row to belong to the
+ * caller's tenant for it to even be matched, and since this payload never
+ * changes tenant_id, the `with check` re-verification passes trivially.
+ * Passing tenant_id here would do nothing except risk a typo breaking a
+ * legitimate update.
+ */
+export async function updateBuilding(id: string, input: { name: string; address?: string }): Promise<void> {
+  const { error } = await client()
+    .from("buildings")
+    .update({ name: input.name, address: input.address || null })
+    .eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
+export async function deleteBuilding(id: string): Promise<void> {
+  const { error } = await client().from("buildings").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
 export async function listUnits(): Promise<Unit[]> {
   const { data, error } = await client().from("units").select("id, building_id, label, owner_name").order("label");
   if (error) throw new Error(error.message);
@@ -101,6 +122,22 @@ export async function createUnit(input: { building_id: string; label: string; ow
   const { error } = await client()
     .from("units")
     .insert({ building_id: input.building_id, label: input.label, owner_name: input.owner_name || null, tenant_id });
+  if (error) throw new Error(error.message);
+}
+
+export async function updateUnit(
+  id: string,
+  input: { building_id: string; label: string; owner_name?: string }
+): Promise<void> {
+  const { error } = await client()
+    .from("units")
+    .update({ building_id: input.building_id, label: input.label, owner_name: input.owner_name || null })
+    .eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
+export async function deleteUnit(id: string): Promise<void> {
+  const { error } = await client().from("units").delete().eq("id", id);
   if (error) throw new Error(error.message);
 }
 
