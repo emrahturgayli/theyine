@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { Announcement } from "@/lib/blokmate-data";
 import CommentThread from "./CommentThread";
+import AttachmentLink from "./AttachmentLink";
 
 export default function AnnouncementList({
   announcements,
@@ -55,6 +56,11 @@ export default function AnnouncementList({
             </div>
           </div>
           <p className="mt-0.5 text-sm text-ink-soft">{a.body}</p>
+          {a.attachment_url && (
+            <div className="mt-1.5">
+              <AttachmentLink path={a.attachment_url} />
+            </div>
+          )}
           {showComments && openId === a.id && (
             <CommentThread buildingId={a.building_id} announcementId={a.id} />
           )}

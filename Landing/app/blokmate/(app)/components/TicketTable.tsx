@@ -3,6 +3,7 @@
 import { Fragment, useState } from "react";
 import type { Ticket } from "@/lib/blokmate-data";
 import CommentThread from "./CommentThread";
+import AttachmentLink from "./AttachmentLink";
 
 const STATUS_LABELS: Record<Ticket["status"], string> = {
   open: "Açık",
@@ -16,6 +17,11 @@ const STATUS_STYLES: Record<Ticket["status"], string> = {
   in_progress: "bg-amber-50 text-amber-700 dark:bg-amber-950/50",
   resolved: "bg-green-50 text-green-700 dark:bg-green-950/50",
   closed: "bg-mist text-ink-faint",
+};
+
+const CATEGORY_LABELS: Record<Ticket["category"], string> = {
+  general: "Genel",
+  payment_notice: "Ödeme Bildirimi",
 };
 
 export default function TicketTable({
@@ -38,6 +44,7 @@ export default function TicketTable({
         <thead className="border-b border-line text-xs uppercase tracking-wide text-ink-faint">
           <tr>
             <th className="px-4 py-3">Konu</th>
+            <th className="px-4 py-3">Kategori</th>
             <th className="px-4 py-3">Tarih</th>
             <th className="px-4 py-3">Durum</th>
             <th className="px-4 py-3" />
@@ -46,18 +53,36 @@ export default function TicketTable({
         <tbody className="divide-y divide-line">
           {loading && (
             <tr>
-              <td colSpan={4} className="px-4 py-6 text-center text-ink-faint">Yükleniyor…</td>
+              <td colSpan={5} className="px-4 py-6 text-center text-ink-faint">Yükleniyor…</td>
             </tr>
           )}
           {!loading && tickets.length === 0 && (
             <tr>
-              <td colSpan={4} className="px-4 py-6 text-center text-ink-faint">Henüz talep yok.</td>
+              <td colSpan={5} className="px-4 py-6 text-center text-ink-faint">Henüz talep yok.</td>
             </tr>
           )}
           {tickets.map((t) => (
             <Fragment key={t.id}>
               <tr>
-                <td className="px-4 py-3 font-medium text-ink">{t.subject}</td>
+                <td className="px-4 py-3 font-medium text-ink">
+                  {t.subject}
+                  {t.attachment_url && (
+                    <div className="mt-1">
+                      <AttachmentLink path={t.attachment_url} />
+                    </div>
+                  )}
+                </td>
+                <td className="px-4 py-3">
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                      t.category === "payment_notice"
+                        ? "bg-blue-50 text-blue-700 dark:bg-blue-950/50"
+                        : "bg-mist text-ink-faint"
+                    }`}
+                  >
+                    {CATEGORY_LABELS[t.category]}
+                  </span>
+                </td>
                 <td className="px-4 py-3 text-ink-soft">{new Date(t.created_at).toLocaleDateString("tr-TR")}</td>
                 <td className="px-4 py-3">
                   <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_STYLES[t.status]}`}>
@@ -76,7 +101,7 @@ export default function TicketTable({
               </tr>
               {openId === t.id && (
                 <tr>
-                  <td colSpan={4} className="bg-mist/40 px-4 py-3">
+                  <td colSpan={5} className="bg-mist/40 px-4 py-3">
                     <CommentThread
                       buildingId={t.building_id}
                       ticketId={t.id}

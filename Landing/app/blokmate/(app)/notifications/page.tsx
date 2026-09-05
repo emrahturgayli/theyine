@@ -9,6 +9,8 @@ const TYPE_LABELS: Record<Notification["type"], string> = {
   invoice_issued: "Yeni aidat kesildi",
   ticket_updated: "Talebinde güncelleme var",
   payment_completed: "Ödemen alındı",
+  reminder_due: "Ödeme hatırlatması",
+  broadcast_message: "Yönetimden mesaj",
 };
 
 export default function NotificationsPage() {
@@ -78,6 +80,7 @@ export default function NotificationsPage() {
             <li key={n.id} className={`flex items-center justify-between gap-3 px-4 py-3 ${n.is_read ? "" : "bg-blue-50/50 dark:bg-blue-950/20"}`}>
               <div>
                 <p className={`text-sm ${n.is_read ? "text-ink-soft" : "font-semibold text-ink"}`}>{TYPE_LABELS[n.type]}</p>
+                {n.message && <p className="mt-0.5 text-sm text-ink-soft">{n.message}</p>}
                 <p className="text-xs text-ink-faint">{new Date(n.created_at).toLocaleString("tr-TR")}</p>
               </div>
               <button

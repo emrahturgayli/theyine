@@ -59,6 +59,7 @@ export type Announcement = {
   title: string;
   body: string;
   published_at: string;
+  attachment_url: string | null;
 };
 export type Ticket = {
   id: string;
@@ -68,15 +69,24 @@ export type Ticket = {
   subject: string;
   body: string | null;
   status: "open" | "in_progress" | "resolved" | "closed";
+  category: "general" | "payment_notice";
+  attachment_url: string | null;
   created_at: string;
 };
 export type Notification = {
   id: string;
   user_id: string;
-  type: "announcement_published" | "invoice_issued" | "ticket_updated" | "payment_completed";
+  type:
+    | "announcement_published"
+    | "invoice_issued"
+    | "ticket_updated"
+    | "payment_completed"
+    | "reminder_due"
+    | "broadcast_message";
   related_announcement_id: string | null;
   related_invoice_id: string | null;
   related_ticket_id: string | null;
+  message: string | null;
   is_read: boolean;
   created_at: string;
 };
@@ -248,17 +258,26 @@ export async function listPayments(): Promise<Payment[]> {
 export async function listAnnouncements(): Promise<Announcement[]> {
   const { data, error } = await client()
     .from("announcements")
-    .select("id, building_id, title, body, published_at")
+    .select("id, building_id, title, body, published_at, attachment_url")
     .order("published_at", { ascending: false });
   if (error) throw new Error(error.message);
   return data ?? [];
 }
 
-export async function createAnnouncement(input: { building_id: string; title: string; body: string }): Promise<void> {
+export async function createAnnouncement(input: {
+  building_id: string;
+  title: string;
+  body: string;
+  attachment_url?: string;
+}): Promise<void> {
   const tenant_id = await requireTenantId();
-  const { error } = await client()
-    .from("announcements")
-    .insert({ building_id: input.building_id, title: input.title, body: input.body, tenant_id });
+  const { error } = await client().from("announcements").insert({
+    building_id: input.building_id,
+    title: input.title,
+    body: input.body,
+    attachment_url: input.attachment_url ?? null,
+    tenant_id,
+  });
   if (error) throw new Error(error.message);
 }
 
@@ -270,13 +289,20 @@ export async function deleteAnnouncement(id: string): Promise<void> {
 export async function listTickets(): Promise<Ticket[]> {
   const { data, error } = await client()
     .from("tickets")
-    .select("id, building_id, unit_id, reported_by_user_id, subject, body, status, created_at")
+    .select("id, building_id, unit_id, reported_by_user_id, subject, body, status, category, attachment_url, created_at")
     .order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
   return data ?? [];
 }
 
-export async function createTicket(input: { building_id: string; unit_id?: string; subject: string; body?: string }): Promise<void> {
+export async function createTicket(input: {
+  building_id: string;
+  unit_id?: string;
+  subject: string;
+  body?: string;
+  category?: Ticket["category"];
+  attachment_url?: string;
+}): Promise<void> {
   const tenant_id = await requireTenantId();
   const supabase = client();
   const {
@@ -287,6 +313,8 @@ export async function createTicket(input: { building_id: string; unit_id?: strin
     unit_id: input.unit_id || null,
     subject: input.subject,
     body: input.body || null,
+    category: input.category ?? "general",
+    attachment_url: input.attachment_url ?? null,
     reported_by_user_id: user?.id ?? null,
     tenant_id,
   });
@@ -348,7 +376,7 @@ export async function createComment(input: {
 export async function listNotifications(): Promise<Notification[]> {
   const { data, error } = await client()
     .from("notifications")
-    .select("id, user_id, type, related_announcement_id, related_invoice_id, related_ticket_id, is_read, created_at")
+    .select("id, user_id, type, related_announcement_id, related_invoice_id, related_ticket_id, message, is_read, created_at")
     .order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
   return data ?? [];
@@ -362,6 +390,37 @@ export async function markNotificationRead(id: string, isRead = true): Promise<v
 export async function markAllNotificationsRead(): Promise<void> {
   const { error } = await client().from("notifications").update({ is_read: true }).eq("is_read", false);
   if (error) throw new Error(error.message);
+}
+
+/**
+ * Manager/staff-only (notifications_insert RLS, migration 011) — fans a
+ * single message out to every resident of one building in a single
+ * insert. Unlike the trigger-driven notification types, this one has no
+ * announcement/invoice/ticket row backing it, so the text lives directly
+ * on each notification row via `message`.
+ */
+export async function sendBroadcastNotification(input: { building_id: string; message: string }): Promise<number> {
+  const tenant_id = await requireTenantId();
+  const supabase = client();
+
+  const { data: recipients, error: recipientsError } = await supabase
+    .from("users")
+    .select("id, units!inner(building_id)")
+    .eq("tenant_id", tenant_id)
+    .eq("units.building_id", input.building_id);
+  if (recipientsError) throw new Error(recipientsError.message);
+  if (!recipients || recipients.length === 0) return 0;
+
+  const { error } = await supabase.from("notifications").insert(
+    recipients.map((r) => ({
+      tenant_id,
+      user_id: r.id,
+      type: "broadcast_message" as const,
+      message: input.message,
+    }))
+  );
+  if (error) throw new Error(error.message);
+  return recipients.length;
 }
 
 /**

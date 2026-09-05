@@ -9,6 +9,8 @@ const TYPE_LABELS: Record<Notification["type"], string> = {
   invoice_issued: "Yeni aidat",
   ticket_updated: "Talep güncellendi",
   payment_completed: "Ödeme alındı",
+  reminder_due: "Ödeme hatırlatması",
+  broadcast_message: "Yönetimden mesaj",
 };
 
 /** Header bell — unread count + a short dropdown, full history lives at /blokmate/notifications. */

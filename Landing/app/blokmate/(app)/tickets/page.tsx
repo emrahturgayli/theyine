@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { listTickets, createTicket, listBuildings, type Ticket, type Building } from "@/lib/blokmate-data";
+import { uploadBlokmateAttachment } from "@/lib/blokmate-attachments";
 import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
 import { useBlokmateToast } from "@/lib/blokmate-toast";
 import TicketTable from "../components/TicketTable";
@@ -17,6 +18,8 @@ export default function TicketsPage() {
   const [buildingId, setBuildingId] = useState("");
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
+  const [category, setCategory] = useState<Ticket["category"]>("general");
+  const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   async function load() {
@@ -41,9 +44,12 @@ export default function TicketsPage() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await createTicket({ building_id: buildingId, subject, body: body || undefined });
+      const attachment_url = file ? await uploadBlokmateAttachment("tickets", file) : undefined;
+      await createTicket({ building_id: buildingId, subject, body: body || undefined, category, attachment_url });
       setSubject("");
       setBody("");
+      setCategory("general");
+      setFile(null);
       await load();
       toast.success("Talep oluşturuldu.");
     } catch (err) {
@@ -95,6 +101,27 @@ export default function TicketsPage() {
             onChange={(e) => setBody(e.target.value)}
             className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-blue-500"
           />
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <div className="min-w-[180px]">
+            <label className="text-xs font-medium text-ink-faint">Kategori</label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value as Ticket["category"])}
+              className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-blue-500"
+            >
+              <option value="general">Genel</option>
+              <option value="payment_notice">Ödeme Bildirimi</option>
+            </select>
+          </div>
+          <div className="flex-1 min-w-[200px]">
+            <label className="text-xs font-medium text-ink-faint">Dekont / dosya ekle (opsiyonel)</label>
+            <input
+              type="file"
+              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+              className="mt-1 block w-full text-sm text-ink-soft file:mr-3 file:min-h-[32px] file:rounded-md file:border-0 file:bg-mist file:px-3 file:text-xs file:font-semibold file:text-ink-soft"
+            />
+          </div>
         </div>
         <button
           type="submit"
