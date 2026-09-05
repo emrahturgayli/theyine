@@ -12,11 +12,14 @@ export default function Sidebar() {
   const { lang } = useBlokmateLanguage();
   const isResident = claims?.role === "resident";
 
+  const isManager = claims?.role === "manager";
+
   const NAV_ITEMS = isResident
     ? [
         { href: "/blokmate/dashboard", label: "Panel" },
         { href: "/blokmate/announcements", label: "Duyurular" },
         { href: "/blokmate/tickets", label: "Talepler" },
+        { href: "/blokmate/notifications", label: "Bildirimler" },
       ]
     : [
         { href: "/blokmate/dashboard", label: "Panel" },
@@ -26,6 +29,8 @@ export default function Sidebar() {
         { href: "/blokmate/payments", label: "Ödemeler" },
         { href: "/blokmate/announcements", label: "Duyurular" },
         { href: "/blokmate/tickets", label: "Talepler" },
+        { href: "/blokmate/notifications", label: "Bildirimler" },
+        ...(isManager ? [{ href: "/blokmate/settings", label: "Ayarlar" }] : []),
       ];
 
   return (

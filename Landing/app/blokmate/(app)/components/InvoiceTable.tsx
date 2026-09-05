@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { Invoice } from "@/lib/blokmate-data";
 import { formatBlokmateAmount } from "@/lib/blokmate-currency";
 import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
+import PayNowButton from "./PayNowButton";
 
 const STATUS_LABELS: Record<Invoice["status"], string> = {
   unpaid: "Ödenmedi",
@@ -26,6 +27,8 @@ export default function InvoiceTable({
   canManage = false,
   onMarkPaid,
   onDelete,
+  showPayButton = false,
+  onPaid,
 }: {
   invoices: Invoice[];
   loading: boolean;
@@ -34,6 +37,9 @@ export default function InvoiceTable({
   canManage?: boolean;
   onMarkPaid?: (invoice: Invoice) => Promise<void>;
   onDelete?: (invoice: Invoice) => void;
+  /** Resident self-service "Öde" button — see supabase/migrations/010_allow_resident_self_payment.sql. */
+  showPayButton?: boolean;
+  onPaid?: () => void | Promise<void>;
 }) {
   const [markingId, setMarkingId] = useState<string | null>(null);
   const { lang } = useBlokmateLanguage();
@@ -57,18 +63,18 @@ export default function InvoiceTable({
             <th className="px-4 py-3">Tutar</th>
             <th className="px-4 py-3">Son ödeme</th>
             <th className="px-4 py-3">Durum</th>
-            {canManage && <th className="px-4 py-3" />}
+            {(canManage || showPayButton) && <th className="px-4 py-3" />}
           </tr>
         </thead>
         <tbody className="divide-y divide-line">
           {loading && (
             <tr>
-              <td colSpan={canManage ? 5 : 4} className="px-4 py-6 text-center text-ink-faint">Yükleniyor…</td>
+              <td colSpan={canManage || showPayButton ? 5 : 4} className="px-4 py-6 text-center text-ink-faint">Yükleniyor…</td>
             </tr>
           )}
           {!loading && invoices.length === 0 && (
             <tr>
-              <td colSpan={canManage ? 5 : 4} className="px-4 py-6 text-center text-ink-faint">Kayıt yok.</td>
+              <td colSpan={canManage || showPayButton ? 5 : 4} className="px-4 py-6 text-center text-ink-faint">Kayıt yok.</td>
             </tr>
           )}
           {invoices.map((inv) => {
@@ -83,9 +89,12 @@ export default function InvoiceTable({
                     {STATUS_LABELS[inv.status]}
                   </span>
                 </td>
-                {canManage && (
+                {(canManage || showPayButton) && (
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-2">
+                      {payable && showPayButton && (
+                        <PayNowButton invoice={inv} onPaid={onPaid} />
+                      )}
                       {payable && onMarkPaid && (
                         <button
                           type="button"

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
+import NotificationBell from "./NotificationBell";
 
 const ROLE_LABELS: Record<string, string> = {
   manager: "Yönetici",
@@ -26,6 +27,7 @@ export default function Topbar() {
         {claims ? ROLE_LABELS[claims.role] ?? claims.role : "Rol bekleniyor…"}
       </div>
       <div className="flex items-center gap-3">
+        <NotificationBell />
         <span className="hidden text-sm text-ink-soft sm:inline">{session?.user.email}</span>
         <button
           type="button"

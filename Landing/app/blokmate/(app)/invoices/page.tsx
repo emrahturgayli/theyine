@@ -147,6 +147,8 @@ export default function InvoicesPage() {
         canManage={canManage}
         onMarkPaid={handleMarkPaid}
         onDelete={handleDelete}
+        showPayButton={!canManage}
+        onPaid={load}
       />
     </div>
   );

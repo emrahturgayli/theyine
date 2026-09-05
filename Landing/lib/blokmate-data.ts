@@ -70,6 +70,24 @@ export type Ticket = {
   status: "open" | "in_progress" | "resolved" | "closed";
   created_at: string;
 };
+export type Notification = {
+  id: string;
+  user_id: string;
+  type: "announcement_published" | "invoice_issued" | "ticket_updated" | "payment_completed";
+  related_announcement_id: string | null;
+  related_invoice_id: string | null;
+  related_ticket_id: string | null;
+  is_read: boolean;
+  created_at: string;
+};
+export type TenantSettings = {
+  tenant_id: string;
+  currency: "TRY" | "EUR" | "BGN" | null;
+  display_name: string | null;
+  contact_email: string | null;
+  contact_phone: string | null;
+  notify_email: boolean;
+};
 export type Comment = {
   id: string;
   building_id: string;
@@ -324,6 +342,59 @@ export async function createComment(input: {
     user_id: user.id,
     message: input.message,
   });
+  if (error) throw new Error(error.message);
+}
+
+export async function listNotifications(): Promise<Notification[]> {
+  const { data, error } = await client()
+    .from("notifications")
+    .select("id, user_id, type, related_announcement_id, related_invoice_id, related_ticket_id, is_read, created_at")
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
+export async function markNotificationRead(id: string, isRead = true): Promise<void> {
+  const { error } = await client().from("notifications").update({ is_read: isRead }).eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
+export async function markAllNotificationsRead(): Promise<void> {
+  const { error } = await client().from("notifications").update({ is_read: true }).eq("is_read", false);
+  if (error) throw new Error(error.message);
+}
+
+/**
+ * Returns null when no row exists yet — every tenant starts without one
+ * (see supabase/migrations/009_add_tenant_settings.sql), and callers should
+ * fall back to the locale-driven defaults in lib/blokmate-currency.ts
+ * rather than treat a missing row as an error.
+ */
+export async function getTenantSettings(): Promise<TenantSettings | null> {
+  const { data, error } = await client()
+    .from("tenant_settings")
+    .select("tenant_id, currency, display_name, contact_email, contact_phone, notify_email")
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return data ?? null;
+}
+
+/**
+ * Manager-only (tenant_settings_insert/update RLS, migration 009).
+ * Upserts on tenant_id since a tenant may be saving settings for the
+ * first time (no row yet) or editing an existing one.
+ */
+export async function upsertTenantSettings(input: {
+  currency?: TenantSettings["currency"];
+  display_name?: string;
+  contact_email?: string;
+  contact_phone?: string;
+  notify_email?: boolean;
+}): Promise<void> {
+  const tenant_id = await requireTenantId();
+  const { error } = await client()
+    .from("tenant_settings")
+    .upsert({ tenant_id, ...input }, { onConflict: "tenant_id" });
   if (error) throw new Error(error.message);
 }
 

@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { fetchDashboardMetrics, listInvoices, listAnnouncements, type DashboardMetrics, type Invoice, type Announcement } from "@/lib/blokmate-data";
 import { formatBlokmateAmount } from "@/lib/blokmate-currency";
 import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
+import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
 import DashboardCard from "../components/DashboardCard";
 import MetricGrid from "../components/MetricGrid";
 import AnnouncementList from "../components/AnnouncementList";
+import PayNowButton from "../components/PayNowButton";
+import OnboardingTips from "../components/OnboardingTips";
 
 function monthLabel(key: string) {
   const [y, m] = key.split("-").map(Number);
@@ -15,6 +18,8 @@ function monthLabel(key: string) {
 
 export default function BlokmateDashboardPage() {
   const { lang } = useBlokmateLanguage();
+  const { claims } = useBlokmateAuth();
+  const canManage = claims?.role === "manager" || claims?.role === "accountant";
   const formatAmount = (cents: number) => formatBlokmateAmount(cents, lang);
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -22,26 +27,22 @@ export default function BlokmateDashboardPage() {
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const [m, i, a] = await Promise.all([fetchDashboardMetrics(), listInvoices(), listAnnouncements()]);
-        if (cancelled) return;
-        setMetrics(m);
-        setInvoices(i);
-        setAnnouncements(a);
-        setStatus("ready");
-      } catch (err) {
-        if (cancelled) return;
-        setError(err instanceof Error ? err.message : "Bilinmeyen hata");
-        setStatus("error");
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
+  const load = useCallback(async () => {
+    try {
+      const [m, i, a] = await Promise.all([fetchDashboardMetrics(), listInvoices(), listAnnouncements()]);
+      setMetrics(m);
+      setInvoices(i);
+      setAnnouncements(a);
+      setStatus("ready");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Bilinmeyen hata");
+      setStatus("error");
+    }
   }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const unpaid = invoices.filter((i) => i.status === "unpaid" || i.status === "overdue");
   const maxMonthly = metrics ? Math.max(1, ...metrics.monthlyCollection.map((m) => m.totalCents)) : 1;
@@ -49,6 +50,8 @@ export default function BlokmateDashboardPage() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-ink">Panel</h1>
+
+      {canManage && <OnboardingTips />}
 
       {status === "error" && <p className="text-sm text-red-600">Veri alınamadı: {error}</p>}
 
@@ -151,9 +154,12 @@ export default function BlokmateDashboardPage() {
           )}
           <ul className="mt-3 divide-y divide-line">
             {unpaid.slice(0, 6).map((inv) => (
-              <li key={inv.id} className="flex items-center justify-between py-2 text-sm">
+              <li key={inv.id} className="flex items-center justify-between gap-3 py-2 text-sm">
                 <span className="text-ink-soft">{inv.due_date}</span>
-                <span className="font-semibold text-ink">{formatAmount(inv.amount_cents)}</span>
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-ink">{formatAmount(inv.amount_cents)}</span>
+                  {!canManage && <PayNowButton invoice={inv} onPaid={load} />}
+                </div>
               </li>
             ))}
           </ul>
