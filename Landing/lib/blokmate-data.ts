@@ -203,6 +203,11 @@ export async function markInvoicePaid(
   }
 }
 
+export async function deleteInvoice(id: string): Promise<void> {
+  const { error } = await client().from("invoices").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
 export async function listPayments(): Promise<Payment[]> {
   const { data, error } = await client()
     .from("payments")
@@ -226,6 +231,11 @@ export async function createAnnouncement(input: { building_id: string; title: st
   const { error } = await client()
     .from("announcements")
     .insert({ building_id: input.building_id, title: input.title, body: input.body, tenant_id });
+  if (error) throw new Error(error.message);
+}
+
+export async function deleteAnnouncement(id: string): Promise<void> {
+  const { error } = await client().from("announcements").delete().eq("id", id);
   if (error) throw new Error(error.message);
 }
 

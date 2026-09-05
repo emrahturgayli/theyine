@@ -1,8 +1,11 @@
 "use client";
 
 import type { Payment } from "@/lib/blokmate-data";
+import { formatBlokmateAmount } from "@/lib/blokmate-currency";
+import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
 
 export default function PaymentTable({ payments, loading }: { payments: Payment[]; loading: boolean }) {
+  const { lang } = useBlokmateLanguage();
   return (
     <div className="card overflow-x-auto">
       <table className="w-full text-left text-sm">
@@ -28,7 +31,7 @@ export default function PaymentTable({ payments, loading }: { payments: Payment[
           {payments.map((p) => (
             <tr key={p.id}>
               <td className="px-4 py-3 text-ink-soft">{new Date(p.paid_at).toLocaleDateString("tr-TR")}</td>
-              <td className="px-4 py-3 font-medium text-ink">{(p.amount_cents / 100).toFixed(2)}</td>
+              <td className="px-4 py-3 font-medium text-ink">{formatBlokmateAmount(p.amount_cents, lang)}</td>
               <td className="px-4 py-3 text-ink-soft">{p.method}</td>
               <td className="px-4 py-3 text-ink-faint">{p.reference ?? "—"}</td>
             </tr>

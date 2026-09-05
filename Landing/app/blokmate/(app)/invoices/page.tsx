@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { listInvoices, createInvoice, listUnits, markInvoicePaid, type Invoice, type Unit } from "@/lib/blokmate-data";
+import { listInvoices, createInvoice, listUnits, markInvoicePaid, deleteInvoice, type Invoice, type Unit } from "@/lib/blokmate-data";
 import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
 import { useBlokmateToast } from "@/lib/blokmate-toast";
 import InvoiceTable from "../components/InvoiceTable";
@@ -64,6 +64,17 @@ export default function InvoicesPage() {
     } catch (err) {
       const message = err instanceof Error ? err.message : "Bilinmeyen hata";
       toast.error(message);
+    }
+  }
+
+  async function handleDelete(invoice: Invoice) {
+    if (!window.confirm("Bu aidatı silmek istediğine emin misin? Bu işlem geri alınamaz.")) return;
+    try {
+      await deleteInvoice(invoice.id);
+      await load();
+      toast.success("Aidat silindi.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Bilinmeyen hata");
     }
   }
 
@@ -133,6 +144,7 @@ export default function InvoicesPage() {
         unitLabel={unitLabel}
         canManage={canManage}
         onMarkPaid={handleMarkPaid}
+        onDelete={handleDelete}
       />
     </div>
   );

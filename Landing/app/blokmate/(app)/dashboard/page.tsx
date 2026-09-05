@@ -2,13 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { fetchDashboardMetrics, listInvoices, listAnnouncements, type DashboardMetrics, type Invoice, type Announcement } from "@/lib/blokmate-data";
+import { formatBlokmateAmount } from "@/lib/blokmate-currency";
+import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
 import DashboardCard from "../components/DashboardCard";
 import MetricGrid from "../components/MetricGrid";
 import AnnouncementList from "../components/AnnouncementList";
-
-function formatAmount(cents: number, currency: string) {
-  return `${(cents / 100).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`;
-}
 
 function monthLabel(key: string) {
   const [y, m] = key.split("-").map(Number);
@@ -16,6 +14,8 @@ function monthLabel(key: string) {
 }
 
 export default function BlokmateDashboardPage() {
+  const { lang } = useBlokmateLanguage();
+  const formatAmount = (cents: number) => formatBlokmateAmount(cents, lang);
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
@@ -56,7 +56,7 @@ export default function BlokmateDashboardPage() {
         <DashboardCard label="Toplam daire sayısı" value={status === "loading" ? "—" : metrics?.totalUnits ?? 0} />
         <DashboardCard
           label="Toplam borç"
-          value={status === "loading" ? "—" : formatAmount(metrics?.totalDebtCents ?? 0, metrics?.currency ?? "BGN")}
+          value={status === "loading" ? "—" : formatAmount(metrics?.totalDebtCents ?? 0)}
           tone="danger"
         />
         <DashboardCard
@@ -89,7 +89,7 @@ export default function BlokmateDashboardPage() {
                   <div
                     className="w-full rounded-t-md bg-blue-500/80"
                     style={{ height: `${Math.max(4, (m.totalCents / maxMonthly) * 100)}%` }}
-                    title={formatAmount(m.totalCents, metrics.currency)}
+                    title={formatAmount(m.totalCents)}
                   />
                   <span className="text-[0.65rem] text-ink-faint">{monthLabel(m.month)}</span>
                 </div>
@@ -112,12 +112,12 @@ export default function BlokmateDashboardPage() {
               </div>
               <div className="mt-3 flex items-center justify-between text-sm">
                 <span className="text-ink-soft">
-                  Tahsil edilen: {formatAmount(metrics?.accrual.totalPaidCents ?? 0, metrics?.currency ?? "BGN")}
+                  Tahsil edilen: {formatAmount(metrics?.accrual.totalPaidCents ?? 0)}
                 </span>
                 <span className="font-semibold text-ink">%{metrics?.accrual.percentCollected ?? 0}</span>
               </div>
               <p className="mt-1 text-xs text-ink-faint">
-                Toplam tahakkuk: {formatAmount(metrics?.accrual.totalInvoicedCents ?? 0, metrics?.currency ?? "BGN")}
+                Toplam tahakkuk: {formatAmount(metrics?.accrual.totalInvoicedCents ?? 0)}
               </p>
             </>
           )}
@@ -153,7 +153,7 @@ export default function BlokmateDashboardPage() {
             {unpaid.slice(0, 6).map((inv) => (
               <li key={inv.id} className="flex items-center justify-between py-2 text-sm">
                 <span className="text-ink-soft">{inv.due_date}</span>
-                <span className="font-semibold text-ink">{formatAmount(inv.amount_cents, inv.currency)}</span>
+                <span className="font-semibold text-ink">{formatAmount(inv.amount_cents)}</span>
               </li>
             ))}
           </ul>

@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { listAnnouncements, createAnnouncement, listBuildings, type Announcement, type Building } from "@/lib/blokmate-data";
+import { listAnnouncements, createAnnouncement, deleteAnnouncement, listBuildings, type Announcement, type Building } from "@/lib/blokmate-data";
+import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
 import { useBlokmateToast } from "@/lib/blokmate-toast";
 import AnnouncementList from "../components/AnnouncementList";
 
 export default function AnnouncementsPage() {
+  const { claims } = useBlokmateAuth();
+  const canManage = claims?.role === "manager" || claims?.role === "staff";
   const toast = useBlokmateToast();
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [buildings, setBuildings] = useState<Building[]>([]);
@@ -50,6 +53,17 @@ export default function AnnouncementsPage() {
       toast.error(message);
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleDelete(announcement: Announcement) {
+    if (!window.confirm("Bu duyuruyu silmek istediğine emin misin? Bu işlem geri alınamaz.")) return;
+    try {
+      await deleteAnnouncement(announcement.id);
+      await load();
+      toast.success("Duyuru silindi.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Bilinmeyen hata");
     }
   }
 
@@ -105,7 +119,12 @@ export default function AnnouncementsPage() {
 
       {status === "error" && <p className="text-sm text-red-600">{error}</p>}
 
-      <AnnouncementList announcements={announcements} loading={status === "loading"} />
+      <AnnouncementList
+        announcements={announcements}
+        loading={status === "loading"}
+        canManage={canManage}
+        onDelete={handleDelete}
+      />
     </div>
   );
 }

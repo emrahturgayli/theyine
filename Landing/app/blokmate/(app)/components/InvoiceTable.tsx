@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import type { Invoice } from "@/lib/blokmate-data";
+import { formatBlokmateAmount } from "@/lib/blokmate-currency";
+import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
 
 const STATUS_LABELS: Record<Invoice["status"], string> = {
   unpaid: "Ödenmedi",
@@ -23,6 +25,7 @@ export default function InvoiceTable({
   unitLabel,
   canManage = false,
   onMarkPaid,
+  onDelete,
 }: {
   invoices: Invoice[];
   loading: boolean;
@@ -30,8 +33,10 @@ export default function InvoiceTable({
   /** Manager/accountant only — RLS enforces this server-side regardless, this just hides the button for residents. */
   canManage?: boolean;
   onMarkPaid?: (invoice: Invoice) => Promise<void>;
+  onDelete?: (invoice: Invoice) => void;
 }) {
   const [markingId, setMarkingId] = useState<string | null>(null);
+  const { lang } = useBlokmateLanguage();
 
   async function handleMarkPaid(inv: Invoice) {
     if (!onMarkPaid || markingId) return;
@@ -71,9 +76,7 @@ export default function InvoiceTable({
             return (
               <tr key={inv.id}>
                 <td className="px-4 py-3 font-medium text-ink">{unitLabel(inv.unit_id)}</td>
-                <td className="px-4 py-3 text-ink-soft">
-                  {(inv.amount_cents / 100).toFixed(2)} {inv.currency}
-                </td>
+                <td className="px-4 py-3 text-ink-soft">{formatBlokmateAmount(inv.amount_cents, lang)}</td>
                 <td className="px-4 py-3 text-ink-soft">{inv.due_date}</td>
                 <td className="px-4 py-3">
                   <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_STYLES[inv.status]}`}>
@@ -81,17 +84,28 @@ export default function InvoiceTable({
                   </span>
                 </td>
                 {canManage && (
-                  <td className="px-4 py-3 text-right">
-                    {payable && onMarkPaid && (
-                      <button
-                        type="button"
-                        onClick={() => handleMarkPaid(inv)}
-                        disabled={markingId === inv.id}
-                        className="min-h-[32px] rounded-md border border-line px-2.5 text-xs font-semibold text-ink-soft transition-colors hover:border-green-500 hover:text-green-600 disabled:opacity-60"
-                      >
-                        {markingId === inv.id ? "İşleniyor…" : "Ödendi olarak işaretle"}
-                      </button>
-                    )}
+                  <td className="px-4 py-3">
+                    <div className="flex justify-end gap-2">
+                      {payable && onMarkPaid && (
+                        <button
+                          type="button"
+                          onClick={() => handleMarkPaid(inv)}
+                          disabled={markingId === inv.id}
+                          className="min-h-[32px] rounded-md border border-line px-2.5 text-xs font-semibold text-ink-soft transition-colors hover:border-green-500 hover:text-green-600 disabled:opacity-60"
+                        >
+                          {markingId === inv.id ? "İşleniyor…" : "Ödendi olarak işaretle"}
+                        </button>
+                      )}
+                      {onDelete && (
+                        <button
+                          type="button"
+                          onClick={() => onDelete(inv)}
+                          className="min-h-[32px] rounded-md border border-line px-2.5 text-xs font-semibold text-ink-soft transition-colors hover:border-red-500 hover:text-red-600"
+                        >
+                          Sil
+                        </button>
+                      )}
+                    </div>
                   </td>
                 )}
               </tr>
