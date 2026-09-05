@@ -2,10 +2,13 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { listTickets, createTicket, listBuildings, type Ticket, type Building } from "@/lib/blokmate-data";
+import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
 import { useBlokmateToast } from "@/lib/blokmate-toast";
 import TicketTable from "../components/TicketTable";
 
 export default function TicketsPage() {
+  const { session, claims } = useBlokmateAuth();
+  const canManage = claims?.role === "manager" || claims?.role === "staff";
   const toast = useBlokmateToast();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [buildings, setBuildings] = useState<Building[]>([]);
@@ -104,7 +107,12 @@ export default function TicketsPage() {
 
       {status === "error" && <p className="text-sm text-red-600">{error}</p>}
 
-      <TicketTable tickets={tickets} loading={status === "loading"} />
+      <TicketTable
+        tickets={tickets}
+        loading={status === "loading"}
+        canManage={canManage}
+        currentUserId={session?.user.id}
+      />
     </div>
   );
 }

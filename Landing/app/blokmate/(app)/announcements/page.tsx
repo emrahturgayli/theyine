@@ -71,6 +71,7 @@ export default function AnnouncementsPage() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-ink">Duyurular</h1>
 
+      {canManage && (
       <form onSubmit={handleSubmit} className="card space-y-3 p-4">
         <div className="flex flex-wrap gap-3">
           <div className="min-w-[160px]">
@@ -116,6 +117,7 @@ export default function AnnouncementsPage() {
           {submitting ? "Yayınlanıyor…" : "Yayınla"}
         </button>
       </form>
+      )}
 
       {status === "error" && <p className="text-sm text-red-600">{error}</p>}
 
@@ -124,6 +126,7 @@ export default function AnnouncementsPage() {
         loading={status === "loading"}
         canManage={canManage}
         onDelete={handleDelete}
+        showComments
       />
     </div>
   );

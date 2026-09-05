@@ -4,11 +4,14 @@ import { useEffect, useState, type FormEvent } from "react";
 import { listUnits, createUnit, updateUnit, deleteUnit, listBuildings, type Unit, type Building } from "@/lib/blokmate-data";
 import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
 import { useBlokmateToast } from "@/lib/blokmate-toast";
+import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
+import { buildingWord } from "@/lib/blokmate-terms";
 import UnitList from "../components/UnitList";
 import Modal from "../components/Modal";
 
 export default function UnitsPage() {
   const { claims } = useBlokmateAuth();
+  const { lang } = useBlokmateLanguage();
   const toast = useBlokmateToast();
   const canManage = claims?.role === "manager" || claims?.role === "accountant";
 
@@ -106,9 +109,10 @@ export default function UnitsPage() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-ink">Daireler</h1>
 
+      {canManage && (
       <form onSubmit={handleSubmit} className="card flex flex-wrap items-end gap-3 p-4">
         <div className="min-w-[160px]">
-          <label className="text-xs font-medium text-ink-faint">Bina</label>
+          <label className="text-xs font-medium text-ink-faint">{buildingWord(lang)}</label>
           <select
             required
             value={buildingId}
@@ -147,10 +151,11 @@ export default function UnitsPage() {
           {submitting ? "Ekleniyor…" : "Ekle"}
         </button>
       </form>
+      )}
 
       {status === "error" && <p className="text-sm text-red-600">{error}</p>}
-      {status === "ready" && buildings.length === 0 && (
-        <p className="text-sm text-ink-faint">Önce bir bina eklemelisin.</p>
+      {canManage && status === "ready" && buildings.length === 0 && (
+        <p className="text-sm text-ink-faint">Önce bir {buildingWord(lang).toLowerCase()} eklemelisin.</p>
       )}
 
       <UnitList
@@ -166,7 +171,7 @@ export default function UnitsPage() {
         <Modal title="Daireyi düzenle" onClose={() => setEditing(null)}>
           <form onSubmit={handleEditSubmit} className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-ink">Bina</label>
+              <label className="text-sm font-medium text-ink">{buildingWord(lang)}</label>
               <select
                 required
                 value={editBuildingId}

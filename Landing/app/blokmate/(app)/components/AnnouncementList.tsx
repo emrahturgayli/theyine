@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import type { Announcement } from "@/lib/blokmate-data";
+import CommentThread from "./CommentThread";
 
 export default function AnnouncementList({
   announcements,
@@ -8,14 +10,18 @@ export default function AnnouncementList({
   limit,
   canManage = false,
   onDelete,
+  showComments = false,
 }: {
   announcements: Announcement[];
   loading: boolean;
   limit?: number;
   canManage?: boolean;
   onDelete?: (announcement: Announcement) => void;
+  /** Manager/resident detail views want the comment thread; the compact dashboard summary doesn't. */
+  showComments?: boolean;
 }) {
   const items = limit ? announcements.slice(0, limit) : announcements;
+  const [openId, setOpenId] = useState<string | null>(null);
 
   if (loading) return <p className="text-sm text-ink-faint">Yükleniyor…</p>;
   if (items.length === 0) return <p className="text-sm text-ink-faint">Henüz duyuru yok.</p>;
@@ -28,6 +34,15 @@ export default function AnnouncementList({
             <h3 className="text-sm font-semibold text-ink">{a.title}</h3>
             <div className="flex items-center gap-2">
               <span className="text-xs text-ink-faint">{new Date(a.published_at).toLocaleDateString("tr-TR")}</span>
+              {showComments && (
+                <button
+                  type="button"
+                  onClick={() => setOpenId(openId === a.id ? null : a.id)}
+                  className="min-h-[28px] rounded-md border border-line px-2 text-xs font-semibold text-ink-soft transition-colors hover:border-blue-500 hover:text-blue-600"
+                >
+                  Yorumlar
+                </button>
+              )}
               {canManage && onDelete && (
                 <button
                   type="button"
@@ -40,6 +55,9 @@ export default function AnnouncementList({
             </div>
           </div>
           <p className="mt-0.5 text-sm text-ink-soft">{a.body}</p>
+          {showComments && openId === a.id && (
+            <CommentThread buildingId={a.building_id} announcementId={a.id} />
+          )}
         </li>
       ))}
     </ul>

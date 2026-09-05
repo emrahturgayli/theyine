@@ -2,19 +2,31 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-const NAV_ITEMS = [
-  { href: "/blokmate/dashboard", label: "Panel" },
-  { href: "/blokmate/buildings", label: "Binalar" },
-  { href: "/blokmate/units", label: "Daireler" },
-  { href: "/blokmate/invoices", label: "Aidatlar" },
-  { href: "/blokmate/payments", label: "Ödemeler" },
-  { href: "/blokmate/announcements", label: "Duyurular" },
-  { href: "/blokmate/tickets", label: "Talepler" },
-];
+import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
+import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
+import { buildingWordPlural } from "@/lib/blokmate-terms";
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { claims } = useBlokmateAuth();
+  const { lang } = useBlokmateLanguage();
+  const isResident = claims?.role === "resident";
+
+  const NAV_ITEMS = isResident
+    ? [
+        { href: "/blokmate/dashboard", label: "Panel" },
+        { href: "/blokmate/announcements", label: "Duyurular" },
+        { href: "/blokmate/tickets", label: "Talepler" },
+      ]
+    : [
+        { href: "/blokmate/dashboard", label: "Panel" },
+        { href: "/blokmate/buildings", label: buildingWordPlural(lang) },
+        { href: "/blokmate/units", label: "Daireler" },
+        { href: "/blokmate/invoices", label: "Aidatlar" },
+        { href: "/blokmate/payments", label: "Ödemeler" },
+        { href: "/blokmate/announcements", label: "Duyurular" },
+        { href: "/blokmate/tickets", label: "Talepler" },
+      ];
 
   return (
     <aside className="hidden w-60 shrink-0 border-r border-line bg-surface md:block">

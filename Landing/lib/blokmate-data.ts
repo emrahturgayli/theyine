@@ -64,9 +64,19 @@ export type Ticket = {
   id: string;
   building_id: string;
   unit_id: string | null;
+  reported_by_user_id: string | null;
   subject: string;
   body: string | null;
   status: "open" | "in_progress" | "resolved" | "closed";
+  created_at: string;
+};
+export type Comment = {
+  id: string;
+  building_id: string;
+  announcement_id: string | null;
+  ticket_id: string | null;
+  user_id: string;
+  message: string;
   created_at: string;
 };
 
@@ -242,7 +252,7 @@ export async function deleteAnnouncement(id: string): Promise<void> {
 export async function listTickets(): Promise<Ticket[]> {
   const { data, error } = await client()
     .from("tickets")
-    .select("id, building_id, unit_id, subject, body, status, created_at")
+    .select("id, building_id, unit_id, reported_by_user_id, subject, body, status, created_at")
     .order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
   return data ?? [];
@@ -250,12 +260,69 @@ export async function listTickets(): Promise<Ticket[]> {
 
 export async function createTicket(input: { building_id: string; unit_id?: string; subject: string; body?: string }): Promise<void> {
   const tenant_id = await requireTenantId();
-  const { error } = await client().from("tickets").insert({
+  const supabase = client();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { error } = await supabase.from("tickets").insert({
     building_id: input.building_id,
     unit_id: input.unit_id || null,
     subject: input.subject,
     body: input.body || null,
+    reported_by_user_id: user?.id ?? null,
     tenant_id,
+  });
+  if (error) throw new Error(error.message);
+}
+
+export async function listCommentsForAnnouncement(announcementId: string): Promise<Comment[]> {
+  const { data, error } = await client()
+    .from("comments")
+    .select("id, building_id, announcement_id, ticket_id, user_id, message, created_at")
+    .eq("announcement_id", announcementId)
+    .order("created_at", { ascending: true });
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
+export async function listCommentsForTicket(ticketId: string): Promise<Comment[]> {
+  const { data, error } = await client()
+    .from("comments")
+    .select("id, building_id, announcement_id, ticket_id, user_id, message, created_at")
+    .eq("ticket_id", ticketId)
+    .order("created_at", { ascending: true });
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
+/**
+ * RLS's comments_insert policy (supabase/migrations/007_add_comments_and_resident_scoping.sql)
+ * is the actual gate on who may post where — a resident commenting on an
+ * announcement outside their building, or a ticket they didn't file, gets
+ * rejected there even if this function is called directly. user_id must
+ * equal auth.uid() per that policy, so it's read from the session rather
+ * than trusted from a caller-supplied value.
+ */
+export async function createComment(input: {
+  building_id: string;
+  announcement_id?: string;
+  ticket_id?: string;
+  message: string;
+}): Promise<void> {
+  const tenant_id = await requireTenantId();
+  const supabase = client();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Oturum bulunamadı — lütfen tekrar giriş yapın.");
+
+  const { error } = await supabase.from("comments").insert({
+    tenant_id,
+    building_id: input.building_id,
+    announcement_id: input.announcement_id ?? null,
+    ticket_id: input.ticket_id ?? null,
+    user_id: user.id,
+    message: input.message,
   });
   if (error) throw new Error(error.message);
 }

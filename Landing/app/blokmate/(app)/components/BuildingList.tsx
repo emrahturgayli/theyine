@@ -1,6 +1,8 @@
 "use client";
 
 import type { Building } from "@/lib/blokmate-data";
+import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
+import { buildingWord } from "@/lib/blokmate-terms";
 
 export default function BuildingList({
   buildings,
@@ -15,12 +17,13 @@ export default function BuildingList({
   onEdit?: (building: Building) => void;
   onDelete?: (building: Building) => void;
 }) {
+  const { lang } = useBlokmateLanguage();
   return (
     <div className="card overflow-x-auto">
       <table className="w-full text-left text-sm">
         <thead className="border-b border-line text-xs uppercase tracking-wide text-ink-faint">
           <tr>
-            <th className="px-4 py-3">Bina</th>
+            <th className="px-4 py-3">{buildingWord(lang)}</th>
             <th className="px-4 py-3">Adres</th>
             <th className="px-4 py-3">Daire sayısı</th>
             {canManage && <th className="px-4 py-3" />}

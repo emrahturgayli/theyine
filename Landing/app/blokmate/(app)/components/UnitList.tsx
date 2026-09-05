@@ -1,6 +1,8 @@
 "use client";
 
 import type { Unit } from "@/lib/blokmate-data";
+import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
+import { buildingWord } from "@/lib/blokmate-terms";
 
 export default function UnitList({
   units,
@@ -17,13 +19,14 @@ export default function UnitList({
   onEdit?: (unit: Unit) => void;
   onDelete?: (unit: Unit) => void;
 }) {
+  const { lang } = useBlokmateLanguage();
   return (
     <div className="card overflow-x-auto">
       <table className="w-full text-left text-sm">
         <thead className="border-b border-line text-xs uppercase tracking-wide text-ink-faint">
           <tr>
             <th className="px-4 py-3">Daire</th>
-            <th className="px-4 py-3">Bina</th>
+            <th className="px-4 py-3">{buildingWord(lang)}</th>
             <th className="px-4 py-3">Malik</th>
             {canManage && <th className="px-4 py-3" />}
           </tr>

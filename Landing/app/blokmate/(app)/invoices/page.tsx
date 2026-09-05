@@ -86,6 +86,7 @@ export default function InvoicesPage() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-ink">Aidatlar</h1>
 
+      {canManage && (
       <form onSubmit={handleSubmit} className="card flex flex-wrap items-end gap-3 p-4">
         <div className="min-w-[140px]">
           <label className="text-xs font-medium text-ink-faint">Daire</label>
@@ -132,9 +133,10 @@ export default function InvoicesPage() {
           {submitting ? "Ekleniyor…" : "Oluştur"}
         </button>
       </form>
+      )}
 
       {status === "error" && <p className="text-sm text-red-600">{error}</p>}
-      {status === "ready" && units.length === 0 && (
+      {canManage && status === "ready" && units.length === 0 && (
         <p className="text-sm text-ink-faint">Önce bir daire eklemelisin.</p>
       )}
 

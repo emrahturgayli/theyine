@@ -4,11 +4,14 @@ import { useEffect, useState, type FormEvent } from "react";
 import { listBuildings, createBuilding, updateBuilding, deleteBuilding, type Building } from "@/lib/blokmate-data";
 import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
 import { useBlokmateToast } from "@/lib/blokmate-toast";
+import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
+import { buildingWord, buildingWordPlural } from "@/lib/blokmate-terms";
 import BuildingList from "../components/BuildingList";
 import Modal from "../components/Modal";
 
 export default function BuildingsPage() {
   const { claims } = useBlokmateAuth();
+  const { lang } = useBlokmateLanguage();
   const toast = useBlokmateToast();
   const canManage = claims?.role === "manager" || claims?.role === "accountant";
 
@@ -46,7 +49,7 @@ export default function BuildingsPage() {
       setName("");
       setAddress("");
       await load();
-      toast.success("Bina eklendi.");
+      toast.success(`${buildingWord(lang)} eklendi.`);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Bilinmeyen hata";
       setError(message);
@@ -71,7 +74,7 @@ export default function BuildingsPage() {
       await updateBuilding(editing.id, { name: editName, address: editAddress || undefined });
       setEditing(null);
       await load();
-      toast.success("Bina güncellendi.");
+      toast.success(`${buildingWord(lang)} güncellendi.`);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Bilinmeyen hata");
     } finally {
@@ -84,7 +87,7 @@ export default function BuildingsPage() {
     try {
       await deleteBuilding(building.id);
       await load();
-      toast.success("Bina silindi.");
+      toast.success(`${buildingWord(lang)} silindi.`);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Bilinmeyen hata");
     }
@@ -92,11 +95,12 @@ export default function BuildingsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-ink">Binalar</h1>
+      <h1 className="text-2xl font-bold text-ink">{buildingWordPlural(lang)}</h1>
 
+      {canManage && (
       <form onSubmit={handleSubmit} className="card flex flex-wrap items-end gap-3 p-4">
         <div className="flex-1 min-w-[160px]">
-          <label className="text-xs font-medium text-ink-faint">Bina adı</label>
+          <label className="text-xs font-medium text-ink-faint">{buildingWord(lang)} adı</label>
           <input
             required
             value={name}
@@ -116,6 +120,7 @@ export default function BuildingsPage() {
           {submitting ? "Ekleniyor…" : "Ekle"}
         </button>
       </form>
+      )}
 
       {status === "error" && <p className="text-sm text-red-600">{error}</p>}
 
@@ -128,10 +133,10 @@ export default function BuildingsPage() {
       />
 
       {editing && (
-        <Modal title="Binayı düzenle" onClose={() => setEditing(null)}>
+        <Modal title={`${buildingWord(lang)} düzenle`} onClose={() => setEditing(null)}>
           <form onSubmit={handleEditSubmit} className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-ink">Bina adı</label>
+              <label className="text-sm font-medium text-ink">{buildingWord(lang)} adı</label>
               <input
                 required
                 value={editName}
