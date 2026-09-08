@@ -102,7 +102,7 @@
     "plans": [
       {
         "name": "Starter",
-        "price": "$29/mo",
+        "price": "€29/mo",
         "unit": "1 building, up to 20 units",
         "features": [
           "Dues tracking & online payment",
@@ -112,7 +112,7 @@
       },
       {
         "name": "Pro",
-        "price": "$79/mo",
+        "price": "€79/mo",
         "unit": "Unlimited buildings/units",
         "features": [
           "Everything in Starter",

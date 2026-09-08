@@ -42,3 +42,23 @@ export function formatBlokmateAmount(cents: number, lang: BlokmateLanguage, tena
   });
   return `${amount} ${symbol}`;
 }
+
+/**
+ * Marketing-page currency formatter — for the logged-out /blokmate
+ * landing page's mockup cards (Dashboard.tsx, MiniDemo.tsx), which have
+ * no tenant/invoice to read a currency off of, only the visitor's
+ * language. Locked to the same TR->TRY / EN,BG->EUR rule as
+ * getBlokmateCurrency (no tenant override — there's no tenant here), via
+ * Intl.NumberFormat rather than the manual toLocaleString + symbol
+ * concatenation formatBlokmateAmount uses, since these callers pass
+ * whole-currency-unit placeholder numbers (80, 8140), not integer cents.
+ */
+export function formatCurrency(value: number, lang: BlokmateLanguage): string {
+  const { code, locale } = getBlokmateCurrency(lang);
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: code,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);
+}

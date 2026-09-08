@@ -4,15 +4,18 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { getTenantSettings, upsertTenantSettings, type TenantSettings, type TenantPlan } from "@/lib/blokmate-data";
 import { seedDemoData } from "@/lib/blokmate-demo-seed";
-import { BLOKMATE_PLANS } from "@/lib/blokmate-plans";
+import { getBlokmatePlans } from "@/lib/blokmate-plans";
 import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
 import { useBlokmateToast } from "@/lib/blokmate-toast";
+import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
 
 /** Manager-only tenant settings — RLS (tenant_settings_update, migration 009) enforces this server-side too. */
 export default function SettingsPage() {
   const router = useRouter();
   const { claims, loading: authLoading } = useBlokmateAuth();
+  const { lang } = useBlokmateLanguage();
   const toast = useBlokmateToast();
+  const plans = getBlokmatePlans(lang);
   const isManager = claims?.role === "manager";
 
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
@@ -186,7 +189,7 @@ export default function SettingsPage() {
           </p>
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          {BLOKMATE_PLANS.map((p) => {
+          {plans.map((p) => {
             const active = plan === p.id;
             return (
               <div

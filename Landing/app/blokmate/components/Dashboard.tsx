@@ -1,5 +1,8 @@
 "use client";
 
+import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
+import { formatCurrency } from "@/lib/blokmate-currency";
+
 /**
  * Manager view mockup — a preview of the panel a building manager sees:
  * overdue payers, new requests, and current balance. Rendered with
@@ -9,12 +12,16 @@
  * data lives in lib/blokmate-dashboard-data.ts (fetchManagerDashboard /
  * fetchResidentDashboard); wire that in once an authenticated dashboard
  * route exists, don't point this marketing preview at live data.
+ *
+ * Amounts are locale-aware (formatCurrency, TR->TRY / EN,BG->EUR) rather
+ * than a hardcoded "80 лв" — this mockup is the first thing a Bulgarian
+ * visitor sees, and BGN reads as stale now that Bulgaria is on the euro.
  */
 
 const MOCK_UNPAID = [
-  { unit: "3B", owner: "A. Petrov", amount: "80 лв", daysOverdue: 12 },
-  { unit: "5A", owner: "M. Ivanova", amount: "80 лв", daysOverdue: 4 },
-  { unit: "1C", owner: "S. Dimitrov", amount: "160 лв", daysOverdue: 21 },
+  { unit: "3B", owner: "A. Petrov", amount: 80, daysOverdue: 12 },
+  { unit: "5A", owner: "M. Ivanova", amount: 80, daysOverdue: 4 },
+  { unit: "1C", owner: "S. Dimitrov", amount: 160, daysOverdue: 21 },
 ];
 
 const MOCK_REQUESTS = [
@@ -28,6 +35,8 @@ const STATUS_LABEL: Record<"open" | "in_progress", string> = {
 };
 
 export default function Dashboard() {
+  const { lang } = useBlokmateLanguage();
+
   return (
     <div className="card mx-auto w-full max-w-3xl overflow-hidden text-left shadow-lift">
       <div className="flex items-center justify-between border-b border-line bg-mist/50 px-6 py-4">
@@ -51,7 +60,7 @@ export default function Dashboard() {
                   <span className="ml-2 text-ink-faint">{row.owner}</span>
                 </div>
                 <div className="text-right">
-                  <div className="font-semibold text-ink">{row.amount}</div>
+                  <div className="font-semibold text-ink">{formatCurrency(row.amount, lang)}</div>
                   <div className="text-xs text-red-500">{row.daysOverdue} gün gecikme</div>
                 </div>
               </li>
@@ -82,7 +91,7 @@ export default function Dashboard() {
 
           <div className="mt-6 rounded-xl bg-mist/60 p-4">
             <div className="text-xs font-medium uppercase tracking-wide text-ink-faint">Güncel Bakiye</div>
-            <div className="mt-1 text-2xl font-bold text-ink">8.140 лв</div>
+            <div className="mt-1 text-2xl font-bold text-ink">{formatCurrency(8140, lang)}</div>
           </div>
         </div>
       </div>

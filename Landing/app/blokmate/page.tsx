@@ -2,7 +2,6 @@
 
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import Dashboard from "./components/Dashboard";
 import HowItWorks from "./components/HowItWorks";
 import Features from "./components/Features";
 import DemoVideo from "./components/DemoVideo";
@@ -37,14 +36,9 @@ export default function BlokmatePage() {
       <Navbar />
       <main>
         <Hero />
-        <section className="border-b border-line py-16 md:py-20">
-          <div className="container-shell">
-            <Dashboard />
-          </div>
-        </section>
+        <DemoVideo />
         <HowItWorks />
         <Features />
-        <DemoVideo />
         <PricingSummary />
         <Testimonials />
         <section className="py-20 md:py-28">

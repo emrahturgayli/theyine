@@ -30,7 +30,7 @@ export default function BlokMateHero() {
           <a
             href="#demo"
             onClick={() => trackEvent("cta_click", "blokmate_hero_demo")}
-            className="btn w-full bg-blue-600 text-white shadow-soft hover:bg-blue-700 sm:w-auto"
+            className="btn w-full bg-blue-600 text-base font-bold text-white shadow-soft hover:bg-blue-700 sm:w-auto sm:text-sm sm:font-semibold"
           >
             {hero.ctaDemo}
           </a>
