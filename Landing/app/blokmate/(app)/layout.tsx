@@ -6,6 +6,7 @@ import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
 import { BlokmateToastProvider } from "@/lib/blokmate-toast";
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
+import NoClaimsBanner from "./components/NoClaimsBanner";
 
 /**
  * Shared shell for every authenticated BlokMate page (dashboard,
@@ -50,13 +51,7 @@ export default function BlokmateAppLayout({ children }: { children: React.ReactN
         <Sidebar />
         <div className="flex flex-1 flex-col">
           <Topbar />
-          {!claims && (
-            <div className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-800 md:px-6 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-300">
-              Oturumunda henüz tenant_id/rol bilgisi yok — Supabase Auth Hook
-              (Custom Access Token) etkin değil ya da hesabın public.users
-              tablosunda henüz oluşturulmadı. Listeler bu durumda boş görünür.
-            </div>
-          )}
+          {!claims && <NoClaimsBanner />}
           <main className="flex-1 p-4 md:p-6">{children}</main>
         </div>
       </div>

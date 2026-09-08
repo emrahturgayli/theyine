@@ -30,6 +30,7 @@ export default function Sidebar() {
         { href: "/blokmate/announcements", label: "Duyurular" },
         { href: "/blokmate/tickets", label: "Talepler" },
         { href: "/blokmate/notifications", label: "Bildirimler" },
+        ...(isManager ? [{ href: "/blokmate/invites", label: "Davetler" }] : []),
         ...(isManager ? [{ href: "/blokmate/settings", label: "Ayarlar" }] : []),
       ];
 
