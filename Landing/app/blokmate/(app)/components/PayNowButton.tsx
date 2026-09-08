@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Invoice } from "@/lib/blokmate-data";
+import type { Invoice, TenantSettings } from "@/lib/blokmate-data";
 import { startPaymentSession, completeMockPayment } from "@/lib/blokmate-payments";
 import { formatBlokmateAmount } from "@/lib/blokmate-currency";
 import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
@@ -12,9 +12,11 @@ import Modal from "./Modal";
 export default function PayNowButton({
   invoice,
   onPaid,
+  currency,
 }: {
   invoice: Pick<Invoice, "id" | "amount_cents" | "currency">;
   onPaid?: () => void | Promise<void>;
+  currency?: TenantSettings["currency"];
 }) {
   const { lang } = useBlokmateLanguage();
   const toast = useBlokmateToast();
@@ -53,7 +55,7 @@ export default function PayNowButton({
         <Modal title="Ödeme" onClose={() => (!paying ? setOpen(false) : undefined)}>
           <div className="space-y-4">
             <p className="text-sm text-ink-soft">
-              <span className="font-semibold text-ink">{formatBlokmateAmount(invoice.amount_cents, lang)}</span>{" "}
+              <span className="font-semibold text-ink">{formatBlokmateAmount(invoice.amount_cents, lang, currency)}</span>{" "}
               tutarındaki aidatı ödemek üzeresin.
             </p>
             <p className="text-xs text-ink-faint">

@@ -6,11 +6,14 @@ import { uploadBlokmateAttachment } from "@/lib/blokmate-attachments";
 import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
 import { useBlokmateToast } from "@/lib/blokmate-toast";
 import TicketTable from "../components/TicketTable";
+import BuildingFilterBar from "../components/BuildingFilterBar";
+import { useBuildingFilter } from "../components/useBuildingFilter";
 
 export default function TicketsPage() {
   const { session, claims } = useBlokmateAuth();
   const canManage = claims?.role === "manager" || claims?.role === "staff";
   const toast = useBlokmateToast();
+  const { buildingId: filterBuildingId } = useBuildingFilter();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
@@ -24,7 +27,7 @@ export default function TicketsPage() {
 
   async function load() {
     try {
-      const [t, b] = await Promise.all([listTickets(), listBuildings()]);
+      const [t, b] = await Promise.all([listTickets(filterBuildingId || undefined), listBuildings()]);
       setTickets(t);
       setBuildings(b);
       if (!buildingId && b.length > 0) setBuildingId(b[0].id);
@@ -38,7 +41,7 @@ export default function TicketsPage() {
   useEffect(() => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [filterBuildingId]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -64,7 +67,10 @@ export default function TicketsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-ink">Talepler</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-bold text-ink">Talepler</h1>
+        <BuildingFilterBar buildings={buildings} />
+      </div>
 
       <form onSubmit={handleSubmit} className="card space-y-3 p-4">
         <div className="flex flex-wrap gap-3">

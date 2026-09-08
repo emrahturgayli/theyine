@@ -149,8 +149,24 @@ export async function deleteBuilding(id: string): Promise<void> {
   if (error) throw new Error(error.message);
 }
 
-export async function listUnits(): Promise<Unit[]> {
-  const { data, error } = await client().from("units").select("id, building_id, label, owner_name").order("label");
+/**
+ * Building ids for the units in one building — used by the list*
+ * functions below to scope invoices/payments (which have no building_id
+ * column of their own) to the global "Bina Seç" filter without an
+ * embedded-resource join per call. RLS still applies to this query same
+ * as listUnits, so a resident passing another building's id here just
+ * gets an empty array back, not another tenant's/building's unit ids.
+ */
+async function unitIdsForBuilding(buildingId: string): Promise<string[]> {
+  const { data, error } = await client().from("units").select("id").eq("building_id", buildingId);
+  if (error) throw new Error(error.message);
+  return (data ?? []).map((u) => u.id);
+}
+
+export async function listUnits(buildingId?: string): Promise<Unit[]> {
+  let query = client().from("units").select("id, building_id, label, owner_name");
+  if (buildingId) query = query.eq("building_id", buildingId);
+  const { data, error } = await query.order("label");
   if (error) throw new Error(error.message);
   return data ?? [];
 }
@@ -179,11 +195,14 @@ export async function deleteUnit(id: string): Promise<void> {
   if (error) throw new Error(error.message);
 }
 
-export async function listInvoices(): Promise<Invoice[]> {
-  const { data, error } = await client()
-    .from("invoices")
-    .select("id, unit_id, amount_cents, currency, due_date, status, description")
-    .order("due_date", { ascending: false });
+export async function listInvoices(buildingId?: string): Promise<Invoice[]> {
+  let query = client().from("invoices").select("id, unit_id, amount_cents, currency, due_date, status, description");
+  if (buildingId) {
+    const unitIds = await unitIdsForBuilding(buildingId);
+    if (unitIds.length === 0) return [];
+    query = query.in("unit_id", unitIds);
+  }
+  const { data, error } = await query.order("due_date", { ascending: false });
   if (error) throw new Error(error.message);
   return data ?? [];
 }
@@ -246,20 +265,46 @@ export async function deleteInvoice(id: string): Promise<void> {
   if (error) throw new Error(error.message);
 }
 
-export async function listPayments(): Promise<Payment[]> {
-  const { data, error } = await client()
-    .from("payments")
-    .select("id, invoice_id, amount_cents, paid_at, method, reference")
-    .order("paid_at", { ascending: false });
+/**
+ * Manager-only reversal of markInvoicePaid — flips a mistakenly (or
+ * fraudulently) confirmed invoice back to "unpaid". RLS (migration 012)
+ * restricts this transition to manager/accountant; a resident's own
+ * invoices_update grant only ever allows unpaid/overdue -> paid, never
+ * the other direction. Deliberately does not delete the payment row it's
+ * reversing — that stays as an audit trail of what was recorded and later
+ * cancelled, same rationale as markInvoicePaid not being wrapped in a
+ * transaction.
+ */
+export async function markInvoiceUnpaid(invoiceId: string): Promise<void> {
+  const { error } = await client().from("invoices").update({ status: "unpaid" }).eq("id", invoiceId);
+  if (error) throw new Error(error.message);
+}
+
+export async function listPayments(buildingId?: string): Promise<Payment[]> {
+  let query = client().from("payments").select("id, invoice_id, amount_cents, paid_at, method, reference");
+  if (buildingId) {
+    const unitIds = await unitIdsForBuilding(buildingId);
+    if (unitIds.length === 0) return [];
+    const { data: invoiceRows, error: invoicesError } = await client()
+      .from("invoices")
+      .select("id")
+      .in("unit_id", unitIds);
+    if (invoicesError) throw new Error(invoicesError.message);
+    const invoiceIds = (invoiceRows ?? []).map((i) => i.id);
+    if (invoiceIds.length === 0) return [];
+    query = query.in("invoice_id", invoiceIds);
+  }
+  const { data, error } = await query.order("paid_at", { ascending: false });
   if (error) throw new Error(error.message);
   return data ?? [];
 }
 
-export async function listAnnouncements(): Promise<Announcement[]> {
-  const { data, error } = await client()
+export async function listAnnouncements(buildingId?: string): Promise<Announcement[]> {
+  let query = client()
     .from("announcements")
-    .select("id, building_id, title, body, published_at, attachment_url")
-    .order("published_at", { ascending: false });
+    .select("id, building_id, title, body, published_at, attachment_url");
+  if (buildingId) query = query.eq("building_id", buildingId);
+  const { data, error } = await query.order("published_at", { ascending: false });
   if (error) throw new Error(error.message);
   return data ?? [];
 }
@@ -286,11 +331,12 @@ export async function deleteAnnouncement(id: string): Promise<void> {
   if (error) throw new Error(error.message);
 }
 
-export async function listTickets(): Promise<Ticket[]> {
-  const { data, error } = await client()
+export async function listTickets(buildingId?: string): Promise<Ticket[]> {
+  let query = client()
     .from("tickets")
-    .select("id, building_id, unit_id, reported_by_user_id, subject, body, status, category, attachment_url, created_at")
-    .order("created_at", { ascending: false });
+    .select("id, building_id, unit_id, reported_by_user_id, subject, body, status, category, attachment_url, created_at");
+  if (buildingId) query = query.eq("building_id", buildingId);
+  const { data, error } = await query.order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
   return data ?? [];
 }
@@ -507,13 +553,13 @@ export type DashboardMetrics = {
  * dashboard page renders an honest "not yet tracked" state for those two
  * instead of calling into this function for them.
  */
-export async function fetchDashboardMetrics(): Promise<DashboardMetrics> {
+export async function fetchDashboardMetrics(buildingId?: string): Promise<DashboardMetrics> {
   const [units, invoices, payments, tickets, announcements] = await Promise.all([
-    listUnits(),
-    listInvoices(),
-    listPayments(),
-    listTickets(),
-    listAnnouncements(),
+    listUnits(buildingId),
+    listInvoices(buildingId),
+    listPayments(buildingId),
+    listTickets(buildingId),
+    listAnnouncements(buildingId),
   ]);
 
   const currency = invoices[0]?.currency ?? "BGN";

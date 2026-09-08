@@ -1,17 +1,23 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { listInvoices, createInvoice, listUnits, markInvoicePaid, deleteInvoice, type Invoice, type Unit } from "@/lib/blokmate-data";
+import { listInvoices, createInvoice, listUnits, listBuildings, markInvoicePaid, markInvoiceUnpaid, deleteInvoice, type Invoice, type Unit, type Building } from "@/lib/blokmate-data";
 import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
 import { useBlokmateToast } from "@/lib/blokmate-toast";
 import InvoiceTable from "../components/InvoiceTable";
+import BuildingFilterBar from "../components/BuildingFilterBar";
+import { useBuildingFilter } from "../components/useBuildingFilter";
+import { useTenantCurrency } from "../components/useTenantCurrency";
 
 export default function InvoicesPage() {
   const { claims } = useBlokmateAuth();
   const toast = useBlokmateToast();
   const canManage = claims?.role === "manager" || claims?.role === "accountant";
+  const { buildingId: filterBuildingId } = useBuildingFilter();
+  const currency = useTenantCurrency();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [units, setUnits] = useState<Unit[]>([]);
+  const [buildings, setBuildings] = useState<Building[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [error, setError] = useState<string | null>(null);
   const [unitId, setUnitId] = useState("");
@@ -21,9 +27,14 @@ export default function InvoicesPage() {
 
   async function load() {
     try {
-      const [i, u] = await Promise.all([listInvoices(), listUnits()]);
+      const [i, u, b] = await Promise.all([
+        listInvoices(filterBuildingId || undefined),
+        listUnits(),
+        listBuildings(),
+      ]);
       setInvoices(i);
       setUnits(u);
+      setBuildings(b);
       if (!unitId && u.length > 0) setUnitId(u[0].id);
       setStatus("ready");
     } catch (err) {
@@ -35,7 +46,7 @@ export default function InvoicesPage() {
   useEffect(() => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [filterBuildingId]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -78,13 +89,27 @@ export default function InvoicesPage() {
     }
   }
 
+  async function handleMarkUnpaid(invoice: Invoice) {
+    if (!window.confirm("Bu faturayı ödenmedi durumuna geri almak istediğine emin misin?")) return;
+    try {
+      await markInvoiceUnpaid(invoice.id);
+      await load();
+      toast.success("Fatura ödenmedi olarak işaretlendi.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Bilinmeyen hata");
+    }
+  }
+
   function unitLabel(id: string) {
     return units.find((u) => u.id === id)?.label ?? id;
   }
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-ink">Aidatlar</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-bold text-ink">Aidatlar</h1>
+        <BuildingFilterBar buildings={buildings} />
+      </div>
 
       {canManage && (
       <form onSubmit={handleSubmit} className="card flex flex-wrap items-end gap-3 p-4">
@@ -146,9 +171,11 @@ export default function InvoicesPage() {
         unitLabel={unitLabel}
         canManage={canManage}
         onMarkPaid={handleMarkPaid}
+        onMarkUnpaid={handleMarkUnpaid}
         onDelete={handleDelete}
         showPayButton={!canManage}
         onPaid={load}
+        currency={currency}
       />
     </div>
   );

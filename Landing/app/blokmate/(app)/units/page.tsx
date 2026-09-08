@@ -8,12 +8,15 @@ import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
 import { buildingWord } from "@/lib/blokmate-terms";
 import UnitList from "../components/UnitList";
 import Modal from "../components/Modal";
+import BuildingFilterBar from "../components/BuildingFilterBar";
+import { useBuildingFilter } from "../components/useBuildingFilter";
 
 export default function UnitsPage() {
   const { claims } = useBlokmateAuth();
   const { lang } = useBlokmateLanguage();
   const toast = useBlokmateToast();
   const canManage = claims?.role === "manager" || claims?.role === "accountant";
+  const { buildingId: filterBuildingId } = useBuildingFilter();
 
   const [units, setUnits] = useState<Unit[]>([]);
   const [buildings, setBuildings] = useState<Building[]>([]);
@@ -32,7 +35,7 @@ export default function UnitsPage() {
 
   async function load() {
     try {
-      const [u, b] = await Promise.all([listUnits(), listBuildings()]);
+      const [u, b] = await Promise.all([listUnits(filterBuildingId || undefined), listBuildings()]);
       setUnits(u);
       setBuildings(b);
       if (!buildingId && b.length > 0) setBuildingId(b[0].id);
@@ -46,7 +49,7 @@ export default function UnitsPage() {
   useEffect(() => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [filterBuildingId]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -107,7 +110,10 @@ export default function UnitsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-ink">Daireler</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-bold text-ink">Daireler</h1>
+        <BuildingFilterBar buildings={buildings} />
+      </div>
 
       {canManage && (
       <form onSubmit={handleSubmit} className="card flex flex-wrap items-end gap-3 p-4">
