@@ -90,6 +90,7 @@ export type Notification = {
   is_read: boolean;
   created_at: string;
 };
+export type TenantPlan = "starter" | "pro" | "enterprise";
 export type TenantSettings = {
   tenant_id: string;
   currency: "TRY" | "EUR" | "BGN" | null;
@@ -97,6 +98,8 @@ export type TenantSettings = {
   contact_email: string | null;
   contact_phone: string | null;
   notify_email: boolean;
+  plan: TenantPlan;
+  stripe_customer_id: string | null;
 };
 export type Comment = {
   id: string;
@@ -478,7 +481,7 @@ export async function sendBroadcastNotification(input: { building_id: string; me
 export async function getTenantSettings(): Promise<TenantSettings | null> {
   const { data, error } = await client()
     .from("tenant_settings")
-    .select("tenant_id, currency, display_name, contact_email, contact_phone, notify_email")
+    .select("tenant_id, currency, display_name, contact_email, contact_phone, notify_email, plan, stripe_customer_id")
     .maybeSingle();
   if (error) throw new Error(error.message);
   return data ?? null;
@@ -487,7 +490,10 @@ export async function getTenantSettings(): Promise<TenantSettings | null> {
 /**
  * Manager-only (tenant_settings_insert/update RLS, migration 009).
  * Upserts on tenant_id since a tenant may be saving settings for the
- * first time (no row yet) or editing an existing one.
+ * first time (no row yet) or editing an existing one. Deliberately has
+ * no `stripe_customer_id` param — that's only ever set server-side, once
+ * a real Stripe Billing subscription/customer exists for the tenant, not
+ * something a manager types into a form.
  */
 export async function upsertTenantSettings(input: {
   currency?: TenantSettings["currency"];
@@ -495,6 +501,7 @@ export async function upsertTenantSettings(input: {
   contact_email?: string;
   contact_phone?: string;
   notify_email?: boolean;
+  plan?: TenantPlan;
 }): Promise<void> {
   const tenant_id = await requireTenantId();
   const { error } = await client()

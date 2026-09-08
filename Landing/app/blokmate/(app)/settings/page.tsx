@@ -2,8 +2,9 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { getTenantSettings, upsertTenantSettings, type TenantSettings } from "@/lib/blokmate-data";
+import { getTenantSettings, upsertTenantSettings, type TenantSettings, type TenantPlan } from "@/lib/blokmate-data";
 import { seedDemoData } from "@/lib/blokmate-demo-seed";
+import { BLOKMATE_PLANS } from "@/lib/blokmate-plans";
 import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
 import { useBlokmateToast } from "@/lib/blokmate-toast";
 
@@ -20,8 +21,10 @@ export default function SettingsPage() {
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [notifyEmail, setNotifyEmail] = useState(false);
+  const [plan, setPlan] = useState<TenantPlan>("starter");
   const [submitting, setSubmitting] = useState(false);
   const [seeding, setSeeding] = useState(false);
+  const [changingPlan, setChangingPlan] = useState<TenantPlan | null>(null);
 
   useEffect(() => {
     if (!authLoading && claims && !isManager) {
@@ -40,6 +43,7 @@ export default function SettingsPage() {
           setContactEmail(settings.contact_email ?? "");
           setContactPhone(settings.contact_phone ?? "");
           setNotifyEmail(settings.notify_email);
+          setPlan(settings.plan);
         }
         setStatus("ready");
       } catch {
@@ -64,6 +68,30 @@ export default function SettingsPage() {
       toast.error(err instanceof Error ? err.message : "Bilinmeyen hata");
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  /**
+   * Skeleton only — this writes tenant_settings.plan directly, with no
+   * real Stripe Billing subscription behind it yet (that's still
+   * architecture-only: the plan/stripe_customer_id columns exist,
+   * migration 013, but nothing creates or charges a subscription). A
+   * manager "upgrading" today just flips this flag; wiring it to
+   * stripe.checkout.sessions.create({ mode: "subscription" }) + a
+   * customer-portal link is the next step once real pricing/Stripe
+   * Billing products are configured.
+   */
+  async function handlePlanChange(nextPlan: TenantPlan) {
+    if (nextPlan === plan) return;
+    setChangingPlan(nextPlan);
+    try {
+      await upsertTenantSettings({ plan: nextPlan });
+      setPlan(nextPlan);
+      toast.success("Plan güncellendi.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Bilinmeyen hata");
+    } finally {
+      setChangingPlan(null);
     }
   }
 
@@ -149,6 +177,46 @@ export default function SettingsPage() {
           </button>
         </form>
       )}
+
+      <div className="card space-y-4 p-5">
+        <div>
+          <h2 className="text-sm font-semibold text-ink">Paket</h2>
+          <p className="text-xs text-ink-faint">
+            Fiyatlar yer tutucudur — gerçek Stripe Billing entegrasyonu henüz bağlı değil, plan değişikliği şimdilik yalnızca hesabına kaydedilir.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {BLOKMATE_PLANS.map((p) => {
+            const active = plan === p.id;
+            return (
+              <div
+                key={p.id}
+                className={`rounded-xl border p-4 ${active ? "border-blue-500 bg-blue-50/50 dark:bg-blue-950/20" : "border-line"}`}
+              >
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold text-ink">{p.name}</h3>
+                  {active && <span className="rounded-full bg-blue-600 px-2 py-0.5 text-[10px] font-semibold text-white">Aktif</span>}
+                </div>
+                <p className="mt-1 text-lg font-bold text-ink">{p.priceLabel}</p>
+                <p className="mt-0.5 text-xs text-ink-faint">{p.tagline}</p>
+                <ul className="mt-3 space-y-1 text-xs text-ink-soft">
+                  {p.features.map((f) => (
+                    <li key={f}>• {f}</li>
+                  ))}
+                </ul>
+                <button
+                  type="button"
+                  onClick={() => handlePlanChange(p.id)}
+                  disabled={active || changingPlan !== null}
+                  className="btn mt-4 w-full min-h-[36px] bg-blue-600 text-xs text-white hover:bg-blue-700 disabled:opacity-60"
+                >
+                  {active ? "Mevcut plan" : changingPlan === p.id ? "Değiştiriliyor…" : "Bu planı seç"}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
       <div className="card space-y-3 p-5">
         <h2 className="text-sm font-semibold text-ink">Demo verisi</h2>

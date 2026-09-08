@@ -1,77 +1,43 @@
 "use client";
 
 import { useState } from "react";
-import type { Invoice, TenantSettings } from "@/lib/blokmate-data";
-import { startPaymentSession, completeMockPayment } from "@/lib/blokmate-payments";
-import { formatBlokmateAmount } from "@/lib/blokmate-currency";
-import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
+import type { Invoice } from "@/lib/blokmate-data";
+import { startCheckout } from "@/lib/blokmate-payments";
 import { useBlokmateToast } from "@/lib/blokmate-toast";
-import Modal from "./Modal";
 
-/** "Öde" button + mock checkout modal — see lib/blokmate-payments.ts for the gateway abstraction this drives. */
-export default function PayNowButton({
-  invoice,
-  onPaid,
-  currency,
-}: {
-  invoice: Pick<Invoice, "id" | "amount_cents" | "currency">;
-  onPaid?: () => void | Promise<void>;
-  currency?: TenantSettings["currency"];
-}) {
-  const { lang } = useBlokmateLanguage();
+/**
+ * "Öde" button — starts a real Stripe Checkout session and redirects to
+ * Stripe's hosted page (see lib/blokmate-payments.ts). No local
+ * confirm-amount modal anymore: Stripe's own Checkout page already shows
+ * the amount and asks for confirmation, so a BlokMate-side one would just
+ * be a redundant extra click. The invoice only actually flips to "paid"
+ * once Stripe's webhook confirms the charge (app/api/payments/webhook) —
+ * the redirect back to /blokmate/invoices?payment=success is a UX
+ * signal, not the write itself.
+ */
+export default function PayNowButton({ invoice }: { invoice: Pick<Invoice, "id"> }) {
   const toast = useBlokmateToast();
-  const [open, setOpen] = useState(false);
-  const [paying, setPaying] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  function handleOpen() {
-    startPaymentSession(invoice);
-    setOpen(true);
-  }
-
-  async function handleConfirm() {
-    setPaying(true);
+  async function handleClick() {
+    setLoading(true);
     try {
-      await completeMockPayment(invoice);
-      toast.success("Ödeme alındı.");
-      setOpen(false);
-      await onPaid?.();
+      const url = await startCheckout(invoice);
+      window.location.href = url;
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Ödeme başarısız oldu.");
-    } finally {
-      setPaying(false);
+      toast.error(err instanceof Error ? err.message : "Ödeme başlatılamadı.");
+      setLoading(false);
     }
   }
 
   return (
-    <>
-      <button
-        type="button"
-        onClick={handleOpen}
-        className="min-h-[32px] rounded-md bg-blue-600 px-2.5 text-xs font-semibold text-white transition-colors hover:bg-blue-700"
-      >
-        Öde
-      </button>
-      {open && (
-        <Modal title="Ödeme" onClose={() => (!paying ? setOpen(false) : undefined)}>
-          <div className="space-y-4">
-            <p className="text-sm text-ink-soft">
-              <span className="font-semibold text-ink">{formatBlokmateAmount(invoice.amount_cents, lang, currency)}</span>{" "}
-              tutarındaki aidatı ödemek üzeresin.
-            </p>
-            <p className="text-xs text-ink-faint">
-              Bu bir deneme (sandbox) ödeme akışıdır — gerçek bir kart işlemi gerçekleşmez.
-            </p>
-            <button
-              type="button"
-              onClick={handleConfirm}
-              disabled={paying}
-              className="btn w-full min-h-[44px] bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
-            >
-              {paying ? "İşleniyor…" : "Ödemeyi onayla"}
-            </button>
-          </div>
-        </Modal>
-      )}
-    </>
+    <button
+      type="button"
+      onClick={handleClick}
+      disabled={loading}
+      className="min-h-[32px] rounded-md bg-blue-600 px-2.5 text-xs font-semibold text-white transition-colors hover:bg-blue-700 disabled:opacity-60"
+    >
+      {loading ? "Yönlendiriliyor…" : "Öde"}
+    </button>
   );
 }

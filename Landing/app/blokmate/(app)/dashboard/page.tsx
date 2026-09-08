@@ -173,7 +173,7 @@ export default function BlokmateDashboardPage() {
                 <span className="text-ink-soft">{inv.due_date}</span>
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-ink">{formatAmount(inv.amount_cents)}</span>
-                  {!canManage && <PayNowButton invoice={inv} onPaid={load} currency={currency} />}
+                  {!canManage && <PayNowButton invoice={inv} />}
                 </div>
               </li>
             ))}

@@ -5,7 +5,7 @@ import { BlokmateAuthProvider } from "@/lib/blokmate-auth-context";
 export const metadata: Metadata = {
   title: "BlokMate | Apartman ve Site Yönetiminde Dijital Rahatlık",
   description:
-    "BlokMate; aidat takibi, tahsilat, duyurular ve arıza taleplerini tek panelde toplayan apartman/site yönetim yazılımı.",
+    "BlokMate; aidat takibi, Stripe ile güvenli online ödeme, sakin paneli, otomatik hatırlatıcılar, duyuru/toplu bildirim ve arıza taleplerini tek panelde toplayan apartman/site yönetim yazılımı.",
   alternates: { canonical: "/blokmate" },
 };
 

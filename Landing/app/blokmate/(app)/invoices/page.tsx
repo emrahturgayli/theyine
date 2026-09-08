@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import { useSearchParams } from "next/navigation";
 import { listInvoices, createInvoice, listUnits, listBuildings, markInvoicePaid, markInvoiceUnpaid, deleteInvoice, type Invoice, type Unit, type Building } from "@/lib/blokmate-data";
 import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
 import { useBlokmateToast } from "@/lib/blokmate-toast";
@@ -47,6 +48,21 @@ export default function InvoicesPage() {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterBuildingId]);
+
+  // Stripe redirects here after Checkout — the webhook (not this) is what
+  // actually marks the invoice paid, usually just ahead of this redirect,
+  // so re-fetching is enough to pick up the new status.
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const paymentResult = searchParams.get("payment");
+    if (paymentResult === "success") {
+      toast.success("Ödeme alındı, teşekkürler!");
+      load();
+    } else if (paymentResult === "cancelled") {
+      toast.error("Ödeme iptal edildi.");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -174,7 +190,6 @@ export default function InvoicesPage() {
         onMarkUnpaid={handleMarkUnpaid}
         onDelete={handleDelete}
         showPayButton={!canManage}
-        onPaid={load}
         currency={currency}
       />
     </div>

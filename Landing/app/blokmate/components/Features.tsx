@@ -30,13 +30,22 @@ const ICONS: JSX.Element[] = [
   <svg key="i3" viewBox="0 0 24 24" {...stroke}>
     <path d="M14.7 6.3a3 3 0 0 0-4.2 4.2L4 17v3h3l6.5-6.5a3 3 0 0 0 4.2-4.2l-2.1 2.1-2-2z" />
   </svg>,
-  // Excel import
+  // Resident portal
   <svg key="i4" viewBox="0 0 24 24" {...stroke}>
+    <circle cx="12" cy="8" r="3.2" />
+    <path d="M5 20c1.2-3.6 4-5.4 7-5.4S17.8 16.4 19 20" />
+  </svg>,
+  // Building-level filtering
+  <svg key="i5" viewBox="0 0 24 24" {...stroke}>
+    <path d="M4 5h16l-6 7.5V19l-4 2v-8.5z" />
+  </svg>,
+  // Excel import
+  <svg key="i6" viewBox="0 0 24 24" {...stroke}>
     <path d="M12 3v12m0 0-4-4m4 4 4-4" />
     <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
   </svg>,
   // Security
-  <svg key="i5" viewBox="0 0 24 24" {...stroke}>
+  <svg key="i7" viewBox="0 0 24 24" {...stroke}>
     <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" />
     <path d="M9.5 12l1.8 1.8L15 10" />
   </svg>,

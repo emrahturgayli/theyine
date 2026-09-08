@@ -65,16 +65,24 @@
         "desc": "Kim ödedi, kim borçlu — tek bakışta görün. Otomatik hatırlatmalar tahsilat oranınızı artırır."
       },
       {
-        "title": "Tek tıkla ödeme",
-        "desc": "Sakinleriniz banka havalesi, kart veya online ödeme ile aidatlarını saniyeler içinde öder."
+        "title": "Gerçek ödeme altyapısı",
+        "desc": "Sakinleriniz Stripe destekli güvenli ödeme sayfasından kart ile aidatlarını saniyeler içinde öder — ödeme onaylanır onaylanmaz fatura otomatik kapanır."
       },
       {
-        "title": "Duyurular ve bildirimler",
-        "desc": "Bina geneli duyurularınız anında tüm sakinlere ulaşır — kağıt ilan panosuna veda edin."
+        "title": "Duyurular, bildirimler ve toplu mesaj",
+        "desc": "Bina geneli duyurularınız ve toplu bildirimleriniz anında tüm sakinlere ulaşır — kağıt ilan panosuna veda edin."
       },
       {
         "title": "Arıza ve talep yönetimi",
-        "desc": "Sakinler arıza bildirir, siz durumu takip edip kapatırsınız — hiçbir talep kaybolmaz."
+        "desc": "Sakinler dekont/fotoğraf ekleyerek arıza veya ödeme bildirir, siz durumu takip edip kapatırsınız — hiçbir talep kaybolmaz."
+      },
+      {
+        "title": "Sakin paneli",
+        "desc": "Sakinleriniz kendi aidatlarını, duyurularını ve taleplerini görebileceği, sadece görüntüleme yetkili kendi panellerine sahip olur."
+      },
+      {
+        "title": "Bina bazlı filtreleme",
+        "desc": "Birden fazla binayı tek hesaptan yönetin; panel, aidat ve duyuru listelerini tek binaya daraltıp anında geçiş yapın."
       },
       {
         "title": "Excel'den 5 dakikada geçiş",
@@ -82,7 +90,7 @@
       },
       {
         "title": "Güvenli altyapı",
-        "desc": "Verileriniz şifreli olarak saklanır, yalnızca yetkili kişiler erişebilir."
+        "desc": "Verileriniz şifreli olarak saklanır, satır seviyesinde erişim kontrolüyle yalnızca yetkili kişiler görebilir."
       }
     ]
   },
@@ -93,35 +101,34 @@
     "cta": "Fiyat teklifi al",
     "plans": [
       {
-        "name": "Başlangıç",
-        "price": "Ücretsiz",
-        "unit": "20 daireye kadar",
+        "name": "Starter",
+        "price": "₺299/ay",
+        "unit": "1 bina, 20 daireye kadar",
         "features": [
-          "Aidat takibi",
-          "Temel duyurular",
+          "Aidat takibi ve online ödeme",
+          "Duyurular ve temel bildirimler",
           "E-posta desteği"
         ]
       },
       {
-        "name": "Standart",
-        "price": "Talep üzerine",
-        "unit": "20-100 daire",
+        "name": "Pro",
+        "price": "₺799/ay",
+        "unit": "Sınırsız bina/daire",
         "features": [
-          "Tüm Başlangıç özellikleri",
-          "Online ödeme",
+          "Tüm Starter özellikleri",
+          "Otomatik hatırlatıcılar ve toplu bildirim",
           "Arıza/talep yönetimi",
           "Öncelikli destek"
         ]
       },
       {
-        "name": "Kurumsal",
-        "price": "Özel",
-        "unit": "100+ daire / çoklu site",
+        "name": "Enterprise",
+        "price": "Bize ulaşın",
+        "unit": "Büyük portföyler / özel entegrasyon",
         "features": [
-          "Tüm Standart özellikleri",
-          "Çoklu bina yönetimi",
-          "Özel entegrasyonlar",
-          "Hesap yöneticisi"
+          "Tüm Pro özellikleri",
+          "Özel SLA ve entegrasyonlar",
+          "Atanmış hesap yöneticisi"
         ]
       }
     ]

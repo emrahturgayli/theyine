@@ -65,16 +65,24 @@
         "desc": "See who's paid and who owes at a glance. Automatic reminders raise your collection rate."
       },
       {
-        "title": "One-tap payment",
-        "desc": "Residents pay their dues in seconds via bank transfer, card or online payment."
+        "title": "Real payment infrastructure",
+        "desc": "Residents pay their dues in seconds on a secure Stripe-backed checkout page — the invoice closes automatically the moment payment is confirmed."
       },
       {
-        "title": "Announcements & notifications",
-        "desc": "Building-wide announcements reach every resident instantly — say goodbye to the paper notice board."
+        "title": "Announcements, notifications & broadcasts",
+        "desc": "Building-wide announcements and one-off broadcast messages reach every resident instantly — say goodbye to the paper notice board."
       },
       {
         "title": "Maintenance & ticket management",
-        "desc": "Residents report issues, you track and close them — nothing falls through the cracks."
+        "desc": "Residents report issues (with a receipt or photo attached), you track and close them — nothing falls through the cracks."
+      },
+      {
+        "title": "Resident portal",
+        "desc": "Residents get their own view-only panel for their dues, announcements and tickets."
+      },
+      {
+        "title": "Building-level filtering",
+        "desc": "Manage several buildings from one account; scope the dashboard, dues and announcement lists to a single building in one click."
       },
       {
         "title": "Switch from Excel in 5 minutes",
@@ -82,7 +90,7 @@
       },
       {
         "title": "Secure by design",
-        "desc": "Your data is stored encrypted, accessible only to authorized people."
+        "desc": "Your data is stored encrypted, with row-level access control so only authorized people can see it."
       }
     ]
   },
@@ -94,33 +102,32 @@
     "plans": [
       {
         "name": "Starter",
-        "price": "Free",
-        "unit": "up to 20 units",
+        "price": "$29/mo",
+        "unit": "1 building, up to 20 units",
         "features": [
-          "Dues tracking",
-          "Basic announcements",
+          "Dues tracking & online payment",
+          "Announcements & basic notifications",
           "Email support"
         ]
       },
       {
-        "name": "Standard",
-        "price": "On request",
-        "unit": "20-100 units",
+        "name": "Pro",
+        "price": "$79/mo",
+        "unit": "Unlimited buildings/units",
         "features": [
           "Everything in Starter",
-          "Online payment",
+          "Automated reminders & broadcasts",
           "Ticket management",
           "Priority support"
         ]
       },
       {
         "name": "Enterprise",
-        "price": "Custom",
-        "unit": "100+ units / multi-site",
+        "price": "Contact us",
+        "unit": "Large portfolios / custom integrations",
         "features": [
-          "Everything in Standard",
-          "Multi-building management",
-          "Custom integrations",
+          "Everything in Pro",
+          "Custom SLA & integrations",
           "Dedicated account manager"
         ]
       }

@@ -29,7 +29,6 @@ export default function InvoiceTable({
   onMarkUnpaid,
   onDelete,
   showPayButton = false,
-  onPaid,
   currency,
 }: {
   invoices: Invoice[];
@@ -41,9 +40,8 @@ export default function InvoiceTable({
   /** Manager/accountant only — reverses a mistaken/fraudulent "paid" back to "unpaid" (migration 012). */
   onMarkUnpaid?: (invoice: Invoice) => Promise<void>;
   onDelete?: (invoice: Invoice) => void;
-  /** Resident self-service "Öde" button — see supabase/migrations/010_allow_resident_self_payment.sql. */
+  /** Resident self-service "Öde" button — redirects to Stripe Checkout, see lib/blokmate-payments.ts. */
   showPayButton?: boolean;
-  onPaid?: () => void | Promise<void>;
   currency?: TenantSettings["currency"];
 }) {
   const [markingId, setMarkingId] = useState<string | null>(null);
@@ -108,7 +106,7 @@ export default function InvoiceTable({
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-2">
                       {payable && showPayButton && (
-                        <PayNowButton invoice={inv} onPaid={onPaid} currency={currency} />
+                        <PayNowButton invoice={inv} />
                       )}
                       {payable && onMarkPaid && (
                         <button
