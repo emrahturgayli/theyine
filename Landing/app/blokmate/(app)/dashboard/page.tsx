@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { fetchDashboardMetrics, listInvoices, listAnnouncements, listBuildings, type DashboardMetrics, type Invoice, type Announcement, type Building } from "@/lib/blokmate-data";
+import { getOwnSignupRequest, type ResidentSignupRequest } from "@/lib/blokmate-invites";
 import { formatBlokmateAmount } from "@/lib/blokmate-currency";
 import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
 import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
@@ -11,6 +12,7 @@ import AnnouncementList from "../components/AnnouncementList";
 import PayNowButton from "../components/PayNowButton";
 import OnboardingTips from "../components/OnboardingTips";
 import NoBuildingsOnboarding from "../components/NoBuildingsOnboarding";
+import ResidentAwaitingApproval from "../components/ResidentAwaitingApproval";
 import BuildingFilterBar from "../components/BuildingFilterBar";
 import { useBuildingFilter } from "../components/useBuildingFilter";
 import { useTenantCurrency } from "../components/useTenantCurrency";
@@ -34,6 +36,24 @@ export default function BlokmateDashboardPage() {
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [error, setError] = useState<string | null>(null);
 
+  // Resident onboarding-state detection: no tenant_id/role claim yet
+  // (see BlokmateAppLayout) could mean "pending manager approval" or a
+  // real misconfiguration — resolved by checking for a
+  // resident_signup_requests row of their own. undefined = still
+  // checking, null = none found (falls through to the normal,
+  // RLS-empty dashboard + NoClaimsBanner's generic message).
+  const [ownRequest, setOwnRequest] = useState<ResidentSignupRequest | null | undefined>(claims ? null : undefined);
+  useEffect(() => {
+    if (claims) {
+      setOwnRequest(null);
+      return;
+    }
+    getOwnSignupRequest()
+      .then(setOwnRequest)
+      .catch(() => setOwnRequest(null));
+  }, [claims]);
+  const awaitingApproval = !claims && !!ownRequest && ownRequest.status !== "approved";
+
   const load = useCallback(async () => {
     try {
       const [m, i, a, b] = await Promise.all([
@@ -54,11 +74,20 @@ export default function BlokmateDashboardPage() {
   }, [filterBuildingId]);
 
   useEffect(() => {
+    if (awaitingApproval) return;
     load();
-  }, [load]);
+  }, [load, awaitingApproval]);
 
   const unpaid = invoices.filter((i) => i.status === "unpaid" || i.status === "overdue");
   const maxMonthly = metrics ? Math.max(1, ...metrics.monthlyCollection.map((m) => m.totalCents)) : 1;
+
+  if (ownRequest === undefined) {
+    return <div className="p-6 text-sm text-ink-faint">Yükleniyor…</div>;
+  }
+
+  if (awaitingApproval && ownRequest) {
+    return <ResidentAwaitingApproval request={ownRequest} />;
+  }
 
   return (
     <div className="space-y-6">

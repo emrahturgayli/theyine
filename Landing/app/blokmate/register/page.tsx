@@ -4,7 +4,14 @@ import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getBlokmateSupabaseBrowser } from "@/lib/blokmate-supabase-browser";
-import { listPublicTenants, listPublicBuildings, listPublicUnits, submitResidentSignupRequest } from "@/lib/blokmate-invites";
+import {
+  listPublicTenants,
+  listPublicBuildings,
+  listPublicUnits,
+  submitResidentSignupRequest,
+  getPublicInviteByToken,
+  type PublicInvite,
+} from "@/lib/blokmate-invites";
 import PasswordInput from "@/components/PasswordInput";
 
 type Role = "manager" | "resident";
@@ -20,13 +27,14 @@ type Role = "manager" | "resident";
  *    previously forced to name one of them right here at signup, which
  *    made no sense; now they can add 1, 5, 20, however many, from the
  *    dashboard after logging in.
- *  - resident: picks their Site -> Building -> Unit from cascading
- *    dropdowns (never types a tenant id/name) and lands in
+ *  - resident: two ways to land on the right Site/Building/Unit, never
+ *    by typing a name — (a) paste the code from an invite link
+ *    (resolved via the same lookup /blokmate/invite/[token] uses, so a
+ *    code and a link are two doors into one flow), the default and
+ *    recommended path, or (b) cascading Site -> Building -> Unit
+ *    dropdowns for a resident with no code. Either way they land in
  *    resident_signup_requests, pending manager approval — NOT
- *    provisioned into `users` directly. A resident with an invite link
- *    should use that link instead (/blokmate/invite/[token]) — it skips
- *    the dropdowns entirely and is the recommended path; this page is
- *    the fallback for a resident who doesn't have one.
+ *    provisioned into `users` directly.
  */
 export default function BlokmateRegisterPage() {
   const router = useRouter();
@@ -43,16 +51,46 @@ export default function BlokmateRegisterPage() {
   const [buildingId, setBuildingId] = useState("");
   const [unitId, setUnitId] = useState("");
 
+  // Resident onboarding, mode A: a typed invite code (same token an
+  // invite link carries in its URL — /blokmate/invite/[token] — just
+  // entered by hand instead of clicked). Resolving it re-uses the exact
+  // same lookup the link page uses, so a code and a link are two doors
+  // into the same flow, not two implementations.
+  const [useInviteCode, setUseInviteCode] = useState(true);
+  const [inviteCode, setInviteCode] = useState("");
+  const [resolvedInvite, setResolvedInvite] = useState<PublicInvite | null>(null);
+  const [resolvingCode, setResolvingCode] = useState(false);
+  const [codeError, setCodeError] = useState<string | null>(null);
+
   const [status, setStatus] = useState<"idle" | "loading" | "error" | "pending">("idle");
   const [error, setError] = useState<string | null>(null);
   const [errorCount, setErrorCount] = useState(0);
 
+  async function handleResolveCode() {
+    if (!inviteCode.trim()) return;
+    setResolvingCode(true);
+    setCodeError(null);
+    try {
+      const invite = await getPublicInviteByToken(inviteCode.trim());
+      if (!invite) {
+        setCodeError("Bu davet kodu geçersiz, süresi dolmuş ya da iptal edilmiş.");
+        setResolvedInvite(null);
+        return;
+      }
+      setResolvedInvite(invite);
+    } catch (err) {
+      setCodeError(err instanceof Error ? err.message : "Davet kodu doğrulanamadı.");
+    } finally {
+      setResolvingCode(false);
+    }
+  }
+
   useEffect(() => {
-    if (role !== "resident") return;
+    if (role !== "resident" || useInviteCode) return;
     listPublicTenants()
       .then(setTenants)
       .catch(() => setTenants([]));
-  }, [role]);
+  }, [role, useInviteCode]);
 
   useEffect(() => {
     setBuildingId("");
@@ -121,9 +159,10 @@ export default function BlokmateRegisterPage() {
     try {
       await submitResidentSignupRequest({
         user_id: signUpData.user.id,
-        tenant_id: tenantId,
-        building_id: buildingId,
-        unit_id: unitId || undefined,
+        tenant_id: useInviteCode ? resolvedInvite!.tenant_id : tenantId,
+        building_id: useInviteCode ? resolvedInvite!.building_id : buildingId,
+        unit_id: (useInviteCode ? resolvedInvite!.unit_id : unitId) || undefined,
+        invite_token_id: useInviteCode ? resolvedInvite!.id : undefined,
         full_name: fullName,
         phone: phone || undefined,
         email,
@@ -183,7 +222,8 @@ export default function BlokmateRegisterPage() {
 
         {role === "resident" && (
           <p className="mt-3 text-xs text-ink-faint">
-            Yöneticinizden bir davet linki aldıysanız onu kullanmanız daha hızlıdır — bu form, davet linki olmayanlar içindir.
+            Yöneticinizden bir davet linki aldıysanız doğrudan o linki açmanız daha hızlıdır — aşağıya sadece linkin
+            içindeki kodu da girebilirsiniz.
           </p>
         )}
 
@@ -246,8 +286,62 @@ export default function BlokmateRegisterPage() {
             <p className="text-xs text-ink-faint">
               Hesabını oluşturduktan sonra panelden istediğin kadar site/bina ekleyebilirsin.
             </p>
+          ) : useInviteCode ? (
+            <div>
+              <label htmlFor="inviteCode" className="text-sm font-medium text-ink">
+                Davet Kodu
+              </label>
+              <div className="mt-1 flex gap-2">
+                <input
+                  id="inviteCode"
+                  value={inviteCode}
+                  onChange={(e) => {
+                    setInviteCode(e.target.value);
+                    setResolvedInvite(null);
+                    setCodeError(null);
+                  }}
+                  placeholder="Yöneticinizden alın"
+                  className="w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:border-blue-500"
+                />
+                <button
+                  type="button"
+                  onClick={handleResolveCode}
+                  disabled={resolvingCode || !inviteCode.trim()}
+                  className="min-h-[44px] shrink-0 rounded-lg border border-line px-4 text-sm font-semibold text-ink-soft hover:border-blue-500 hover:text-blue-600 disabled:opacity-60"
+                >
+                  {resolvingCode ? "…" : "Doğrula"}
+                </button>
+              </div>
+              {codeError && <p className="mt-2 text-sm text-red-600">{codeError}</p>}
+              {resolvedInvite && (
+                <div className="mt-2 rounded-lg bg-mist px-4 py-3 text-sm">
+                  <p className="font-semibold text-ink">{resolvedInvite.tenantName}</p>
+                  <p className="text-ink-soft">
+                    {resolvedInvite.buildingName}
+                    {resolvedInvite.unitLabel ? ` — Daire ${resolvedInvite.unitLabel}` : ""}
+                  </p>
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  setUseInviteCode(false);
+                  setResolvedInvite(null);
+                }}
+                className="mt-3 text-xs font-semibold text-blue-600 hover:underline"
+              >
+                Davet kodum yok, listeden seçeyim
+              </button>
+            </div>
           ) : (
             <>
+              <button
+                type="button"
+                onClick={() => setUseInviteCode(true)}
+                className="text-xs font-semibold text-blue-600 hover:underline"
+              >
+                ← Davet kodum var
+              </button>
               <div>
                 <label htmlFor="tenantId" className="text-sm font-medium text-ink">
                   Site
@@ -330,7 +424,11 @@ export default function BlokmateRegisterPage() {
 
           <button
             type="submit"
-            disabled={status === "loading" || (role === "resident" && (!tenantId || !buildingId))}
+            disabled={
+              status === "loading" ||
+              (role === "resident" && useInviteCode && !resolvedInvite) ||
+              (role === "resident" && !useInviteCode && (!tenantId || !buildingId))
+            }
             className="btn w-full min-h-[44px] bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
           >
             {status === "loading" ? "Oluşturuluyor…" : role === "resident" ? "Kayıt talebi gönder" : "Hesap oluştur"}
