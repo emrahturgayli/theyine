@@ -10,17 +10,23 @@ import PasswordInput from "@/components/PasswordInput";
 type Role = "manager" | "resident";
 
 /**
- * Self-serve signup, two paths:
- *  - manager: creates a brand-new tenant + building (unchanged — see
- *    app/api/blokmate/register/route.ts).
+ * Self-serve signup, two paths — both create ONLY an identity now, never
+ * a building:
+ *  - manager: creates a tenant (their own workspace/portfolio — an
+ *    internal placeholder name, never asked for) + their `users` row.
+ *    Adding buildings/sites is a separate, repeatable post-login step
+ *    (see app/blokmate/(app)/buildings/page.tsx and the "no buildings
+ *    yet" prompt on the dashboard) — a manager who runs 20 sites was
+ *    previously forced to name one of them right here at signup, which
+ *    made no sense; now they can add 1, 5, 20, however many, from the
+ *    dashboard after logging in.
  *  - resident: picks their Site -> Building -> Unit from cascading
  *    dropdowns (never types a tenant id/name) and lands in
  *    resident_signup_requests, pending manager approval — NOT
- *    provisioned into `users` directly. This replaces the old free-text
- *    "kurum kodu" (raw tenant UUID) field. A resident with an invite
- *    link should use that link instead (/blokmate/invite/[token]) — it
- *    skips the dropdowns entirely and is the recommended path; this page
- *    is the fallback for a resident who doesn't have one.
+ *    provisioned into `users` directly. A resident with an invite link
+ *    should use that link instead (/blokmate/invite/[token]) — it skips
+ *    the dropdowns entirely and is the recommended path; this page is
+ *    the fallback for a resident who doesn't have one.
  */
 export default function BlokmateRegisterPage() {
   const router = useRouter();
@@ -29,7 +35,6 @@ export default function BlokmateRegisterPage() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [buildingName, setBuildingName] = useState("");
 
   const [tenants, setTenants] = useState<{ id: string; name: string }[]>([]);
   const [buildings, setBuildings] = useState<{ id: string; name: string }[]>([]);
@@ -96,7 +101,6 @@ export default function BlokmateRegisterPage() {
           accessToken: signUpData.session.access_token,
           role,
           fullName,
-          buildingName,
         }),
       });
       const body = await res.json();
@@ -239,18 +243,9 @@ export default function BlokmateRegisterPage() {
           </div>
 
           {role === "manager" ? (
-            <div>
-              <label htmlFor="buildingName" className="text-sm font-medium text-ink">
-                Bina / Site adı
-              </label>
-              <input
-                id="buildingName"
-                required
-                value={buildingName}
-                onChange={(e) => setBuildingName(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:border-blue-500"
-              />
-            </div>
+            <p className="text-xs text-ink-faint">
+              Hesabını oluşturduktan sonra panelden istediğin kadar site/bina ekleyebilirsin.
+            </p>
           ) : (
             <>
               <div>

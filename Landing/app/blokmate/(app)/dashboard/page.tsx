@@ -10,6 +10,7 @@ import MetricGrid from "../components/MetricGrid";
 import AnnouncementList from "../components/AnnouncementList";
 import PayNowButton from "../components/PayNowButton";
 import OnboardingTips from "../components/OnboardingTips";
+import NoBuildingsOnboarding from "../components/NoBuildingsOnboarding";
 import BuildingFilterBar from "../components/BuildingFilterBar";
 import { useBuildingFilter } from "../components/useBuildingFilter";
 import { useTenantCurrency } from "../components/useTenantCurrency";
@@ -66,9 +67,13 @@ export default function BlokmateDashboardPage() {
         <BuildingFilterBar buildings={buildings} />
       </div>
 
-      {canManage && <OnboardingTips />}
-
       {status === "error" && <p className="text-sm text-red-600">Veri alınamadı: {error}</p>}
+
+      {canManage && status === "ready" && buildings.length === 0 ? (
+        <NoBuildingsOnboarding />
+      ) : (
+        <>
+      {canManage && <OnboardingTips />}
 
       <MetricGrid>
         <DashboardCard label="Toplam daire sayısı" value={status === "loading" ? "—" : metrics?.totalUnits ?? 0} />
@@ -187,6 +192,8 @@ export default function BlokmateDashboardPage() {
           </div>
         </div>
       </div>
+        </>
+      )}
     </div>
   );
 }

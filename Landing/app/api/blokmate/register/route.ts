@@ -12,13 +12,22 @@ import { getBlokmateSupabase } from "@/lib/blokmate";
  * that couldn't happen client-side, after verifying the caller really is
  * the user they claim to be.
  *
- * Manager path: creates a brand-new tenant + building, then the manager's
- * public.users row.
- * Resident path: joins an EXISTING tenant via `tenantCode` — for this MVP
- * that's just the tenant's raw UUID (shown to a manager after they
- * register, meant to be shared with residents out-of-band). Not a real
- * invite-link/expiry system; fine for now, flagged so it isn't mistaken
- * for one.
+ * Manager path: creates a brand-new tenant (an internal
+ * workspace/portfolio record — its `name` is a placeholder derived from
+ * the manager's own name, never asked for at signup) and the manager's
+ * public.users row. Deliberately creates NO building — a manager who
+ * runs many sites was previously forced to name one of them right here
+ * to get through signup, which doesn't fit "I manage 20 buildings."
+ * Adding buildings is a separate, repeatable action from
+ * app/blokmate/(app)/buildings/page.tsx after login (users_insert /
+ * buildings_insert RLS, migrations 002/006, already scope that to
+ * managers of their own tenant — unchanged by this route).
+ *
+ * Resident path (tenantCode): superseded by the invite-link and
+ * dropdown flows (lib/blokmate-invites.ts, resident_signup_requests) —
+ * the current /blokmate/register UI no longer sends `tenantCode`. Left
+ * in place only because some other caller might still hit it directly;
+ * not reachable from the app's own UI.
  *
  * The new user's JWT was minted at signUp time, before this insert
  * existed — it has no tenant_id/blokmate_role yet. The client MUST call
@@ -31,7 +40,6 @@ export async function POST(request: Request) {
     accessToken?: string;
     role?: "manager" | "resident";
     fullName?: string;
-    buildingName?: string;
     tenantCode?: string;
   };
   try {
@@ -40,7 +48,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "invalid_json" }, { status: 400 });
   }
 
-  const { accessToken, role, fullName, buildingName, tenantCode } = body;
+  const { accessToken, role, fullName, tenantCode } = body;
   if (!accessToken || typeof accessToken !== "string") {
     return NextResponse.json({ error: "missing_access_token" }, { status: 401 });
   }
@@ -49,9 +57,6 @@ export async function POST(request: Request) {
   }
   if (!fullName || typeof fullName !== "string" || !fullName.trim()) {
     return NextResponse.json({ error: "invalid_full_name" }, { status: 400 });
-  }
-  if (role === "manager" && (!buildingName || !buildingName.trim())) {
-    return NextResponse.json({ error: "invalid_building_name" }, { status: 400 });
   }
   if (role === "resident" && (!tenantCode || !tenantCode.trim())) {
     return NextResponse.json({ error: "invalid_tenant_code" }, { status: 400 });
@@ -83,10 +88,16 @@ export async function POST(request: Request) {
   }
 
   if (role === "manager") {
+    // `name` is NOT NULL on tenants (001_init_blokmate.sql) but is
+    // otherwise just an internal label — nothing in the UI surfaces it
+    // as "the tenant's name" the way tenant_settings.display_name does
+    // (Settings page). A placeholder derived from the manager avoids
+    // asking them to name anything (a building, a company, a site) they
+    // may not have decided on yet at signup time.
     const { data: tenant, error: tenantError } = await supabase
       .from("tenants")
       .insert({
-        name: buildingName!.trim(),
+        name: `${fullName.trim()} — Yönetim Hesabı`,
         sector: "apartment",
         contact_email: authUser.email ?? "",
         status: "trial",
@@ -98,15 +109,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "tenant_create_failed" }, { status: 500 });
     }
 
-    const { error: buildingError } = await supabase.from("buildings").insert({
-      tenant_id: tenant.id,
-      name: buildingName!.trim(),
-    });
-    if (buildingError) {
-      console.error("[blokmate-register] building insert failed:", buildingError.message);
-      // Non-fatal: the tenant exists, the manager can add buildings from
-      // the dashboard. Don't fail registration over it.
-    }
+    // No building created here — see the file header comment. The
+    // manager adds their first (and every subsequent) site from
+    // /blokmate/buildings after logging in.
 
     const { error: userInsertError } = await supabase.from("users").insert({
       id: authUser.id,
