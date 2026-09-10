@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { getBlokmateSupabaseBrowser } from "@/lib/blokmate-supabase-browser";
 import { getPublicInviteByToken, submitResidentSignupRequest, type PublicInvite } from "@/lib/blokmate-invites";
 import PasswordInput from "@/components/PasswordInput";
+import InviteSummaryCard from "../../components/InviteSummaryCard";
 
 /**
  * Public invite-acceptance page — no auth required to view it. The
@@ -71,8 +72,14 @@ export default function InviteAcceptPage() {
 
   if (invite === undefined) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-canvas px-4 py-16 text-sm text-ink-faint">
-        Yükleniyor…
+      <main className="flex min-h-screen items-center justify-center bg-canvas px-4 py-16">
+        <div className="flex items-center gap-2 text-sm text-ink-faint">
+          <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+          </svg>
+          Davet doğrulanıyor…
+        </div>
       </main>
     );
   }
@@ -81,8 +88,13 @@ export default function InviteAcceptPage() {
     return (
       <main className="flex min-h-screen items-center justify-center bg-canvas px-4 py-16">
         <div className="card w-full max-w-md p-8 text-center">
-          <h1 className="text-xl font-bold text-ink">Davet linki geçersiz</h1>
-          <p className="mt-3 text-sm text-ink-soft">
+          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-600 dark:bg-red-950/50">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </span>
+          <h1 className="mt-4 text-xl font-bold text-ink">Davet linki geçersiz</h1>
+          <p className="mt-2 text-sm leading-relaxed text-ink-soft">
             Bu link süresi dolmuş, iptal edilmiş ya da hiç var olmamış olabilir. Bina yöneticinizden yeni bir davet isteyin.
           </p>
           <Link href="/blokmate/register" className="btn mt-6 inline-flex bg-blue-600 text-white hover:bg-blue-700">
@@ -97,8 +109,13 @@ export default function InviteAcceptPage() {
     return (
       <main className="flex min-h-screen items-center justify-center bg-canvas px-4 py-16">
         <div className="card w-full max-w-md p-8 text-center">
-          <h1 className="text-xl font-bold text-ink">Kayıt talebin alındı</h1>
-          <p className="mt-3 text-sm text-ink-soft">
+          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-50 text-green-600 dark:bg-green-950/50">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+          </span>
+          <h1 className="mt-4 text-xl font-bold text-ink">Kayıt talebin alındı</h1>
+          <p className="mt-2 text-sm leading-relaxed text-ink-soft">
             {invite.tenantName} — {invite.buildingName} yöneticisi talebini onayladıktan sonra panele erişebileceksin.
           </p>
           <Link href="/blokmate/login" className="btn mt-6 inline-flex bg-blue-600 text-white hover:bg-blue-700">
@@ -113,12 +130,9 @@ export default function InviteAcceptPage() {
     <main className="flex min-h-screen items-center justify-center bg-canvas px-4 py-16">
       <div className="card w-full max-w-md p-8">
         <h1 className="text-2xl font-bold text-ink">Davete katıl</h1>
-        <div className="mt-3 rounded-lg bg-mist px-4 py-3 text-sm">
-          <p className="font-semibold text-ink">{invite.tenantName}</p>
-          <p className="text-ink-soft">
-            {invite.buildingName}
-            {invite.unitLabel ? ` — Daire ${invite.unitLabel}` : ""}
-          </p>
+        <p className="mt-1 text-sm text-ink-faint">Aşağıdaki bilgilerle hesabını oluştur, yönetici onayladığında panele erişeceksin.</p>
+        <div className="mt-4">
+          <InviteSummaryCard invite={invite} />
         </div>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">

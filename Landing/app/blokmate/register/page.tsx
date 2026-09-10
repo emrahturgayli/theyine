@@ -13,6 +13,7 @@ import {
   type PublicInvite,
 } from "@/lib/blokmate-invites";
 import PasswordInput from "@/components/PasswordInput";
+import InviteSummaryCard from "../components/InviteSummaryCard";
 
 type Role = "manager" | "resident";
 
@@ -291,7 +292,8 @@ export default function BlokmateRegisterPage() {
               <label htmlFor="inviteCode" className="text-sm font-medium text-ink">
                 Davet Kodu
               </label>
-              <div className="mt-1 flex gap-2">
+              <p className="mt-0.5 text-xs text-ink-faint">Yöneticinden aldığın kodu ya da davet linkindeki kodu gir.</p>
+              <div className="mt-1.5 flex gap-2">
                 <input
                   id="inviteCode"
                   value={inviteCode}
@@ -300,26 +302,40 @@ export default function BlokmateRegisterPage() {
                     setResolvedInvite(null);
                     setCodeError(null);
                   }}
-                  placeholder="Yöneticinizden alın"
-                  className="w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:border-blue-500"
+                  disabled={!!resolvedInvite}
+                  placeholder="örn. 8f3a1c9d2b..."
+                  className="w-full rounded-lg border border-line bg-surface px-3 py-2.5 font-mono text-sm text-ink outline-none focus:border-blue-500 disabled:bg-mist disabled:text-ink-faint"
                 />
-                <button
-                  type="button"
-                  onClick={handleResolveCode}
-                  disabled={resolvingCode || !inviteCode.trim()}
-                  className="min-h-[44px] shrink-0 rounded-lg border border-line px-4 text-sm font-semibold text-ink-soft hover:border-blue-500 hover:text-blue-600 disabled:opacity-60"
-                >
-                  {resolvingCode ? "…" : "Doğrula"}
-                </button>
+                {resolvedInvite ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setResolvedInvite(null);
+                      setInviteCode("");
+                    }}
+                    className="min-h-[44px] shrink-0 rounded-lg border border-line px-4 text-sm font-semibold text-ink-soft hover:border-red-500 hover:text-red-600"
+                  >
+                    Değiştir
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleResolveCode}
+                    disabled={resolvingCode || !inviteCode.trim()}
+                    className="min-h-[44px] shrink-0 rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+                  >
+                    {resolvingCode ? "Doğrulanıyor…" : "Doğrula"}
+                  </button>
+                )}
               </div>
-              {codeError && <p className="mt-2 text-sm text-red-600">{codeError}</p>}
+              {codeError && (
+                <p role="alert" className="mt-2 text-sm text-red-600">
+                  {codeError}
+                </p>
+              )}
               {resolvedInvite && (
-                <div className="mt-2 rounded-lg bg-mist px-4 py-3 text-sm">
-                  <p className="font-semibold text-ink">{resolvedInvite.tenantName}</p>
-                  <p className="text-ink-soft">
-                    {resolvedInvite.buildingName}
-                    {resolvedInvite.unitLabel ? ` — Daire ${resolvedInvite.unitLabel}` : ""}
-                  </p>
+                <div className="mt-3">
+                  <InviteSummaryCard invite={resolvedInvite} />
                 </div>
               )}
               <button
