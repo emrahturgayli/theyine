@@ -2,9 +2,23 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
-import { listInvoices, createInvoice, listUnits, listBuildings, markInvoicePaid, markInvoiceUnpaid, deleteInvoice, type Invoice, type Unit, type Building } from "@/lib/blokmate-data";
+import {
+  listInvoices,
+  createInvoice,
+  listUnits,
+  listBuildings,
+  markInvoicePaid,
+  markInvoiceUnpaid,
+  deleteInvoice,
+  accrueMonthlyDues,
+  type Invoice,
+  type Unit,
+  type Building,
+} from "@/lib/blokmate-data";
 import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
 import { useBlokmateToast } from "@/lib/blokmate-toast";
+import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
+import { buildingWordPlural } from "@/lib/blokmate-terms";
 import InvoiceTable from "../components/InvoiceTable";
 import BuildingFilterBar from "../components/BuildingFilterBar";
 import { useBuildingFilter } from "../components/useBuildingFilter";
@@ -12,6 +26,7 @@ import { useTenantCurrency } from "../components/useTenantCurrency";
 
 export default function InvoicesPage() {
   const { claims } = useBlokmateAuth();
+  const { lang } = useBlokmateLanguage();
   const toast = useBlokmateToast();
   const canManage = claims?.role === "manager" || claims?.role === "accountant";
   const { buildingId: filterBuildingId } = useBuildingFilter();
@@ -26,6 +41,12 @@ export default function InvoicesPage() {
   const [dueDate, setDueDate] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  const currentPeriod = new Date().toISOString().slice(0, 7);
+  const [accrueBuildingId, setAccrueBuildingId] = useState("");
+  const [accruePeriod, setAccruePeriod] = useState(currentPeriod);
+  const [accrueDueDate, setAccrueDueDate] = useState("");
+  const [accruing, setAccruing] = useState(false);
+
   async function load() {
     try {
       const [i, u, b] = await Promise.all([
@@ -37,6 +58,7 @@ export default function InvoicesPage() {
       setUnits(u);
       setBuildings(b);
       if (!unitId && u.length > 0) setUnitId(u[0].id);
+      if (!accrueBuildingId && b.length > 0) setAccrueBuildingId(filterBuildingId || b[0].id);
       setStatus("ready");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Bilinmeyen hata");
@@ -120,6 +142,41 @@ export default function InvoicesPage() {
     return units.find((u) => u.id === id)?.label ?? id;
   }
 
+  const accrueBuilding = buildings.find((b) => b.id === accrueBuildingId);
+
+  async function handleAccrue(e: FormEvent) {
+    e.preventDefault();
+    if (!accrueBuildingId) return;
+    if (
+      !window.confirm(
+        `${accruePeriod} dönemi için bu binadaki tüm dairelere aidat oluşturulacak. Devam edilsin mi?`
+      )
+    ) {
+      return;
+    }
+    setAccruing(true);
+    try {
+      const result = await accrueMonthlyDues({
+        building_id: accrueBuildingId,
+        period: accruePeriod,
+        due_date: accrueDueDate,
+      });
+      await load();
+      if (result.created === 0 && result.skipped > 0) {
+        toast.error(`${accruePeriod} dönemi için tüm daireler zaten tahakkuk etmiş.`);
+      } else {
+        toast.success(
+          `${result.created} fatura oluşturuldu` +
+            (result.skipped > 0 ? ` (${result.skipped} daire zaten tahakkuk etmişti).` : ".")
+        );
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Bilinmeyen hata");
+    } finally {
+      setAccruing(false);
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -174,6 +231,58 @@ export default function InvoicesPage() {
           {submitting ? "Ekleniyor…" : "Oluştur"}
         </button>
       </form>
+      )}
+
+      {canManage && (
+        <form onSubmit={handleAccrue} className="card flex flex-wrap items-end gap-3 p-4">
+          <div className="min-w-[160px]">
+            <label className="text-xs font-medium text-ink-faint">Bina</label>
+            <select
+              required
+              value={accrueBuildingId}
+              onChange={(e) => setAccrueBuildingId(e.target.value)}
+              className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-blue-500"
+            >
+              {buildings.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="min-w-[140px]">
+            <label className="text-xs font-medium text-ink-faint">Dönem</label>
+            <input
+              required
+              type="month"
+              value={accruePeriod}
+              onChange={(e) => setAccruePeriod(e.target.value)}
+              className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-blue-500"
+            />
+          </div>
+          <div className="min-w-[160px]">
+            <label className="text-xs font-medium text-ink-faint">Son ödeme</label>
+            <input
+              required
+              type="date"
+              value={accrueDueDate}
+              onChange={(e) => setAccrueDueDate(e.target.value)}
+              className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-blue-500"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={accruing || !accrueBuilding?.standard_due_amount_cents}
+            className="btn min-h-[40px] bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
+          >
+            {accruing ? "Oluşturuluyor…" : "Aylık Aidatları Tahakkuk Et"}
+          </button>
+          {accrueBuilding && !accrueBuilding.standard_due_amount_cents && (
+            <p className="w-full text-xs text-amber-600">
+              Bu bina için Standart Aidat Tutarı belirlenmemiş — önce {buildingWordPlural(lang)} sayfasından ekle.
+            </p>
+          )}
+        </form>
       )}
 
       {status === "error" && <p className="text-sm text-red-600">{error}</p>}

@@ -40,6 +40,7 @@ export async function POST(request: Request) {
     accessToken?: string;
     role?: "manager" | "resident";
     fullName?: string;
+    phone?: string;
     tenantCode?: string;
   };
   try {
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "invalid_json" }, { status: 400 });
   }
 
-  const { accessToken, role, fullName, tenantCode } = body;
+  const { accessToken, role, fullName, phone, tenantCode } = body;
   if (!accessToken || typeof accessToken !== "string") {
     return NextResponse.json({ error: "missing_access_token" }, { status: 401 });
   }
@@ -118,6 +119,7 @@ export async function POST(request: Request) {
       tenant_id: tenant.id,
       full_name: fullName.trim(),
       email: authUser.email ?? "",
+      phone: phone?.trim() || null,
       role: "manager",
     });
     if (userInsertError) {

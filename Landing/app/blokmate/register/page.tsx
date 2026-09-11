@@ -11,9 +11,11 @@ import {
   submitResidentSignupRequest,
   getPublicInviteByToken,
   type PublicInvite,
+  type ResidentStatus,
 } from "@/lib/blokmate-invites";
 import PasswordInput from "@/components/PasswordInput";
 import InviteSummaryCard from "../components/InviteSummaryCard";
+import ResidentStatusPicker from "../components/ResidentStatusPicker";
 
 type Role = "manager" | "resident";
 
@@ -44,6 +46,7 @@ export default function BlokmateRegisterPage() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [residentStatus, setResidentStatus] = useState<ResidentStatus>("owner");
 
   const [tenants, setTenants] = useState<{ id: string; name: string }[]>([]);
   const [buildings, setBuildings] = useState<{ id: string; name: string }[]>([]);
@@ -140,6 +143,7 @@ export default function BlokmateRegisterPage() {
           accessToken: signUpData.session.access_token,
           role,
           fullName,
+          phone,
         }),
       });
       const body = await res.json();
@@ -167,6 +171,7 @@ export default function BlokmateRegisterPage() {
         full_name: fullName,
         phone: phone || undefined,
         email,
+        resident_status: residentStatus,
       });
       setStatus("pending");
     } catch (err) {
@@ -241,20 +246,20 @@ export default function BlokmateRegisterPage() {
               className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:border-blue-500"
             />
           </div>
-          {role === "resident" && (
-            <div>
-              <label htmlFor="phone" className="text-sm font-medium text-ink">
-                Telefon
-              </label>
-              <input
-                id="phone"
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:border-blue-500"
-              />
-            </div>
-          )}
+          <div>
+            <label htmlFor="phone" className="text-sm font-medium text-ink">
+              Telefon
+            </label>
+            <input
+              id="phone"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="+90 5xx xxx xx xx"
+              className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:border-blue-500"
+            />
+          </div>
+          {role === "resident" && <ResidentStatusPicker value={residentStatus} onChange={setResidentStatus} />}
           <div>
             <label htmlFor="email" className="text-sm font-medium text-ink">
               E-posta

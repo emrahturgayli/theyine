@@ -4,9 +4,10 @@ import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { getBlokmateSupabaseBrowser } from "@/lib/blokmate-supabase-browser";
-import { getPublicInviteByToken, submitResidentSignupRequest, type PublicInvite } from "@/lib/blokmate-invites";
+import { getPublicInviteByToken, submitResidentSignupRequest, type PublicInvite, type ResidentStatus } from "@/lib/blokmate-invites";
 import PasswordInput from "@/components/PasswordInput";
 import InviteSummaryCard from "../../components/InviteSummaryCard";
+import ResidentStatusPicker from "../../components/ResidentStatusPicker";
 
 /**
  * Public invite-acceptance page — no auth required to view it. The
@@ -23,6 +24,7 @@ export default function InviteAcceptPage() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [residentStatus, setResidentStatus] = useState<ResidentStatus>("owner");
   const [status, setStatus] = useState<"idle" | "loading" | "error" | "pending">("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -62,6 +64,7 @@ export default function InviteAcceptPage() {
         full_name: fullName,
         phone: phone || undefined,
         email,
+        resident_status: residentStatus,
       });
       setStatus("pending");
     } catch (err) {
@@ -173,6 +176,9 @@ export default function InviteAcceptPage() {
               className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:border-blue-500"
             />
           </div>
+
+          <ResidentStatusPicker value={residentStatus} onChange={setResidentStatus} />
+
           <div>
             <label htmlFor="password" className="text-sm font-medium text-ink">
               Şifre

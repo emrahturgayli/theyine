@@ -263,13 +263,14 @@ export default function InvitesPage() {
                 <th className="px-4 py-3">E-posta</th>
                 <th className="px-4 py-3">{buildingWord(lang)}</th>
                 <th className="px-4 py-3">Daire</th>
+                <th className="px-4 py-3">Statü</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
             <tbody className="divide-y divide-line">
               {status === "ready" && requests.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-4 py-6 text-center text-ink-faint">Bekleyen talep yok.</td>
+                  <td colSpan={6} className="px-4 py-6 text-center text-ink-faint">Bekleyen talep yok.</td>
                 </tr>
               )}
               {requests.map((r) => {
@@ -296,6 +297,9 @@ export default function InvitesPage() {
                           ))}
                         </select>
                       )}
+                    </td>
+                    <td className="px-4 py-3 text-ink-soft">
+                      {r.resident_status === "owner" ? "Mülk Sahibi" : r.resident_status === "tenant" ? "Kiracı" : "—"}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-2">

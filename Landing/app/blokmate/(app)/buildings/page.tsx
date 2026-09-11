@@ -20,11 +20,13 @@ export default function BuildingsPage() {
   const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
+  const [standardDue, setStandardDue] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const [editing, setEditing] = useState<Building | null>(null);
   const [editName, setEditName] = useState("");
   const [editAddress, setEditAddress] = useState("");
+  const [editStandardDue, setEditStandardDue] = useState("");
   const [editSubmitting, setEditSubmitting] = useState(false);
 
   async function load() {
@@ -45,9 +47,14 @@ export default function BuildingsPage() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await createBuilding({ name, address: address || undefined });
+      await createBuilding({
+        name,
+        address: address || undefined,
+        standard_due_amount_cents: standardDue ? Math.round(Number(standardDue) * 100) : undefined,
+      });
       setName("");
       setAddress("");
+      setStandardDue("");
       await load();
       toast.success(`${buildingWord(lang)} eklendi.`);
     } catch (err) {
@@ -64,6 +71,9 @@ export default function BuildingsPage() {
     setEditing(building);
     setEditName(building.name);
     setEditAddress(building.address ?? "");
+    setEditStandardDue(
+      building.standard_due_amount_cents != null ? (building.standard_due_amount_cents / 100).toString() : ""
+    );
   }
 
   async function handleEditSubmit(e: FormEvent) {
@@ -71,7 +81,11 @@ export default function BuildingsPage() {
     if (!editing) return;
     setEditSubmitting(true);
     try {
-      await updateBuilding(editing.id, { name: editName, address: editAddress || undefined });
+      await updateBuilding(editing.id, {
+        name: editName,
+        address: editAddress || undefined,
+        standard_due_amount_cents: editStandardDue ? Math.round(Number(editStandardDue) * 100) : null,
+      });
       setEditing(null);
       await load();
       toast.success(`${buildingWord(lang)} güncellendi.`);
@@ -116,6 +130,18 @@ export default function BuildingsPage() {
             className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-blue-500"
           />
         </div>
+        <div className="min-w-[160px]">
+          <label className="text-xs font-medium text-ink-faint">Standart Aidat Tutarı</label>
+          <input
+            type="number"
+            step="0.01"
+            min="0"
+            value={standardDue}
+            onChange={(e) => setStandardDue(e.target.value)}
+            placeholder="opsiyonel"
+            className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink outline-none focus:border-blue-500"
+          />
+        </div>
         <button type="submit" disabled={submitting} className="btn min-h-[40px] bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60">
           {submitting ? "Ekleniyor…" : "Ekle"}
         </button>
@@ -151,6 +177,21 @@ export default function BuildingsPage() {
                 onChange={(e) => setEditAddress(e.target.value)}
                 className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:border-blue-500"
               />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-ink">Standart Aidat Tutarı</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={editStandardDue}
+                onChange={(e) => setEditStandardDue(e.target.value)}
+                placeholder="opsiyonel"
+                className="mt-1 w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-ink outline-none focus:border-blue-500"
+              />
+              <p className="mt-1 text-xs text-ink-faint">
+                "Aylık Aidatları Tahakkuk Et" butonu bu tutarı kullanır.
+              </p>
             </div>
             <button
               type="submit"

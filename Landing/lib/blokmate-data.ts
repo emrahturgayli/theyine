@@ -34,7 +34,13 @@ async function requireTenantId(): Promise<string> {
   return claims.tenant_id;
 }
 
-export type Building = { id: string; name: string; address: string | null; unit_count: number };
+export type Building = {
+  id: string;
+  name: string;
+  address: string | null;
+  unit_count: number;
+  standard_due_amount_cents: number | null;
+};
 export type Unit = { id: string; building_id: string; label: string; owner_name: string | null };
 export type Invoice = {
   id: string;
@@ -44,6 +50,7 @@ export type Invoice = {
   due_date: string;
   status: "unpaid" | "paid" | "overdue" | "void";
   description: string | null;
+  period: string | null;
 };
 export type Payment = {
   id: string;
@@ -118,16 +125,26 @@ function client() {
 }
 
 export async function listBuildings(): Promise<Building[]> {
-  const { data, error } = await client().from("buildings").select("id, name, address, unit_count").order("name");
+  const { data, error } = await client()
+    .from("buildings")
+    .select("id, name, address, unit_count, standard_due_amount_cents")
+    .order("name");
   if (error) throw new Error(error.message);
   return data ?? [];
 }
 
-export async function createBuilding(input: { name: string; address?: string }): Promise<void> {
+export async function createBuilding(input: {
+  name: string;
+  address?: string;
+  standard_due_amount_cents?: number;
+}): Promise<void> {
   const tenant_id = await requireTenantId();
-  const { error } = await client()
-    .from("buildings")
-    .insert({ name: input.name, address: input.address || null, tenant_id });
+  const { error } = await client().from("buildings").insert({
+    name: input.name,
+    address: input.address || null,
+    standard_due_amount_cents: input.standard_due_amount_cents ?? null,
+    tenant_id,
+  });
   if (error) throw new Error(error.message);
 }
 
@@ -139,10 +156,17 @@ export async function createBuilding(input: { name: string; address?: string }):
  * Passing tenant_id here would do nothing except risk a typo breaking a
  * legitimate update.
  */
-export async function updateBuilding(id: string, input: { name: string; address?: string }): Promise<void> {
+export async function updateBuilding(
+  id: string,
+  input: { name: string; address?: string; standard_due_amount_cents?: number | null }
+): Promise<void> {
   const { error } = await client()
     .from("buildings")
-    .update({ name: input.name, address: input.address || null })
+    .update({
+      name: input.name,
+      address: input.address || null,
+      standard_due_amount_cents: input.standard_due_amount_cents ?? null,
+    })
     .eq("id", id);
   if (error) throw new Error(error.message);
 }
@@ -199,7 +223,7 @@ export async function deleteUnit(id: string): Promise<void> {
 }
 
 export async function listInvoices(buildingId?: string): Promise<Invoice[]> {
-  let query = client().from("invoices").select("id, unit_id, amount_cents, currency, due_date, status, description");
+  let query = client().from("invoices").select("id, unit_id, amount_cents, currency, due_date, status, description, period");
   if (buildingId) {
     const unitIds = await unitIdsForBuilding(buildingId);
     if (unitIds.length === 0) return [];
@@ -225,6 +249,71 @@ export async function createInvoice(input: {
     tenant_id,
   });
   if (error) throw new Error(error.message);
+}
+
+export type AccrueDuesResult = { created: number; skipped: number; totalUnits: number };
+
+/**
+ * "Aylık Aidatları Tahakkuk Et" — bulk-creates one invoice per unit in a
+ * building at the building's standard_due_amount_cents (migration 015),
+ * tagged with `period` ('YYYY-MM'). There's no vacancy/occupancy concept
+ * in this schema (units have no "empty" flag), so "her dolu daireye"
+ * from SPEC.md Section 6 is read as "every unit in the building" — every
+ * unit that exists is billable, whether or not a resident portal account
+ * has been provisioned for it yet.
+ *
+ * Idempotent by construction, not by pre-checking: this uses `upsert`
+ * with `ignoreDuplicates: true` against the (unit_id, period) unique
+ * index (migration 015), so re-running it for a period already accrued
+ * just silently skips the units that already have one — a manager who
+ * double-clicks the button, or runs it again after adding a new unit
+ * mid-month, can't double-bill anyone. `skipped` in the result reflects
+ * exactly that.
+ */
+export async function accrueMonthlyDues(input: {
+  building_id: string;
+  period: string;
+  due_date: string;
+}): Promise<AccrueDuesResult> {
+  const tenant_id = await requireTenantId();
+  const supabase = client();
+
+  const { data: building, error: buildingError } = await supabase
+    .from("buildings")
+    .select("standard_due_amount_cents")
+    .eq("id", input.building_id)
+    .maybeSingle();
+  if (buildingError) throw new Error(buildingError.message);
+  if (!building?.standard_due_amount_cents) {
+    throw new Error("Bu bina için önce Standart Aidat Tutarı belirlemelisin.");
+  }
+
+  const { data: units, error: unitsError } = await supabase
+    .from("units")
+    .select("id")
+    .eq("building_id", input.building_id);
+  if (unitsError) throw new Error(unitsError.message);
+  if (!units || units.length === 0) {
+    return { created: 0, skipped: 0, totalUnits: 0 };
+  }
+
+  const rows = units.map((u) => ({
+    tenant_id,
+    unit_id: u.id,
+    amount_cents: building.standard_due_amount_cents!,
+    due_date: input.due_date,
+    period: input.period,
+    description: `${input.period} dönemi aidatı`,
+  }));
+
+  const { data: insertedRows, error: insertError } = await supabase
+    .from("invoices")
+    .upsert(rows, { onConflict: "unit_id,period", ignoreDuplicates: true })
+    .select("id");
+  if (insertError) throw new Error(insertError.message);
+
+  const created = insertedRows?.length ?? 0;
+  return { created, skipped: units.length - created, totalUnits: units.length };
 }
 
 /**

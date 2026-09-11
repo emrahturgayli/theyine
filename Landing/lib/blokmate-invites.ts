@@ -38,6 +38,8 @@ export type PublicInvite = {
   unitLabel: string | null;
 };
 
+export type ResidentStatus = "owner" | "tenant";
+
 export type ResidentSignupRequest = {
   id: string;
   user_id: string;
@@ -48,6 +50,7 @@ export type ResidentSignupRequest = {
   full_name: string;
   phone: string | null;
   email: string;
+  resident_status: ResidentStatus | null;
   status: "pending" | "approved" | "rejected";
   created_at: string;
 };
@@ -185,6 +188,7 @@ export async function submitResidentSignupRequest(input: {
   full_name: string;
   phone?: string;
   email: string;
+  resident_status?: ResidentStatus;
 }): Promise<void> {
   const { error } = await client()
     .from("resident_signup_requests")
@@ -197,6 +201,7 @@ export async function submitResidentSignupRequest(input: {
       full_name: input.full_name,
       phone: input.phone || null,
       email: input.email,
+      resident_status: input.resident_status || null,
     });
   if (error) throw new Error(error.message);
 }
@@ -211,7 +216,7 @@ export async function getOwnSignupRequest(): Promise<ResidentSignupRequest | nul
 
   const { data, error } = await supabase
     .from("resident_signup_requests")
-    .select("id, user_id, tenant_id, building_id, unit_id, invite_token_id, full_name, phone, email, status, created_at")
+    .select("id, user_id, tenant_id, building_id, unit_id, invite_token_id, full_name, phone, email, resident_status, status, created_at")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(1)
@@ -227,7 +232,7 @@ export async function getOwnSignupRequest(): Promise<ResidentSignupRequest | nul
 export async function listPendingSignupRequests(): Promise<ResidentSignupRequest[]> {
   const { data, error } = await client()
     .from("resident_signup_requests")
-    .select("id, user_id, tenant_id, building_id, unit_id, invite_token_id, full_name, phone, email, status, created_at")
+    .select("id, user_id, tenant_id, building_id, unit_id, invite_token_id, full_name, phone, email, resident_status, status, created_at")
     .eq("status", "pending")
     .order("created_at", { ascending: true });
   if (error) throw new Error(error.message);
@@ -244,7 +249,10 @@ export async function listPendingSignupRequests(): Promise<ResidentSignupRequest
  * the request just stays "pending" for a manager to notice and re-mark.
  */
 export async function approveSignupRequest(
-  request: Pick<ResidentSignupRequest, "id" | "user_id" | "tenant_id" | "full_name" | "email" | "unit_id">,
+  request: Pick<
+    ResidentSignupRequest,
+    "id" | "user_id" | "tenant_id" | "full_name" | "email" | "unit_id" | "phone" | "resident_status"
+  >,
   unitId?: string
 ): Promise<void> {
   const supabase = client();
@@ -257,7 +265,9 @@ export async function approveSignupRequest(
     tenant_id: request.tenant_id,
     full_name: request.full_name,
     email: request.email,
+    phone: request.phone,
     role: "resident",
+    resident_status: request.resident_status,
     unit_id: unitId || request.unit_id || null,
   });
   if (userInsertError) throw new Error(userInsertError.message);
