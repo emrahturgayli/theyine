@@ -26,8 +26,10 @@ BlokMate; site, apartman ve plaza yöneticileri için geliştirilmiş, "Apsiyon"
 * Sakinler için Davet Kodu (Invite Code) üretim ve doğrulama akışı yapıldı.
 * Bekleyen sakinler için State Detection (Durum Algılama) onay akışları tamamlandı.
 
-## 6. Sıradaki Sprint (Ömer/Beta Feedback Entegrasyonu)
-Bu özellikler bir sonraki kodlamada sisteme eklenecektir:
-1. **Kullanıcı Kaydı Güncellemesi:** Kayıt formuna ve veritabanı profiline "Telefon Numarası" alanı eklenecek.
-2. **Sakin Statüsü:** Sakin daireye bağlanırken/kaydolurken statüsünü seçecek: `Mülk Sahibi` veya `Kiracı`.
-3. **Otomatik Aidat Atama (Bulk Insert):** Bina ayarlarına "Standart Aidat Tutarı" girilecek. Yönetici tek bir butona basarak ("Aylık Aidatları Tahakkuk Et"), o binadaki tüm dolu dairelere o tutar kadar otomatik borç/fatura oluşturacak.
+## 6. Tamamlanan Sprint (Ömer/Beta Feedback Entegrasyonu)
+Bu özellikler sisteme eklendi (Migration 015 & 016):
+1. **Kullanıcı Kaydı Güncellemesi:** Kayıt formuna ve veritabanı profiline "Telefon Numarası" alanı eklendi.
+2. **Sakin Statüsü:** Sakin daireye bağlanırken/kaydolurken statüsünü seçiyor: `Mülk Sahibi` veya `Kiracı`.
+3. **Otomatik Aidat Atama (Bulk Insert):** Bina ayarlarına "Standart Aidat Tutarı" girilecek şekilde eklendi. Yönetici tek bir butona basarak ("Aylık Aidatları Tahakkuk Et"), o binadaki tüm dolu dairelere o tutar kadar otomatik borç/fatura oluşturuyor.
+4. **Borç Görünümleri:** Sakin ve yönetici için aidat/borç görünüm ekranları eklendi.
+5. **Manuel Ödeme Kaydı:** Yönetici, kapıdan/elden alınan ödemeleri manuel ödeme yöntemi girerek sisteme işleyebiliyor.
