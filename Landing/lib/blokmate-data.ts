@@ -51,6 +51,7 @@ export type Invoice = {
   status: "unpaid" | "paid" | "overdue" | "void";
   description: string | null;
   period: string | null;
+  paid_at: string | null;
 };
 export type Payment = {
   id: string;
@@ -223,7 +224,7 @@ export async function deleteUnit(id: string): Promise<void> {
 }
 
 export async function listInvoices(buildingId?: string): Promise<Invoice[]> {
-  let query = client().from("invoices").select("id, unit_id, amount_cents, currency, due_date, status, description, period");
+  let query = client().from("invoices").select("id, unit_id, amount_cents, currency, due_date, status, description, period, paid_at");
   if (buildingId) {
     const unitIds = await unitIdsForBuilding(buildingId);
     if (unitIds.length === 0) return [];
@@ -329,9 +330,19 @@ export async function accrueMonthlyDues(input: {
  * "unpaid"; surfaced as an error so the manager knows to recheck rather
  * than silently mismatching.
  */
+export type ManualPaymentMethod = "bank_transfer" | "card" | "cash" | "door" | "other";
+
+/**
+ * Manager-only manual payment entry — "Elden ödeme" (cash), "Havale"
+ * (bank_transfer), or "Kapıdan ödeme" (door), plus card/other for
+ * anything else recorded by hand rather than through Stripe. Sets
+ * invoices.paid_at (migration 016) alongside status so
+ * ResidentDuesList/ManagerDuesTable can show "last payment date"
+ * without joining payments.
+ */
 export async function markInvoicePaid(
   invoice: Pick<Invoice, "id" | "amount_cents">,
-  method: "bank_transfer" | "card" | "cash" | "other" = "cash"
+  method: ManualPaymentMethod = "cash"
 ): Promise<void> {
   const tenant_id = await requireTenantId();
   const supabase = client();
@@ -344,7 +355,10 @@ export async function markInvoicePaid(
   });
   if (paymentError) throw new Error(paymentError.message);
 
-  const { error: invoiceError } = await supabase.from("invoices").update({ status: "paid" }).eq("id", invoice.id);
+  const { error: invoiceError } = await supabase
+    .from("invoices")
+    .update({ status: "paid", paid_at: new Date().toISOString() })
+    .eq("id", invoice.id);
   if (invoiceError) {
     throw new Error(
       `Ödeme kaydedildi ancak fatura durumu güncellenemedi: ${invoiceError.message}`
@@ -368,7 +382,7 @@ export async function deleteInvoice(id: string): Promise<void> {
  * transaction.
  */
 export async function markInvoiceUnpaid(invoiceId: string): Promise<void> {
-  const { error } = await client().from("invoices").update({ status: "unpaid" }).eq("id", invoiceId);
+  const { error } = await client().from("invoices").update({ status: "unpaid", paid_at: null }).eq("id", invoiceId);
   if (error) throw new Error(error.message);
 }
 

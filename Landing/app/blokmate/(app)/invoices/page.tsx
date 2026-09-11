@@ -14,12 +14,14 @@ import {
   type Invoice,
   type Unit,
   type Building,
+  type ManualPaymentMethod,
 } from "@/lib/blokmate-data";
 import { useBlokmateAuth } from "@/lib/blokmate-auth-context";
 import { useBlokmateToast } from "@/lib/blokmate-toast";
 import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
 import { buildingWordPlural } from "@/lib/blokmate-terms";
-import InvoiceTable from "../components/InvoiceTable";
+import ManagerDuesTable from "../components/ManagerDuesTable";
+import ResidentDuesList from "../components/ResidentDuesList";
 import BuildingFilterBar from "../components/BuildingFilterBar";
 import { useBuildingFilter } from "../components/useBuildingFilter";
 import { useTenantCurrency } from "../components/useTenantCurrency";
@@ -105,9 +107,9 @@ export default function InvoicesPage() {
     }
   }
 
-  async function handleMarkPaid(invoice: Invoice) {
+  async function handleMarkPaid(invoice: Invoice, method: ManualPaymentMethod) {
     try {
-      await markInvoicePaid(invoice);
+      await markInvoicePaid(invoice, method);
       await load();
       toast.success("Fatura ödendi olarak işaretlendi.");
     } catch (err) {
@@ -290,17 +292,19 @@ export default function InvoicesPage() {
         <p className="text-sm text-ink-faint">Önce bir daire eklemelisin.</p>
       )}
 
-      <InvoiceTable
-        invoices={invoices}
-        loading={status === "loading"}
-        unitLabel={unitLabel}
-        canManage={canManage}
-        onMarkPaid={handleMarkPaid}
-        onMarkUnpaid={handleMarkUnpaid}
-        onDelete={handleDelete}
-        showPayButton={!canManage}
-        currency={currency}
-      />
+      {canManage ? (
+        <ManagerDuesTable
+          invoices={invoices}
+          loading={status === "loading"}
+          unitLabel={unitLabel}
+          onMarkPaid={handleMarkPaid}
+          onMarkUnpaid={handleMarkUnpaid}
+          onDelete={handleDelete}
+          currency={currency}
+        />
+      ) : (
+        <ResidentDuesList invoices={invoices} loading={status === "loading"} currency={currency} />
+      )}
     </div>
   );
 }

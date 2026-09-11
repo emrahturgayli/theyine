@@ -94,7 +94,7 @@ async function markInvoicePaidFromMetadata(
   // here for that.
   const { error: invoiceUpdateError } = await supabase
     .from("invoices")
-    .update({ status: "paid" })
+    .update({ status: "paid", paid_at: new Date().toISOString() })
     .eq("id", invoice.id)
     .eq("tenant_id", invoice.tenant_id);
   if (invoiceUpdateError) {

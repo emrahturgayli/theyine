@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import type { Invoice, TenantSettings } from "@/lib/blokmate-data";
+import type { Invoice, TenantSettings, ManualPaymentMethod } from "@/lib/blokmate-data";
 import { formatBlokmateAmount } from "@/lib/blokmate-currency";
 import { useBlokmateLanguage } from "@/hooks/useBlokmateLanguage";
 import PayNowButton from "./PayNowButton";
+import MarkPaidButton from "./MarkPaidButton";
 
 const STATUS_LABELS: Record<Invoice["status"], string> = {
   unpaid: "Ödenmedi",
@@ -36,7 +37,7 @@ export default function InvoiceTable({
   unitLabel: (unitId: string) => string;
   /** Manager/accountant only — RLS enforces this server-side regardless, this just hides the button for residents. */
   canManage?: boolean;
-  onMarkPaid?: (invoice: Invoice) => Promise<void>;
+  onMarkPaid?: (invoice: Invoice, method: ManualPaymentMethod) => Promise<void>;
   /** Manager/accountant only — reverses a mistaken/fraudulent "paid" back to "unpaid" (migration 012). */
   onMarkUnpaid?: (invoice: Invoice) => Promise<void>;
   onDelete?: (invoice: Invoice) => void;
@@ -47,11 +48,11 @@ export default function InvoiceTable({
   const [markingId, setMarkingId] = useState<string | null>(null);
   const { lang } = useBlokmateLanguage();
 
-  async function handleMarkPaid(inv: Invoice) {
+  async function handleMarkPaid(inv: Invoice, method: ManualPaymentMethod) {
     if (!onMarkPaid || markingId) return;
     setMarkingId(inv.id);
     try {
-      await onMarkPaid(inv);
+      await onMarkPaid(inv, method);
     } finally {
       setMarkingId(null);
     }
@@ -67,27 +68,31 @@ export default function InvoiceTable({
     }
   }
 
+  const columnCount = 6 + (canManage || showPayButton ? 1 : 0);
+
   return (
     <div className="card overflow-x-auto">
       <table className="w-full text-left text-sm">
         <thead className="border-b border-line text-xs uppercase tracking-wide text-ink-faint">
           <tr>
             <th className="px-4 py-3">Daire</th>
+            <th className="px-4 py-3">Dönem</th>
             <th className="px-4 py-3">Tutar</th>
             <th className="px-4 py-3">Son ödeme</th>
             <th className="px-4 py-3">Durum</th>
+            <th className="px-4 py-3">Ödeme tarihi</th>
             {(canManage || showPayButton) && <th className="px-4 py-3" />}
           </tr>
         </thead>
         <tbody className="divide-y divide-line">
           {loading && (
             <tr>
-              <td colSpan={canManage || showPayButton ? 5 : 4} className="px-4 py-6 text-center text-ink-faint">Yükleniyor…</td>
+              <td colSpan={columnCount} className="px-4 py-6 text-center text-ink-faint">Yükleniyor…</td>
             </tr>
           )}
           {!loading && invoices.length === 0 && (
             <tr>
-              <td colSpan={canManage || showPayButton ? 5 : 4} className="px-4 py-6 text-center text-ink-faint">Kayıt yok.</td>
+              <td colSpan={columnCount} className="px-4 py-6 text-center text-ink-faint">Kayıt yok.</td>
             </tr>
           )}
           {invoices.map((inv) => {
@@ -95,12 +100,16 @@ export default function InvoiceTable({
             return (
               <tr key={inv.id}>
                 <td className="px-4 py-3 font-medium text-ink">{unitLabel(inv.unit_id)}</td>
+                <td className="px-4 py-3 text-ink-soft">{inv.period ?? "—"}</td>
                 <td className="px-4 py-3 text-ink-soft">{formatBlokmateAmount(inv.amount_cents, lang, currency)}</td>
                 <td className="px-4 py-3 text-ink-soft">{inv.due_date}</td>
                 <td className="px-4 py-3">
                   <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_STYLES[inv.status]}`}>
                     {STATUS_LABELS[inv.status]}
                   </span>
+                </td>
+                <td className="px-4 py-3 text-ink-soft">
+                  {inv.paid_at ? new Date(inv.paid_at).toLocaleDateString("tr-TR") : "—"}
                 </td>
                 {(canManage || showPayButton) && (
                   <td className="px-4 py-3">
@@ -109,14 +118,7 @@ export default function InvoiceTable({
                         <PayNowButton invoice={inv} />
                       )}
                       {payable && onMarkPaid && (
-                        <button
-                          type="button"
-                          onClick={() => handleMarkPaid(inv)}
-                          disabled={markingId === inv.id}
-                          className="min-h-[32px] rounded-md border border-line px-2.5 text-xs font-semibold text-ink-soft transition-colors hover:border-green-500 hover:text-green-600 disabled:opacity-60"
-                        >
-                          {markingId === inv.id ? "İşleniyor…" : "Ödendi olarak işaretle"}
-                        </button>
+                        <MarkPaidButton onConfirm={(method) => handleMarkPaid(inv, method)} />
                       )}
                       {inv.status === "paid" && onMarkUnpaid && (
                         <button
