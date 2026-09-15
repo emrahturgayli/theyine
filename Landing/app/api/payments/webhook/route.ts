@@ -43,7 +43,7 @@ import { getBlokmateStripe } from "@/lib/blokmate-stripe";
  */
 export const runtime = "nodejs";
 
-async function markInvoicePaidFromMetadata(
+export async function markInvoicePaidFromMetadata(
   supabase: SupabaseClient,
   metadata: Stripe.Metadata | null | undefined,
   paymentReference: string

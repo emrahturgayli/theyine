@@ -5,6 +5,7 @@
 - Yanıtları ve açıklamaları sade, öz ve net tut.
 - Bir kod değişikliği veya işlem yapmadan önce kısaca ne yapacağını söyle.
 - Değişiklik sonrasında `tsc --noEmit` ve `next build` ile kontrol sağla.
+- Her yayından (deploy) önce `test-listesi.md` dosyasındaki kontrol listesini geçir ve kullanıcıya hatırlat.
 
 ## 2. Bağlam (Context)
 - **Proje:** BlokMate — Apsiyon alternatifi, ultra basit, mobil uyumlu site/apartman yönetim SaaS platformu.

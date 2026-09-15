@@ -178,18 +178,14 @@ export default function BlokmateDashboardPage() {
         <div className="card p-5">
           <h2 className="text-sm font-semibold text-ink">Kasa-banka durumu</h2>
           <p className="mt-3 text-sm text-ink-faint">
-            Bu modül henüz uygulanmadı — bir kasa/banka defteri tablosu (gelir-gider mutabakatı) şu an şemada yok.
-            Şu anki tek gerçek para-giriş verisi <code className="rounded bg-mist px-1 py-0.5 text-xs">payments</code>{" "}
-            tablosu; sağdaki "Aylık tahsilat" grafiği bu veriyi gösteriyor. Gerçek kasa-banka mutabakatı için ayrı bir
-            ledger/expense şeması eklenmesi gerekiyor.
+            Bu özellik yakında eklenecek. Şimdilik tahsilat özetini "Aylık tahsilat" grafiğinden takip edebilirsin.
           </p>
         </div>
 
         <div className="card p-5">
           <h2 className="text-sm font-semibold text-ink">Aylık gider</h2>
           <p className="mt-3 text-sm text-ink-faint">
-            Bu modül henüz uygulanmadı — şemada bir gider (expense) tablosu yok, bu yüzden burada uydurma rakam
-            gösterilmiyor. Gider takibi eklenmek istenirse yeni bir tablo + RLS politikası gerekir.
+            Bu özellik yakında eklenecek.
           </p>
         </div>
       </div>

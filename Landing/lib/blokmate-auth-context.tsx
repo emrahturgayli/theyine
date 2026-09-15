@@ -38,6 +38,16 @@ type BlokmateAuthState = {
 
 const BlokmateAuthContext = createContext<BlokmateAuthState | null>(null);
 
+// Supabase returns these as raw English strings — translate the common
+// ones a resident/manager can actually hit at login; fall back to the raw
+// message for anything else so an unexpected error is never swallowed.
+function translateBlokmateAuthError(message: string): string {
+  if (/invalid login credentials/i.test(message)) return "E-posta veya şifre hatalı.";
+  if (/email not confirmed/i.test(message)) return "E-posta adresin henüz doğrulanmamış.";
+  if (/too many requests/i.test(message)) return "Çok fazla deneme yapıldı. Lütfen biraz sonra tekrar dene.";
+  return message;
+}
+
 export function BlokmateAuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [claims, setClaims] = useState<BlokmateJwtClaims | null>(null);
@@ -71,7 +81,7 @@ export function BlokmateAuthProvider({ children }: { children: ReactNode }) {
     const supabase = getBlokmateSupabaseBrowser();
     if (!supabase) return { error: "Supabase yapılandırılmamış." };
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error: error?.message ?? null };
+    return { error: error ? translateBlokmateAuthError(error.message) : null };
   }
 
   async function signOut() {

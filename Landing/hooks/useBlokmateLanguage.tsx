@@ -58,13 +58,13 @@ export function BlokmateLanguageProvider({ children }: { children: ReactNode }) 
   const [lang, setLangState] = useState<BlokmateLanguage>("tr");
 
   useEffect(() => {
+    // Only restore an explicit prior choice — never silently switch away
+    // from the Turkish default based on navigator.language, since that
+    // overrides the user's actual UI without any action on their part.
     const stored = window.localStorage.getItem(STORAGE_KEY) as BlokmateLanguage | null;
     if (stored && stored in DICTIONARIES) {
       setLangState(stored);
-      return;
     }
-    const browser = navigator.language.slice(0, 2).toLowerCase();
-    if (browser in DICTIONARIES) setLangState(browser as BlokmateLanguage);
   }, []);
 
   const setLang = useCallback((next: BlokmateLanguage) => {

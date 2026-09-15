@@ -111,6 +111,19 @@ export async function POST(request: Request) {
       success_url: `${origin}/blokmate/invoices?payment=success`,
       cancel_url: `${origin}/blokmate/invoices?payment=cancelled`,
     });
+
+    // Best-effort — if this write fails the checkout still proceeds (the
+    // webhook is still the source of truth for marking paid); it only
+    // means the reconciliation job in app/api/payments/reconcile won't be
+    // able to look this particular session back up later.
+    const { error: sessionIdError } = await supabase
+      .from("invoices")
+      .update({ stripe_session_id: session.id })
+      .eq("id", invoice.id);
+    if (sessionIdError) {
+      console.error("[payments/create-session] failed to store stripe_session_id:", sessionIdError.message);
+    }
+
     return NextResponse.json({ url: session.url });
   } catch (err) {
     console.error("[payments/create-session] Stripe error:", err instanceof Error ? err.message : err);
